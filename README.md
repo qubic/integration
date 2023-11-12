@@ -5,6 +5,8 @@ This Documentation is meant to describe how you can access the Qubic Network API
   - [General Concepts](#general-concepts)
   - [Basic Communication Structure](#basic-communication-structure)
   - [Examples / Use Cases](#examples--use-cases)
+    - [Basics](#basics)
+    - [Example Use Cases](#example-use-cases)
 
 > [!IMPORTANT]
 > The Qubic Core Main-Net runs on TCP Sockets with Port **21841**
@@ -53,8 +55,15 @@ When talking to the Qubic Network and you don't operate your own Computor be car
 > [!IMPORTANT]
 > To get reliable information, use only trusted Peers to request data. 
 
+### Basics
+1. [Generate Qubic Addres](UseCases//GenerateAddress.md)
+2. [How to Sign](UseCases/Sign.md)
+
+### Example Use Cases
 1. [TickInfo - Basic Network Info / Blockheight](UseCases/TickInfo.md)
 2. [TickData - Tick Definition (Block Info by height)](UseCases/TickData.md)
 3. [Tramsaction Info](UseCases/GetTransaction.md)
+4. [GetEntity - get balance of an address](UseCases/GetEntity.md)
+5. [Send Transaction](UseCases/SendTransaction.md)
 
 
