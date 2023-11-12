@@ -1,5 +1,10 @@
-# Qubic Integration
+# Qubic Documentation/Integration
 This Documentation is meant to describe how you can access the Qubic Network API.
+
+- [Qubic Documentation/Integration](#qubic-documentationintegration)
+  - [General Concepts](#general-concepts)
+  - [Basic Communication Structure](#basic-communication-structure)
+  - [Examples / Use Cases](#examples--use-cases)
 
 > [!IMPORTANT]
 > The Qubic Core Main-Net runs on TCP Sockets with Port **21841**
@@ -10,6 +15,12 @@ This Documentation is meant to describe how you can access the Qubic Network API
 
 ## General Concepts
 todo: explain used crypto, private/public key, signing/verify
+
+| Term  | Description                                                                                     |
+| ----- | ----------------------------------------------------------------------------------------------- |
+| Epoch | An epoch describes a period of time in which the network runs without resetting the nodes data. |
+| Tick  | A Tick is a Block in Qubic. It describes one Block in the Blockchain |
+| TickLeader | The [TickLeader](Glossar/TickLeader.md) is the Computor which is responsible for a certain Tick |
 
 ## Basic Communication Structure
 Communication in Qubic is basically a continious TCP Stream. All starts with the `RequestResponseHeader` which contains the information about the current Packet to be transfered.
@@ -34,5 +45,16 @@ a complete Qubic TCP Packet is defined by:
 1. RequestRepsonseHeader
 2. Payload
 
+## Examples / Use Cases
+We provide you sme use cases to understand how to interact with the Qubic API.
+
+When talking to the Qubic Network and you don't operate your own Computor be careful to use **only** trusted Peers.
+
+> [!IMPORTANT]
+> To get reliable information, use only trusted Peers to request data. 
+
+1. [TickInfo - Basic Network Info / Blockheight](UseCases/TickInfo.md)
+2. [TickData - Tick Definition (Block Info by height)](UseCases/TickData.md)
+3. [Tramsaction Info](UseCases/GetTransaction.md)
 
 

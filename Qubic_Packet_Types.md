@@ -23,6 +23,9 @@ This Packet can be used to ask any Peer for the current Computors list. The answ
 ## `REQUEST_QUORUM_TICK` 14
 Request a Peer for the votes of the Computors for a specific Tick. Answer will be a bulk response of `BROADCAST_TICK`.
 
+## `REQUEST_TICK_DATA` 16
+Request a Peer for the TickData for a specific Tick. Answer will be a response of `BROADCAST_FUTURE_TICK_DATA`.
+
 ## `BROADCAST_TRANSACTION` 24
 Packet which Contains a Qubic Transaction. A Transaction can be a Transfer (with or without flow of Qubics). A Command for a SC or any other information that will be written to the Blockchain.
 
