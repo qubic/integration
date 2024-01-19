@@ -3,16 +3,18 @@ A TickData describes one Tick (Block). It contains all important information a C
 
 To query the TickData, send a `RequestedTickData` Packet with the type set to **16**.
 
-## Header
+## Request Header
 - Size: **12**
 - Type: **16**
 - DejaVu: **any Random int**
 
-## Payload
+## Request Payload
 - `unsigned int tick`: The Tick for which you want to receive the TickData
 
-## Response
-you wil get the following response:
+## Response Header
+`BROADCAST_FUTURE_TICK_DATA`
+
+## Response Payload
 
 ```c++
 typedef struct

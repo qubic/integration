@@ -2,7 +2,7 @@
 
 ## Main Settings
 
-todo: Describe
+> todo: Describe
 
 ```c++
 #define AVX512 0
@@ -38,7 +38,7 @@ static unsigned short CONTRACT_FILE_NAME[] = L"contract????.???";
 
 ## Node Settings
 
-todo: Describe
+> todo: Describe
 
 ```c++
 #define ASSETS_CAPACITY 0x1000000ULL // Must be 2^N
