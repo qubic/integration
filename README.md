@@ -11,7 +11,7 @@ This Documentation is meant to describe how you can access the Qubic Network API
 > [!IMPORTANT]
 > The Qubic Core Main-Net runs on TCP Sockets with Port **21841**
 
-> The Qubic Test-net runs on TCP Port **21843**
+> The Qubic Test-net runs on TCP Port **21843** (NOT YET ONLINE)
 
 > The default Buffer size is defined in `BUFFER_SIZE` with **33554432**
 
