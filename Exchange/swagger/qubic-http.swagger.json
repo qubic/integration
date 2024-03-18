@@ -1,0 +1,212 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "qubic.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "QubicService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/balances/{id}": {
+      "get": {
+        "operationId": "QubicService_GetBalance",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetBalanceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "QubicService"
+        ]
+      }
+    },
+    "/broadcast-transaction": {
+      "post": {
+        "operationId": "QubicService_BroadcastTransaction",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbBroadcastTransactionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbBroadcastTransactionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "QubicService"
+        ]
+      }
+    },
+    "/tick-info": {
+      "get": {
+        "operationId": "QubicService_GetTickInfo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetTickInfoResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "QubicService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "pbBalance": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "balance": {
+          "type": "string",
+          "format": "int64"
+        },
+        "validForTick": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "latestIncomingTransferTick": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "latestOutgoingTransferTick": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "pbBroadcastTransactionRequest": {
+      "type": "object",
+      "properties": {
+        "encodedTransaction": {
+          "type": "string"
+        }
+      }
+    },
+    "pbBroadcastTransactionResponse": {
+      "type": "object",
+      "properties": {
+        "peersBroadcasted": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pbGetBalanceResponse": {
+      "type": "object",
+      "properties": {
+        "balance": {
+          "$ref": "#/definitions/pbBalance"
+        }
+      }
+    },
+    "pbGetTickInfoResponse": {
+      "type": "object",
+      "properties": {
+        "tickInfo": {
+          "$ref": "#/definitions/pbTickInfo"
+        }
+      }
+    },
+    "pbTickInfo": {
+      "type": "object",
+      "properties": {
+        "tick": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "duration": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "epoch": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "initialTick": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}
