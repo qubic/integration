@@ -1,5 +1,5 @@
 # TickData - Tick Definition (Block Info by height)
-A TickData describes one Tick (Block). It contains all important information a Comptor needs to calculate the Tick.
+A TickData describes one Tick (Block). It contains all important information a Computor needs to calculate the Tick.
 
 To query the TickData, send a `RequestedTickData` Packet with the type set to **16**.
 

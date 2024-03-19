@@ -22,7 +22,7 @@ todo: explain used crypto, private/public key, signing/verify
 | ----- | ----------------------------------------------------------------------------------------------- |
 | Epoch | An epoch describes a period of time in which the network runs without resetting the nodes data. |
 | Tick  | A Tick is a Block in Qubic. It describes one Block in the Blockchain |
-| TickLeader | The [TickLeader](Glossar/TickLeader.md) is the Computor which is responsible for a certain Tick |
+| TickLeader | The TickLeader is the Computor which is responsible for a certain Tick |
 
 ## Basic Communication Structure
 Communication in Qubic is basically a continious TCP Stream. All starts with the `RequestResponseHeader` which contains the information about the current Packet to be transfered.
@@ -40,15 +40,15 @@ private:
 
 - `_size` => The size of the Packet. Total size including Header size.
 - `_type` => Type of Packet. Refer to [Qubic Types](Qubic_Packet_Types.md)
-- `_dejavu` => Marker to know if a packat was relayed, new or if we already know it. It is also used in replys to mark a response as an answer to your request.
+- `_dejavu` => Marker to know if a packet was relayed, new or if we already know it. It is also used in replies to mark a response as an answer to your request.
 
-a complete Qubic TCP Packet is defined by:
+A complete Qubic TCP Packet is defined by:
 
 1. RequestRepsonseHeader
 2. Payload
 
 ## Examples / Use Cases
-We provide you sme use cases to understand how to interact with the Qubic API.
+We provide you same use cases to understand how to interact with the Qubic API.
 
 When talking to the Qubic Network and you don't operate your own Computor be careful to use **only** trusted Peers.
 
