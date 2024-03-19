@@ -3,7 +3,7 @@
 This documentation describes best practises to integrate/interact with Qubic for partners.
 
 ## Qubic RPC
-The Qubic RPC is your gatway to the Qubic Network. For test purposes, you can use https://testapi.qubic.org.
+The Qubic RPC is your gatway to the Qubic Network. For test purposes, you can use https://testapi.qubic.org as baseUrl.
 
 > [Swagger/OpenAPI Documentation](qubic-rpc-doc.html)
 
