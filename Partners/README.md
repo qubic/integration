@@ -2,6 +2,10 @@
 
 This documentation describes best practises to integrate/interact with Qubic for partners.
 
+## Qubic RPC
+The Qubic RPC is your gatway to the Qubic Network. For test purposes, you can use https://testapi.qubic.org.
+
+> [Swagger/OpenAPI Documentation](qubic-rpc-doc.html)
 
 ## Exchange integration
 To partner up with Qubic from a perspective of an exchange, there are two main approaches how you can integrate Qubic into your business logic.

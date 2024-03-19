@@ -3,11 +3,7 @@ window.onload = function() {
 
   // the following lines will be replaced by docker/configurator, when it runs in a docker-container
   window.ui = SwaggerUIBundle({
-    urls: [
-      {url: "archive.swagger.json", name: "Qubic RPC Archive Tree"},
-      {url: "qubic-http.swagger.json", name: "Qubic RPC Live Tree"},
-      {url: "txstatus.swagger.json", name: "Qubic RPC TX Status Tree"},
-    ],
+    url: "txstatus.swagger.json",
     dom_id: '#swagger-ui',
     deepLinking: true,
     presets: [

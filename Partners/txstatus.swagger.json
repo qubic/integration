@@ -1,0 +1,173 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "txstatus.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "TxStatusService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/tx-status/status": {
+      "get": {
+        "operationId": "TxStatusService_GetLastProcessedTick",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetLastProcessedTickResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TxStatusService"
+        ]
+      }
+    },
+    "/tx-status/ticks/{tickNumber}": {
+      "get": {
+        "operationId": "TxStatusService_GetTickTransactionsStatus",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetTickTransactionsStatusResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tickNumber",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "TxStatusService"
+        ]
+      }
+    },
+    "/tx-status/{txId}": {
+      "get": {
+        "operationId": "TxStatusService_GetTransactionStatus",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetTransactionStatusResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "txId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "TxStatusService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "pbGetLastProcessedTickResponse": {
+      "type": "object",
+      "properties": {
+        "lastProcessedTick": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "pbGetTickTransactionsStatusResponse": {
+      "type": "object",
+      "properties": {
+        "transactionsStatus": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbTransactionStatus"
+          }
+        }
+      }
+    },
+    "pbGetTransactionStatusResponse": {
+      "type": "object",
+      "properties": {
+        "transactionStatus": {
+          "$ref": "#/definitions/pbTransactionStatus"
+        }
+      }
+    },
+    "pbTransactionStatus": {
+      "type": "object",
+      "properties": {
+        "txId": {
+          "type": "string"
+        },
+        "moneyFlew": {
+          "type": "boolean"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}
