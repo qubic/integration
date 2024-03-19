@@ -1,5 +1,5 @@
 # Send Transaction
-This Use Case describes how to send a Basic Transaction. A Bais Transaction is used to send $QBIC's from one Address to another.
+This Use Case describes how to send a Basic Transaction. A Basic Transaction is used to send $QBIC's from one Address to another.
 
 To send a Transaction, send a `BroadcastTransaction` Packet with the type set to **24**.
 
