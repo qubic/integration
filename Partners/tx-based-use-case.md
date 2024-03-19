@@ -186,7 +186,7 @@ const block = await response.json();
 const latestBlockHeight = block.height;
 ```
 
-1. Create and sign transaction
+2. Create and sign transaction
 
 ```js
   // please find an extended example here: https://github.com/qubic/ts-library/blob/main/test/createTransactionTest.js
@@ -208,7 +208,7 @@ const latestBlockHeight = block.height;
     const transactionId = tx.getId();
 ```
 
-1. Send transaction
+3. Send transaction
 
 ```js
   // after creating and signing the tx it should be sent to the network
@@ -232,7 +232,7 @@ const latestBlockHeight = block.height;
   }
 ```
 
-1. Verify transaction status
+4. Verify transaction status
 
 ```js
   // you can verify if a transaction was successful as soon the target tick has passed (true finality)
