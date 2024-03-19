@@ -5,6 +5,17 @@ The following examples refer to the Qubic RPC V1 API and the [TS Library](https:
 
 The TS Library uses a Webassembly for all cryptographical stuff.
 
+
+## Table of Content
+- [TX Based Exchange integration](#tx-based-exchange-integration)
+  - [Table of Content](#table-of-content)
+  - [General Examples](#general-examples)
+    - [Generating a Seed](#generating-a-seed)
+    - [Signing a Package](#signing-a-package)
+  - [Deposit Workflow](#deposit-workflow)
+    - [1. Scan Ticks/Blocks sequentially](#1-scan-ticksblocks-sequentially)
+    - [2. Verify incoming transactions](#2-verify-incoming-transactions)
+
 ## General Examples
 
 ### Generating a Seed
