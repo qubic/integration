@@ -1,5 +1,5 @@
 # Title
-Basic Descriptiong
+Basic Description
 
 ## Request Header
 - Size: **12**

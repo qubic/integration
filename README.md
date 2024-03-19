@@ -40,15 +40,15 @@ private:
 
 - `_size` => The size of the Packet. Total size including Header size.
 - `_type` => Type of Packet. Refer to [Qubic Types](Qubic_Packet_Types.md)
-- `_dejavu` => Marker to know if a packat was relayed, new or if we already know it. It is also used in replys to mark a response as an answer to your request.
+- `_dejavu` => Marker to know if a packet was relayed, new or if we already know it. It is also used in replies to mark a response as an answer to your request.
 
-a complete Qubic TCP Packet is defined by:
+A complete Qubic TCP Packet is defined by:
 
 1. RequestRepsonseHeader
 2. Payload
 
 ## Examples / Use Cases
-We provide you sme use cases to understand how to interact with the Qubic API.
+We provide you same use cases to understand how to interact with the Qubic API.
 
 When talking to the Qubic Network and you don't operate your own Computor be careful to use **only** trusted Peers.
 
