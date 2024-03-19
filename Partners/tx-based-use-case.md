@@ -179,12 +179,15 @@ We assume you have already all needed data to create and send the transaction:
 
 #### Workflow
 1. Request latest block height
+
 ```js
 const response = await fetch(`${baseUrl}/live/block-height`);
 const block = await response.json();
 const latestBlockHeight = block.height;
 ```
-2. Create and sign transaction
+
+1. Create and sign transaction
+
 ```js
   // please find an extended example here: https://github.com/qubic/ts-library/blob/main/test/createTransactionTest.js
 
@@ -204,7 +207,9 @@ const latestBlockHeight = block.height;
     // this id can presented to the client as reference
     const transactionId = tx.getId();
 ```
-3. Send transaction
+
+1. Send transaction
+
 ```js
   // after creating and signing the tx it should be sent to the network
   const response = fetch(`${baseUrl}/live/broadcast-transaction`,
@@ -226,7 +231,9 @@ const latestBlockHeight = block.height;
     // :( something went wrong, try again
   }
 ```
-4. Verify transaction status
+
+1. Verify transaction status
+
 ```js
   // you can verify if a transaction was successful as soon the target tick has passed (true finality)
 
