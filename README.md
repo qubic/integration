@@ -22,7 +22,7 @@ todo: explain used crypto, private/public key, signing/verify
 | ----- | ----------------------------------------------------------------------------------------------- |
 | Epoch | An epoch describes a period of time in which the network runs without resetting the nodes data. |
 | Tick  | A Tick is a Block in Qubic. It describes one Block in the Blockchain |
-| TickLeader | The [TickLeader](Glossar/TickLeader.md) is the Computor which is responsible for a certain Tick |
+| TickLeader | The TickLeader is the Computor which is responsible for a certain Tick |
 
 ## Basic Communication Structure
 Communication in Qubic is basically a continious TCP Stream. All starts with the `RequestResponseHeader` which contains the information about the current Packet to be transfered.
