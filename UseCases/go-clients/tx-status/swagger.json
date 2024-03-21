@@ -1,0 +1,242 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "txstatus.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "TxStatusService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/tx-status/block-height": {
+      "get": {
+        "operationId": "TxStatusService_GetBlockHeight",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetBlockHeightResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TxStatusService"
+        ]
+      }
+    },
+    "/tx-status/status": {
+      "get": {
+        "operationId": "TxStatusService_GetStatus",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetStatusResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TxStatusService"
+        ]
+      }
+    },
+    "/tx-status/ticks/{tickNumber}": {
+      "get": {
+        "operationId": "TxStatusService_GetTickTransactionsStatus",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetTickTransactionsStatusResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tickNumber",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "TxStatusService"
+        ]
+      }
+    },
+    "/tx-status/{txId}": {
+      "get": {
+        "operationId": "TxStatusService_GetTransactionStatus",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetTransactionStatusResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "txId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "TxStatusService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "pbGetBlockHeightResponse": {
+      "type": "object",
+      "properties": {
+        "blockHeight": {
+          "$ref": "#/definitions/pbProcessedTick"
+        }
+      }
+    },
+    "pbGetStatusResponse": {
+      "type": "object",
+      "properties": {
+        "lastProcessedTick": {
+          "$ref": "#/definitions/pbProcessedTick"
+        },
+        "lastProcessedTicksPerEpoch": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "skippedTicks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbSkippedTicksInterval"
+          }
+        }
+      }
+    },
+    "pbGetTickTransactionsStatusResponse": {
+      "type": "object",
+      "properties": {
+        "transactionsStatus": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbTransactionStatus"
+          }
+        }
+      }
+    },
+    "pbGetTransactionStatusResponse": {
+      "type": "object",
+      "properties": {
+        "transactionStatus": {
+          "$ref": "#/definitions/pbTransactionStatus"
+        }
+      }
+    },
+    "pbProcessedTick": {
+      "type": "object",
+      "properties": {
+        "tickNumber": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "epoch": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "pbSkippedTicksInterval": {
+      "type": "object",
+      "properties": {
+        "startTick": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "endTick": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "pbTransactionStatus": {
+      "type": "object",
+      "properties": {
+        "txId": {
+          "type": "string"
+        },
+        "moneyFlew": {
+          "type": "boolean"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}
