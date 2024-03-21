@@ -10,7 +10,7 @@ import (
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/qubic/integration/go-clients/live/client/qubic_live_service"
+	"github.com/qubic/integration/UseCases/go-clients/live/client/qubic_live_service"
 )
 
 // Default qubic proto HTTP client.

@@ -10,7 +10,7 @@ import (
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/qubic/integration/go-clients/tx-status/client/tx_status_service"
+	"github.com/qubic/integration/UseCases/go-clients/tx-status/client/tx_status_service"
 )
 
 // Default txstatus proto HTTP client.

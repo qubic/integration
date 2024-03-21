@@ -10,7 +10,7 @@ import (
 	httptransport "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/qubic/integration/go-clients/archive/client/archive_service"
+	"github.com/qubic/integration/UseCases/go-clients/archive/client/archive_service"
 )
 
 // Default archive proto HTTP client.

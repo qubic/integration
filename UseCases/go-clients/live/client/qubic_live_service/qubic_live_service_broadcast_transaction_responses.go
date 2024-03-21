@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/qubic/integration/go-clients/live/models"
+	"github.com/qubic/integration/UseCases/go-clients/live/models"
 )
 
 // QubicLiveServiceBroadcastTransactionReader is a Reader for the QubicLiveServiceBroadcastTransaction structure.

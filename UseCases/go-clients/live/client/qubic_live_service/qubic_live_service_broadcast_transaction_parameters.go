@@ -15,7 +15,7 @@ import (
 	cr "github.com/go-openapi/runtime/client"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/qubic/integration/go-clients/live/models"
+	"github.com/qubic/integration/UseCases/go-clients/live/models"
 )
 
 // NewQubicLiveServiceBroadcastTransactionParams creates a new QubicLiveServiceBroadcastTransactionParams object,

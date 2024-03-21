@@ -12,7 +12,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/strfmt"
 
-	"github.com/qubic/integration/go-clients/tx-status/models"
+	"github.com/qubic/integration/UseCases/go-clients/tx-status/models"
 )
 
 // TxStatusServiceGetStatusReader is a Reader for the TxStatusServiceGetStatus structure.

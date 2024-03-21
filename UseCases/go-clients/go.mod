@@ -1,4 +1,4 @@
-module github.com/qubic/integration/go-clients
+module github.com/qubic/integration/UseCases/go-clients
 
 go 1.20
 
