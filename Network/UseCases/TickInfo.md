@@ -28,7 +28,7 @@ typedef struct
 } CurrentTickInfo;
 ```
 
-All information in the response are related to the nodes status:
+All information in the response is related to the nodes status:
 
 - tickDuration: How long the current Node stays in that tick
 - epoch: the epoch
