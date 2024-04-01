@@ -91,6 +91,28 @@
         ]
       }
     },
+    "/latestTick": {
+      "get": {
+        "operationId": "ArchiveService_GetLatestTick",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetLatestTickResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ArchiveService"
+        ]
+      }
+    },
     "/status": {
       "get": {
         "operationId": "ArchiveService_GetStatus",
@@ -334,6 +356,15 @@
         }
       }
     },
+    "pbGetLatestTickResponse": {
+      "type": "object",
+      "properties": {
+        "latestTick": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
     "pbGetQuorumTickDataResponse": {
       "type": "object",
       "properties": {
@@ -346,14 +377,13 @@
       "type": "object",
       "properties": {
         "lastProcessedTick": {
-          "type": "integer",
-          "format": "int64"
+          "$ref": "#/definitions/pbProcessedTick"
         },
         "lastProcessedTicksPerEpoch": {
           "type": "object",
           "additionalProperties": {
-            "type": "string",
-            "format": "uint64"
+            "type": "integer",
+            "format": "int64"
           }
         },
         "skippedTicks": {
@@ -361,6 +391,13 @@
           "items": {
             "type": "object",
             "$ref": "#/definitions/pbSkippedTicksInterval"
+          }
+        },
+        "processedTickIntervalsPerEpoch": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbProcessedTickIntervalsPerEpoch"
           }
         }
       }
@@ -401,6 +438,48 @@
           "items": {
             "type": "object",
             "$ref": "#/definitions/pbTransferTransactionsPerTick"
+          }
+        }
+      }
+    },
+    "pbProcessedTick": {
+      "type": "object",
+      "properties": {
+        "tickNumber": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "epoch": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "pbProcessedTickInterval": {
+      "type": "object",
+      "properties": {
+        "initialProcessedTick": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "lastProcessedTick": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "pbProcessedTickIntervalsPerEpoch": {
+      "type": "object",
+      "properties": {
+        "epoch": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "intervals": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbProcessedTickInterval"
           }
         }
       }

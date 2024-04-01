@@ -16,36 +16,14 @@
     "application/json"
   ],
   "paths": {
-    "/tx-status/status": {
+    "/ticks/{tickNumber}/approved-transactions": {
       "get": {
-        "operationId": "TxStatusService_GetLastProcessedTick",
+        "operationId": "TxStatusService_GetTickApprovedTransactions",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/pbGetLastProcessedTickResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "tags": [
-          "TxStatusService"
-        ]
-      }
-    },
-    "/tx-status/ticks/{tickNumber}": {
-      "get": {
-        "operationId": "TxStatusService_GetTickTransactionsStatus",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbGetTickTransactionsStatusResponse"
+              "$ref": "#/definitions/pbGetTickApprovedTransactionsResponse"
             }
           },
           "default": {
@@ -64,6 +42,28 @@
             "format": "int64"
           }
         ],
+        "tags": [
+          "TxStatusService"
+        ]
+      }
+    },
+    "/tx-status/status": {
+      "get": {
+        "operationId": "TxStatusService_GetStatus",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetStatusResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
         "tags": [
           "TxStatusService"
         ]
@@ -101,23 +101,43 @@
     }
   },
   "definitions": {
-    "pbGetLastProcessedTickResponse": {
+    "pbGetStatusResponse": {
       "type": "object",
       "properties": {
         "lastProcessedTick": {
-          "type": "integer",
-          "format": "int64"
-        }
-      }
-    },
-    "pbGetTickTransactionsStatusResponse": {
-      "type": "object",
-      "properties": {
-        "transactionsStatus": {
+          "$ref": "#/definitions/pbProcessedTick"
+        },
+        "lastProcessedTicksPerEpoch": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "format": "int64"
+          }
+        },
+        "skippedTicks": {
           "type": "array",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/pbTransactionStatus"
+            "$ref": "#/definitions/pbSkippedTicksInterval"
+          }
+        },
+        "processedTickIntervalsPerEpoch": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbProcessedTickIntervalsPerEpoch"
+          }
+        }
+      }
+    },
+    "pbGetTickApprovedTransactionsResponse": {
+      "type": "object",
+      "properties": {
+        "approvedTransactions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbTransaction"
           }
         }
       }
@@ -127,6 +147,97 @@
       "properties": {
         "transactionStatus": {
           "$ref": "#/definitions/pbTransactionStatus"
+        }
+      }
+    },
+    "pbProcessedTick": {
+      "type": "object",
+      "properties": {
+        "tickNumber": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "epoch": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "pbProcessedTickInterval": {
+      "type": "object",
+      "properties": {
+        "initialProcessedTick": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "lastProcessedTick": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "pbProcessedTickIntervalsPerEpoch": {
+      "type": "object",
+      "properties": {
+        "epoch": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "intervals": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbProcessedTickInterval"
+          }
+        }
+      }
+    },
+    "pbSkippedTicksInterval": {
+      "type": "object",
+      "properties": {
+        "startTick": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "endTick": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "pbTransaction": {
+      "type": "object",
+      "properties": {
+        "sourceId": {
+          "type": "string"
+        },
+        "destId": {
+          "type": "string"
+        },
+        "amount": {
+          "type": "string",
+          "format": "int64"
+        },
+        "tickNumber": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "inputType": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "inputSize": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "inputHex": {
+          "type": "string"
+        },
+        "signatureHex": {
+          "type": "string"
+        },
+        "txId": {
+          "type": "string"
         }
       }
     },

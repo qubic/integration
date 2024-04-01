@@ -6,7 +6,7 @@
   },
   "tags": [
     {
-      "name": "QubicService"
+      "name": "QubicLiveService"
     }
   ],
   "consumes": [
@@ -18,7 +18,7 @@
   "paths": {
     "/balances/{id}": {
       "get": {
-        "operationId": "QubicService_GetBalance",
+        "operationId": "QubicLiveService_GetBalance",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -42,13 +42,35 @@
           }
         ],
         "tags": [
-          "QubicService"
+          "QubicLiveService"
+        ]
+      }
+    },
+    "/block-height": {
+      "get": {
+        "operationId": "QubicLiveService_GetBlockHeight",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetBlockHeightResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "QubicLiveService"
         ]
       }
     },
     "/broadcast-transaction": {
       "post": {
-        "operationId": "QubicService_BroadcastTransaction",
+        "operationId": "QubicLiveService_BroadcastTransaction",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -74,13 +96,13 @@
           }
         ],
         "tags": [
-          "QubicService"
+          "QubicLiveService"
         ]
       }
     },
     "/tick-info": {
       "get": {
-        "operationId": "QubicService_GetTickInfo",
+        "operationId": "QubicLiveService_GetTickInfo",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -96,7 +118,7 @@
           }
         },
         "tags": [
-          "QubicService"
+          "QubicLiveService"
         ]
       }
     }
@@ -148,6 +170,14 @@
       "properties": {
         "balance": {
           "$ref": "#/definitions/pbBalance"
+        }
+      }
+    },
+    "pbGetBlockHeightResponse": {
+      "type": "object",
+      "properties": {
+        "blockHeight": {
+          "$ref": "#/definitions/pbTickInfo"
         }
       }
     },

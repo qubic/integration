@@ -11,8 +11,16 @@ The TS Library uses a Webassembly for all cryptographical stuff.
 
 For all the follwing examples the `baseUrl` is set to:
 ```js
-const baseUrl = 'https://testapi.qubic.org';
+const baseUrl = 'https://testapi.qubic.org/v1';
 ```
+
+This documentation refers to the Qubic V1 RPC API.
+
+| Method  	| Endpoint    	| Description   	| 
+|---	|---	|---	|---
+| GET  	|   	|   	|   
+|   	|   	|   	|   
+|   	|   	|   	|   
 
 
 ## Table of Content
@@ -28,8 +36,11 @@ const baseUrl = 'https://testapi.qubic.org';
     - [Create, sign, send and verify a transaction](#create-sign-send-and-verify-a-transaction)
       - [Workflow](#workflow)
   - [Deposit Workflow](#deposit-workflow)
-    - [1. Scan Ticks/Blocks sequentially](#1-scan-ticksblocks-sequentially)
-    - [2. Verify incoming transactions](#2-verify-incoming-transactions)
+    - [Scan Ticks/Blocks sequentially](#scan-ticksblocks-sequentially)
+      - [Special case Qutil/SendMany SC](#special-case-qutilsendmany-sc)
+  - [Withdraw Workflow](#withdraw-workflow)
+    - [Plain Transaction](#plain-transaction)
+    - [Qutil/Send Many Smart Contract](#qutilsend-many-smart-contract)
 
 ## Qubic Rules
 When using the Qubic RPC you should follow some important rules.
@@ -53,33 +64,65 @@ If Alice sends a tx for tick 9, nothing would change as the TX with the higher t
 
 
 ### Respect RPC Status
-Both endpoints:
+the endpoint
 - `/status`
-- `/tx-status/status`
 
 return the current status of the RPC data.
 
 sample status response:
 ```json
 {
-    "lastProcessedTick": 13054803,
+    "lastProcessedTick": {
+        "tickNumber": 13189868,
+        "epoch": 102
+    },
     "lastProcessedTicksPerEpoch": {
-        "99": "12941678",
-        "100": "13054803"
+        "99": 12941678,
+        "100": 13059142,
+        "101": 13101159,
+        "102": 13189868
     },
     "skippedTicks": [
         {
             "startTick": 12941679,
             "endTick": 12949999
+        },
+        {
+            "startTick": 13059143,
+            "endTick": 13059999
+        },
+        {
+            "startTick": 13101160,
+            "endTick": 13109999
+        }
+    ],
+    "processedTickIntervalsPerEpoch": [
+        {
+            "epoch": 101,
+            "intervals": [
+                {
+                    "initialProcessedTick": 13082191,
+                    "lastProcessedTick": 13101159
+                }
+            ]
+        },
+        {
+            "epoch": 102,
+            "intervals": [
+                {
+                    "initialProcessedTick": 13110000,
+                    "lastProcessedTick": 13189868
+                }
+            ]
         }
     ]
 }
 ```
 
 > [!IMPORTANT]
-> The `lastProcessedTick` indicates to which tick the RPC server has processed data.
-> All endpoints below `/tx-status` are related to `/tx-status/status`
-> All other endpoints are related to `/status`
+> The `lastProcessedTick` indicates up to which tick the RPC server has processed data.
+
+> in the array `processedTickIntervalsPerEpoch` you find the processed ticks. it is possible due to updates, that apochs can have multiple tick ranges
 
 ### Epoch change
 > WIP
@@ -181,7 +224,7 @@ We assume you have already all needed data to create and send the transaction:
 1. Request latest block height
 
 ```js
-const response = await fetch(`${baseUrl}/live/block-height`);
+const response = await fetch(`${baseUrl}/block-height`);
 const block = await response.json();
 const latestBlockHeight = block.height;
 ```
@@ -212,7 +255,7 @@ const latestBlockHeight = block.height;
 
 ```js
   // after creating and signing the tx it should be sent to the network
-  const response = fetch(`${baseUrl}/live/broadcast-transaction`,
+  const response = fetch(`${baseUrl}/broadcast-transaction`,
                     {
                         headers: {
                           'Accept': 'application/json',
@@ -237,19 +280,19 @@ const latestBlockHeight = block.height;
 ```js
   // you can verify if a transaction was successful as soon the target tick has passed (true finality)
 
-  // make sure, that the /tx-status/status => latestProcessedTick is >= target tick of tx
-
-   const response = await fetch(`${baseUrl}/tx-status/ticks/${tx.tick}`);
+   const response = await fetch(`${baseUrl}/ticks/${tx.tick}/approved-transactions`);
       // only if status == 200 (ok) the tx can be marked as verified
     if(response.status == 200) 
     {
       const tickTransactions = await response.json();
       const txStatus = tickTransactions.transactionsStatus.find(f => f.txId === tx.getId());
-      if(txStatus && txStatus.moneyFlew){
+      if(txStatus){
         // yipiii! transaction was successful
       }else {
         // :( transaction was NOT successful
       }
+    }else if(response.status === 400){
+      // bad request must be handled by the client. check code table below
     }else if(response.status === 404){
       const errorStatus = await response.json();
       if(errorStatus.code === 123){
@@ -260,15 +303,42 @@ const latestBlockHeight = block.height;
 
 ```
 
+when you ask the RPC server for `approved-transactions` you may receive a `400 Bad Request`.
+
+sample `Bad Request` response:
+```json
+{
+    "code": 11,
+    "message": "provided tick number 13055400 was skipped by the system, next available tick is 13082191",
+    "details": [
+        {
+            "@type": "type.googleapis.com/qubic.txstatus.pb.NextAvailableTick",
+            "nextTickNumber": 13082191
+        }
+    ]
+}
+```
+
+> [!IMPORTANT]
+> You must check the code to know what happened.
+
+
+| code   	|  reason  	| action |
+|---	|---	|--- |
+| 9  	|  requested tick number `<TICKNUMBER>` is greater than last processed tick `<LASTPROCESSEDTICK>` 	| repeat your request until it works. you may track the the `LASTPROCESSEDTICK` from the endpoint `/latestTick`  |
+| 11  	|  provided tick number `<TICKNUMBER>` was skipped by the system, next available tick is `<NEXTAVAILABLETICKNUMBER>` 	| take the `nextTickNumber` from `details` and proceed with this tick.  |
+| X  	|   	| |
+
+
 ## Deposit Workflow
-We assume that you have in your business logic the accounts of your clients. We refer to on of accounts this by `clientAcccount`. A client Account is a package of `seed`, `privateKey`, `publicKey` and `publicId`. The list of all `clientAccount` is called `clientAccountList`.
+We assume that you have in your business logic the accounts of your clients. We refer to this accounts by `clientAcccount`. A client Account is a package of `seed`, `privateKey`, `publicKey` and `publicId`. The list of all `clientAccount` is called `clientAccountList`.
 
 To detect a deposit to a `clientAccount` we use the Qubic RPC and run a sequential blockscan.
 You will need to define an initial tick from which on you will start your block scans. For our example, we start with tick `13032965`.
 
 The following code samples contains pseudo code which you have to replace by your own business logic.
 
-### 1. Scan Ticks/Blocks sequentially
+### Scan Ticks/Blocks sequentially
 
 ```js
   // don't forget to do a proper errorhandling!
@@ -277,95 +347,125 @@ The following code samples contains pseudo code which you have to replace by you
   const currentTick = 13032965;
 
   // request transactions for the tick
-  const response = await fetch(`${baseUrl}/ticks/${currentTick}/transfer-transactions`);
+  const response = await fetch(`${baseUrl}/ticks/${currentTick}/approved-transactions`);
   
-  // the result will contain all executed transactions for the given tick
+  // the result will contain all executed and approved transactions for the given tick
   const tickTransactions = await response.json();
 
   // map this transactions to your `clientAccountList`
   const clientDeposits = clientAccountList.filter(f => tickTransactions.find(t => t.destId == f.publicId))
 
   clientDeposits.forEach(clientAccount => {
-    clientAccount.addIncomingTransactions(tickTransactions.filter(f => f.destId == clientAccount.publicId).map(m => createInternalTransaction(f)));
+    // add transaction to your accounting
+    const internalTx = clientAccount.addIncomingTransactions(tickTransactions.filter(f => f.destId == clientAccount.publicId).map(m => createInternalTransaction(m)));
+
+    // start here your internal business logic to credit your clients account
+    creditClientAccount(clientAccount, internalTx);
+
+    // start transfering the deposit to your hot wallet here
+    transferToHotWallet(clientAccount, internalTx);
   });
 ```
 
-repeat the above code as long you don't get a 404 and increase `currentTick` for each iteration.
+repeat the above code as long you don't get a `400 Bad Request`.
 
-### 2. Verify incoming transactions
-After you identified potential incoming transfers for your clients you need to verify them.
+#### Special case Qutil/SendMany SC
+In general we suggest to not allow your clients to use their deposit accounts for smart contract usage. (e.g. pool payouts, quottery or any future use case)
 
-You can either verify every single transactions:
+But, there is a send many smart contract which you should support. A such transaction can be identified as followed:
+
 ```js
-  // don't forget to to a proper errorhandling!
+  // we assume you have in hand a tx object (e.g. from the approved-transactions endpoint)
+  const tx = getTxFromApprovedTransactionsEndpoint();
 
-  clientAccountList.filter(f => f.hasUnverifiedTransaction).map(clientAccount =>
-  {
-    clientAccount.transactions.filter(f => !f.isVerified).map(unverifiedTransaction => {
-      const response = await fetch(`${baseUrl}/tx-status/${}/transfer-transactions`);
-      // only if status == 200 (ok) the tx can be marked as verified
-      if(response.status == 200) 
-      {
-        const txStatus = await response.json();
-        if(txStatus.txId === unverifiedTransaction.txId){
-          unverifiedTransaction.isVerified = true;
-          // the moneyFlew indicates if on behalf of the executed transaction qubics are flew
-          unverifiedTransaction.moneyFlew = txStatus.moneyFlew;
-
-          // start here your internal business logic to credit your clients account
-          if(unverifiedTransaction.moneyFlew) {
-            creditClientAccount(clientAccount, unverifiedTransaction);
-
-            // start transfering the deposit to your hot wallet here
-            transferToHotWallet(clientAccount, unverifiedTransaction);
-          }
-
-        }
-      }
-    });
-
-  });
-```
-
-or, you can also do tick/block verification:
-```js
-  // don't forget to to a proper errorhandling!
-  // if you request a tick which is yet not processed, you will receive a 404 with a specific message
-
-  async function blockTxVerify(tickNumber){
-    // request transactions for the tick
-    const response = await fetch(`${baseUrl}/tx-status/${tickNumber}`);
-    
-    if(reponse.status !== 200)
+  
+  if(
+    // address of Qutil/SendMany SC
+    tx.destId === 'EAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVWRF'
+    &&
+    // type must be 1
+    tx.inputType == 1
+    &&
+    // size must be 1000
+    tx.inputSize = 1000
+    &&
+    // input must be present
+    tx.inputHex
+    )
     {
-      // something went wrong; repeat this later again
-      return;
+      // if we are here, this tx was a sendmany sc invovation
+      // in the input we have potentially 25 inlay transactions
+
+      // translate input to transfers
+      const sendManyTransfers = getSendManyTransfers(tx.inputHex);
+
+      // get all client accounts which have got a tx
+      const clientDeposits = clientAccountList.filter(f => sendManyTransfers.find(t => t.destId == f.publicId))
+
+      clientDeposits.forEach(clientAccount => {
+
+        // add transaction to your accounting
+        const internalTx = clientAccount.addIncomingTransactions(sendManyTransfers.filter(f => f.destId == clientAccount.publicId).map(m => createInternalTransaction(m)));
+
+        // start here your internal business logic to credit your clients account
+        creditClientAccount(clientAccount, internalTx);
+
+        // start transfering the deposit to your hot wallet here
+        transferToHotWallet(clientAccount, internalTx);
+      });>
+
+      
     }
 
-    // the result will contain the tx status for each tx in the given tick
-    const txStatuses = await response.json();
-    
-    // load alread stored transfers for the tick
-    const allClientTransfers = getAllClientTransferForTick(tickNumber);
+    /**
+     * converts the send many input hex to transfers
+     **/
+    async function getSendManyTransfers(inputHex)
+    {
 
-    allClientTransfers.forEach(transfer => {
-      const txStatus = txStatuses.find(f => f.txId = transfer.txId);
-      if(txStatus){
-        transer.isVerified = true;
-        transfer.moneyFlew = txStatus.moneyFlew;
+      // array to store the transfers
+      const sendManyTransfers = [];
 
-         // start here your internal business logic to credit your clients account
-          if(transfer.moneyFlew) {
-            creditClientAccountByTransaction(transfer);
+      // convert hex to uint8array for processing
+      const sendManyInput = (inputHex) => Uint8Array.from(inputHex.match(/.{1,2}/g).map((byte) => parseInt(byte, 16)));
 
-            // start transfering the deposit to your hot wallet here
-            transferToHotWallet(transfer);
-          }
+      // a send many tx can have maximum 25 recipients
+      for (let i = 0; i < 25; i++) {
+                // get the amount for the transfer
+                const amount = Number(
+                    this.uint8ArrayToBigInt(
+                        sendManyInput.slice(800 + i * 8, 800 + i * 8 + 8)
+                    ) as any
+                );
+                // only add transfer to output array if amount > 0; 0 or lower means, no transfer
+                if (amount > 0) {
+                    const dest = sendManyInput.slice(32 * i, 32 * i + 32);
+                    this.sendManyTransfers.push({
+                        amount: amount,
+                        destId: await getId(dest),
+                    });
+                }
+            }
+    }
 
-      }
-
-    }):
-    
-  }
+    /**
+     * converts the public key to a publicId
+     **/
+    async function getId(publicKey /* Uint8Array */) /* Promise<string> */ {
+        // use here the qubic helper instance which you should have anywhere
+        return await helper.getIdentity(publicKey);
+    }
 
 ```
+
+
+## Withdraw Workflow
+To do withdraws you can either use a plain transaction or the send many sc.
+The plain transaction is limited to one transaction per hot wallet. With the send many sc you can withdraw to up to 25 clients in one transaction.
+
+### Plain Transaction
+This transaction is feeless, follow the process from [Create, sign, send and verify a transaction](#create-sign-send-and-verify-a-transaction)
+
+### Qutil/Send Many Smart Contract
+The fee for using the Smart Contract are `10` Qubic.
+
