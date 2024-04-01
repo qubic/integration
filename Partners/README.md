@@ -26,7 +26,7 @@ The Qubic RPC Server is built and operated with the following software:
 - `go-archiver` https://github.com/qubic/go-archiver
 - `go-node-fetcher` https://github.com/qubic/go-node-fetcher
 - `go-node-connector` https://github.com/qubic/go-node-connector
-- `ts-library` https://github.com/qubic/ts-library
+- `ts-library` https://github.com/qubic/ts-library (https://www.npmjs.com/package/qubic-ts-library)
 
 
 ## Balance Based Workflow
