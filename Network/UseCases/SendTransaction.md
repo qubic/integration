@@ -42,7 +42,7 @@ typedef struct
 > Set the target tick at minimum +5 from current network tick. Best results are achieved with current tick +10-20.
 
 > [!IMPORTANT]
-> Per source ID only **one** transaction can pe present in the Network. If you send another transaction with the same Source while the first was not yet executed, the existing will be overwritten.
+> Per source ID only **one** transaction can be present in the Network. If you send another transaction with the same Source while the first was not yet executed, the existing will be overwritten.
 
 ## Response Header
 none

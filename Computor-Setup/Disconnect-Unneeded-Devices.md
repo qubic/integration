@@ -63,7 +63,7 @@ Edit the `startup.nsh` file with `edit startup.nsh`.
 
 Add `disconnect <DEVICEID>` and adjust the `ifconfig` command to your needs.
 
-you can close the editor with `CTRL+q`, choose `y` to save your changes.
+You can close the editor with `CTRL+q`, choose `y` to save your changes.
 
 ### Test your changes
 Reboot your Server and see if the connection now works.

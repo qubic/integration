@@ -1,14 +1,14 @@
 # Qubic Partner Integration
 
-This documentation describes best practises to integrate/interact with Qubic for partners.
+This documentation describes best practices to integrate/interact with Qubic for partners.
 
 ## Qubic RPC
-The Qubic RPC is your gatway to the Qubic Network. For test purposes, you can use https://testapi.qubic.org as baseUrl.
+The Qubic RPC is your gateway to the Qubic Network. For testing purposes, you can use https://testapi.qubic.org as baseUrl.
 
 > [Swagger/OpenAPI Documentation](qubic-rpc-doc.html)
 
 ## Exchange integration
-To partner up with Qubic from a perspective of an exchange, there are two main approaches how you can integrate Qubic into your business logic.
+To partner up with Qubic from a perspective of an exchange, there are two main approaches how you can integrate Qubic into your business logic:
 
 1. TX Based
 2. Balance Based
@@ -30,7 +30,7 @@ The Qubic RPC Server is built and operated with the following software:
 
 
 ## Balance Based Workflow
-In contrary to the TX Based Workflow with the balance workflow you can implement Qubics native way of integration.
+In contrary to the TX Based Workflow, with the balance workflow you can implement Qubics native way of integration.
 
 In Qubic the Balance of an Address can be altered without a Transaction being issued. This can be invoked by any Smart Contract.
 
