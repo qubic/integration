@@ -397,7 +397,7 @@ But, there is a send many smart contract which you should support. A such transa
       // in the input we have potentially 25 inlay transactions
 
       // translate input to transfers
-      const sendManyTransfers = getSendManyTransfers(tx.inputHex);
+      const parsedSendManyPayload = await new QubicTransferSendManyPayload().parse(newPayload).getTransfers();
 
       // get all client accounts which have got a tx
       const clientDeposits = clientAccountList.filter(f => sendManyTransfers.find(t => t.destId == f.publicId))
@@ -417,44 +417,7 @@ But, there is a send many smart contract which you should support. A such transa
       
     }
 
-    /**
-     * converts the send many input hex to transfers
-     **/
-    async function getSendManyTransfers(inputHex)
-    {
-
-      // array to store the transfers
-      const sendManyTransfers = [];
-
-      // convert hex to uint8array for processing
-      const sendManyInput = (inputHex) => Uint8Array.from(inputHex.match(/.{1,2}/g).map((byte) => parseInt(byte, 16)));
-
-      // a send many tx can have maximum 25 recipients
-      for (let i = 0; i < 25; i++) {
-                // get the amount for the transfer
-                const amount = Number(
-                    this.uint8ArrayToBigInt(
-                        sendManyInput.slice(800 + i * 8, 800 + i * 8 + 8)
-                    ) as any
-                );
-                // only add transfer to output array if amount > 0; 0 or lower means, no transfer
-                if (amount > 0) {
-                    const dest = sendManyInput.slice(32 * i, 32 * i + 32);
-                    this.sendManyTransfers.push({
-                        amount: amount,
-                        destId: await getId(dest),
-                    });
-                }
-            }
-    }
-
-    /**
-     * converts the public key to a publicId
-     **/
-    async function getId(publicKey /* Uint8Array */) /* Promise<string> */ {
-        // use here the qubic helper instance which you should have anywhere
-        return await helper.getIdentity(publicKey);
-    }
+    
 
 ```
 
@@ -468,4 +431,72 @@ This transaction is feeless, follow the process from [Create, sign, send and ver
 
 ### Qutil/Send Many Smart Contract
 The fee for using the Smart Contract are `10` Qubic.
+
+A send many smart contract invocation is a qubic transactions with some specific settings.
+
+the below example shows how to use it.
+
+```js
+
+  // create the builder package
+  const sendManyPayload = new QubicTransferSendManyPayload();
+
+  // add a destination
+  sendManyPayload.addTransfer({
+    destId: new PublicKey("SUZFFQSCVPHYYBDCQODEMFAOKRJDDDIRJFFIWFLRDDJQRPKMJNOCSSKHXHGK"),
+    amount: new Long(1)
+  });
+
+  // add a destination
+  sendManyPayload.addTransfer({
+    destId: new PublicKey("SUZFFQSCVPHYYBDCQODEMFAOKRJDDDIRJFFIWFLRDDJQRPKMJNOCSSKHXHGK"),
+    amount: new Long(2)
+  });
+
+  // ...add up to 25 destination addresses
+
+  // add the fixed fee to the total amount
+  const totalAmount = sendManyPayload.getTotalAmount() + BigInt(QubicDefinitions.QUTIL_SENDMANY_FEE);
+
+  // build and sign tx
+  const tx = new QubicTransaction().setSourcePublicKey(sourcePublicKey)
+    .setDestinationPublicKey(QubicDefinitions.QUTIL_ADDRESS) // a send many transfer should go the Qutil SC
+    .setAmount(totalAmount) // calculated from all transfers + fee
+    .setTick(0) // set an appropriate target tick
+    .setInputType(QubicDefinitions.QUTIL_SENDMANY_INPUT_TYPE) // input type for send many invocation
+    .setInputSize(sendManyPayload.getPackageSize()) // the input size equals the size of the send many payload
+    .setPayload(sendManyPayload); // add payload
+
+  const signedTransactionData = await tx.build(signSeed);
+  
+  // the tx can now be sent
+ const response = fetch(`${baseUrl}/broadcast-transaction`,
+                    {
+                        headers: {
+                          'Accept': 'application/json',
+                          'Content-Type': 'application/json'
+                        },
+                        method: "POST",
+                        body: JSON.stringify({
+                          encodedTransaction: signedTransactionData
+                        })
+                    });
+
+  if(reponse.status == 200)
+  {
+    // yipiii! transaction has been broadcasted
+
+    // by requesting getId() you receive the txId of this transaction
+    // this id can presented to the client as reference
+    const transactionId = tx.getId();
+
+    // after a tx has been send you can either check its status by block scan or by dedicated call to /tx-status/<TDID>
+
+  }else {
+    // :( something went wrong, try again
+  }
+
+
+```
+
 
