@@ -1,11 +1,135 @@
 # TX Based Exchange integration
 
+## Management Summary
+This document describes the Qubic RPC infrastructure and how it can be used to integrate Qubic into an exchange environment.
+
+## About qubic
+* Launched: 13.4.2022 (mainnet)
+* Fair Launch: no VC or team allocations
+* Circulating Supply: 71.4trn (trilion)
+* Weekly Emission: 1trn
+* Hard Cap/Max Supply: 1000trn (will most likely never be reached due to burn mechanisms)
+
+### Available to buy
+* [SafeTrade](https://safe.trade/)
+* [Tradeogre](https://tradeogre.com/markets)
+* [Seven Seas Exchange](https://www.sevenseas.exchange/)
+* [Bitkonan](https://www.bitkonan.com)
+
+### Trackers
+* [Coinmarketcap](https://coinmarketcap.com/currencies/qubic/)
+* [Coingecko](https://www.coingecko.com/en/coins/qubic-network)
+* [Delta mobile app](http://delta.app)
+* [Livecoinwatch](https://www.livecoinwatch.com/price/QUBIC-QUBIC)
+* [Coinpaprika](https://coinpaprika.com/coin/qubic-qubic/)
+
+
+## Exchange Related Information
+* Project Name: Qubic
+* Ticker: QUBIC 
+* Currency: QU
+* Brand assets (logo, icon) for [download](https://drive.google.com/file/d/13XcdR7nWMTNVRL5J5FYZyc-SnMMAYN3w/view)
+* Decimals: The smallest possible unit is 1 QU (like 1 Satoshi in Bitcoin) and it trades at a price of around 0.000006879 USD right now.
+
+### Links
+* Github: [https://github.com/qubic](https://github.com/qubic)
+* X/Twitter: [https://x.com/_Qubic_](https://x.com/_Qubic_) 
+* Website: [https://qubic.org/](https://qubic.org/)
+* Discord: [https://discord.com/invite/qubic](https://discord.com/invite/qubic)
+* Telegram: [https://t.me/qubic_network](https://t.me/qubic_network)
+* Youtube: [https://www.youtube.com/@_qubic_](https://www.youtube.com/@_qubic_)
+* Explorer: [https://app.qubic.li/network/explorer](https://app.qubic.li/network/explorer) 
+* Medium, Reddit, Facebook, Instagram: n/a
+
+### Tech Integration Basics
+* Base URL for production environment: `https://ex.qubic.org/v1`
+* Base URL for test environment (points to test infrastructure which accesses the production chain): `https://testapi.qubic.org/v1`
+* Access to the production environment is IP restricted.
+* Individual rate limits can be set by source ip address.
+* The HTTP API is open and doesn’t require any special authentication.
+* All infrastructure is protected by Cloudflare
+
+> [!IMPORTANT]
+> Use `https://testapi.qubic.org/v1` for testing and let us know your IP addresses in order to access `https://ex.qubic.org/v1`
+
+### Tech FAQ
+* **Is there a need to run an own node?** \
+No, we suggest using our infrastructure as described in this document for easy onboarding. But you can also run your own node. Let’s discuss.
+* **Does qubic support memo for wallets?** \
+No, it doesn’t.
+* **Where do I get test tokens?** \
+Just get in touch, we’re happy to send some. \
+
+
+# General Qubic Terms
+This section is about terms needed to understand Qubic. It explains the dos and don’ts.
+
+## QU (Qubics)
+QU is the native currency of the Qubic network.
+
+## Epoch
+An Epoch in Qubic is one week. It starts every Wednesday at 12 UTC and ends one week later before the new epoch starts.
+Epochs are important because every epoch change gives the node operators the chance to update their nodes. Currently every week is expected to have one core update.
+During epoch change ~11:00 to ~13:00 UTC the general network availability is deprecated. This means that asking for current balance may take a bit longer than normal.
+Using the Qubic RPC interface you will have responsiveness also during epoch transition because all important data is cached.
+
+> [!IMPORTANT]
+> We suggest <strong>not</strong> to  send out transactions during the transition phase. Every Wednesday 11:45 UTC and 12:45 UTC.
+
+## Computor
+A Computor is one of 676 validators in Qubic.
+Computors take on a multitude of tasks, among them are validation of ticks, execution of smart contracts, and validation of transactions. 
+
+## Quorum
+The Quorum (derived from a paper of [Nick Szabo](https://www.fon.hum.uva.nl/rob/Courses/InformationInSpeech/CDROM/Literature/LOTwinterschool2006/szabo.best.vwh.net/quorum.html), see also: [Quorum in distributed systems on Wikipedia](https://en.wikipedia.org/wiki/Quorum_(distributed_computing)). ) in Qubic is defined by 451 of 676 Computors.
+The Quorum is needed to finalize Ticks or to make decisions. Only if 451 out of 676 Computors agree to a common state the network can proceed.
+The Quorum is also needed to make network related decisions. This can be achieved by proposals and votes.
+
+## Tick
+A Tick in Qubic is a block for other blockchains. A Tick is defined by its TickData which is issued by the responsible Computor. A tick usually takes between two and eight seconds.
+Every Tick can be non-empty or empty. Only non-empty ticks are considered as good and will include and execute transactions.
+As soon as a tick has passed, the transactions (and everything else) included cannot be changed or reverted anymore (true finality).
+
+> [!IMPORTANT]
+> If a Tick is empty, transactions from this Tick are not included into blockchain and therefore not executed.
+
+> [!IMPORTANT]
+> Working with Ticks is the most important concept to understand in qubic. Integration will need to monitor ticks and act according to outcome (ie. re-issue a transaction or issue a new one - more on this later in this document)
+
+## TickData
+TickData is the definition of a Tick. It contains the cryptographically signed information what transactions must be processed in this Tick.
+It also contains the timestamp of the Tick and other block information needed to determine if a Tick is valid or not.
+
+## Transaction
+A transaction in Qubic is a transport vehicle for multiple purposes.
+The main purposes are:
+1. Sending QU from one address to another
+2. Sending Smart Contract commands
+
+A transaction in Qubic needs to have a `Target Tick` when it should be executed. The network cannot decide this. It is good practice to add 5 Ticks of offset to the `latest Tick` (current block height).
+
+> [!IMPORTANT]
+>A Qubic transaction must have a `Target Tick`. The `Target Tick` can be chosen from `latest Tick` + 5
+
+Due to Qubics architecture from one source address can **only exist one concurrent transaction** in the network.
+Network is in tick 5. If Alice has one tx in the network for future tick 10 and then sends another one for tick 11 it would overwrite the first one. So one has to wait until tick 10 has passed. If Alice sends a tx for tick 9, nothing would change as the TX with the higher tick set will stay in the network.
+
+> [!IMPORTANT]
+> Only one concurrent TX per sending ID can exist. Don’t send a new transaction from the same source address until the tx `Target Tick` has been passed. This is important to consider for withdrawals: a hot wallet can only have one transaction, everything else needs to be queued. We discuss an approach ("SendMany") which allows for more bandwidth further down.
+
+Transactions can be created and signed locally/offline. Only the signed transaction must be sent to the network.
+
+# The Integration for Exchanges
+The following documentation showcases the integration of qubic for exchanges: deposits and withdrawals based on the RPC services provided.
+
+Code examples leverage the [TS Library](https://github.com/qubic/ts-library)
+
+Integrators may also use:
+* [Go Library](https://github.com/)
+* [HTTP Library](https://github.com/)
+
 > [!WARNING]
-> THIS PAGE IS WORK IN PROGRESS
-
-The following use cases are based on the Qubic RPC V1.
-
-The following examples refer to the Qubic RPC V1 API and the [TS Library](https://github.com/qubic/ts-library)
+> Library links missing
 
 The TS Library uses a Webassembly for all cryptographical stuff.
 
@@ -14,35 +138,16 @@ For all the follwing examples the `baseUrl` is set to:
 const baseUrl = 'https://testapi.qubic.org/v1';
 ```
 
-This documentation refers to the [Qubic V1 RPC API](qubic-rpc-doc.html).
+This documentation refers to the Qubic V1 RPC API.
 
-| Method  	| Endpoint    	| Description   	|  Body Payload |
-|---	|---	|---	|---|
-| GET  	| /block-height   	| Get the current tick/block height   	| -   |
-| POST  | /broadcast-transaction	| Broadcast a transaction    	| `{ "encodedTransaction": "<BASE64RAWTX>" }  `  |
-| GET  	| /ticks/{tickNumber}/approved-transactions  	| Get a List of approved transactions for the given tick 	|   - |
-| GET  	| /tx-status/{txId}  	| Get the status of a single transaction 	|   - |
-| GET  	| /status  	| Get the RPC status 	|   - |
+| Method  	| Endpoint    	| Description   	| 
+|---	|---	|---	|---
+| GET  	|   	|   	|   
+|   	|   	|   	|   
+|   	|   	|   	|   
 
-
-## Table of Content
-- [TX Based Exchange integration](#tx-based-exchange-integration)
-  - [Table of Content](#table-of-content)
-  - [Qubic Rules](#qubic-rules)
-    - [One concurent TX per source Address](#one-concurent-tx-per-source-address)
-    - [Respect RPC Status](#respect-rpc-status)
-    - [Epoch change](#epoch-change)
-  - [General Examples](#general-examples)
-    - [Generating a Seed](#generating-a-seed)
-    - [Signing a Package](#signing-a-package)
-    - [Create, sign, send and verify a transaction](#create-sign-send-and-verify-a-transaction)
-      - [Workflow](#workflow)
-  - [Deposit Workflow](#deposit-workflow)
-    - [Scan Ticks/Blocks sequentially](#scan-ticksblocks-sequentially)
-      - [Special case Qutil/SendMany SC](#special-case-qutilsendmany-sc)
-  - [Withdraw Workflow](#withdraw-workflow)
-    - [Plain Transaction](#plain-transaction)
-    - [Qutil/Send Many Smart Contract](#qutilsend-many-smart-contract)
+> [!WARNING]
+> Links missing
 
 ## Qubic Rules
 When using the Qubic RPC you should follow some important rules.
@@ -64,12 +169,45 @@ If Alice sends a tx for tick 9, nothing would change as the TX with the higher t
 > [!IMPORTANT]
 > Only one concurrent TX per sending ID, don’t send a new transaction from the same source address until the previous tx target tick has been passed.
 
+### Error Handling
+If any request has a problem, you will get a proper HTTP status code.
+
+<table>
+  <tr>
+   <td>Code
+   </td>
+   <td>Description
+   </td>
+  </tr>
+  <tr>
+   <td>200
+   </td>
+   <td>OK, all good
+   </td>
+  </tr>
+  <tr>
+   <td>4xx
+   </td>
+   <td>Bad Request: You have any error in your request
+   </td>
+  </tr>
+  <tr>
+   <td>5xx
+   </td>
+   <td>Internal Server Error: there is an internal problem
+   </td>
+  </tr>
+</table>
+
+If you receive a 4xx response it is most probably because you sent anything which is not expected. In the response body you will find a description.
+If you receive a 5xx response anything went wrong on our side. If you keep getting those responses, please contact us.
+Generally, we apply the Status Code Handling from GRPC Core ([https://grpc.github.io/grpc/core/md_doc_statuscodes.html](https://grpc.github.io/grpc/core/md_doc_statuscodes.html)) 
 
 ### Respect RPC Status
 the endpoint
 - `/status`
 
-return the current status of the RPC data.
+returns the current status of the RPC data.
 
 sample status response:
 ```json
@@ -123,7 +261,6 @@ sample status response:
 
 > [!IMPORTANT]
 > The `lastProcessedTick` indicates up to which tick the RPC server has processed data.
-
 > in the array `processedTickIntervalsPerEpoch` you find the processed ticks. it is possible due to updates, that apochs can have multiple tick ranges
 
 ### Epoch change
@@ -136,7 +273,6 @@ A seed is the private key in Qubic. Based on the seed, you can create the public
 
 The seed is a 55-lower-case-char string. Please use a proper random generator in your environment. The Example here is for demonstration purposes only.
 
-## Javascript
 ```js
     // generates a random seed
   seedGen() {
@@ -164,31 +300,6 @@ The seed is a 55-lower-case-char string. Please use a proper random generator in
   // publicId => the public key in human readable format. this is the address qubic users use
 ```
 
-## Go
-```go
-package main
-
-import (
-	"encoding/hex"
-	"fmt"
-	"github.com/qubic/go-node-connector/types"
-	"log"
-)
-
-func main() {
-	seed := types.GenerateRandomSeed()
-	fmt.Println(seed)
-	wallet, err := types.NewWallet(seed)
-	if err != nil {
-		log.Fatalf("got err: %s when creating wallet", err.Error())
-	}
-
-	fmt.Println(wallet.Identity.String())
-	fmt.Println(hex.EncodeToString(wallet.PrivKey[:]))
-	fmt.Println(hex.EncodeToString(wallet.PubKey[:]))
-}
-```
-
 ### Signing a Package
 For signing a package, you can either use the qubic crypto library () or e.g. for transactions the wrapper from the `ts-library`.
 
@@ -196,7 +307,6 @@ the pre condition to be able to sign a package is to have the `seed` or `private
 
 the following example assumes that we have already created our `idPackage` which includes our `privateKey`.
 
-## Javascript
 ```js
   // to sign a package, you need the private key which is derived from the seed and it's publicKey
   const seed = 'wqbdupxgcaimwdsnchitjmsplzclkqokhadgehdxqogeeiovzvadstt';
@@ -249,62 +359,17 @@ We assume you have already all needed data to create and send the transaction:
 - Receiver
 - Amount
 
-#### Workflow
-1. Request the latest tick height
+#### Full Workflow to Issue Transactions
+1. Request latest block height
 
-## Javascript
 ```js
-const response = await fetch(`${baseUrl}/latestTick`);
+const response = await fetch(`${baseUrl}/block-height`);
 const block = await response.json();
-const latestBlockHeight = block.latestTick;
-```
-
-## Go
-```go
-package main
-
-import (
-	"encoding/json"
-	"fmt"
-	"log"
-	"net/http"
-)
-
-const baseUrl = "https://testapi.qubic.org/v1"
-
-func main() {
-	url := baseUrl + "/latestTick"
-	req, err := http.NewRequest(http.MethodGet, url, nil)
-	if err != nil {
-		log.Fatalf("got err: %s when creating request", err.Error())
-	}
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		log.Fatalf("got err: %s when performing request", err.Error())
-	}
-	defer res.Body.Close()
-
-    if res.StatusCode != http.StatusOK {
-      log.Fatalf("Got non 200 status code: %d", res.StatusCode)
-    }
-
-	type response struct {
-		LatestTick uint32 `json:"latestTick"`
-	}
-	var body response
-
-	err = json.NewDecoder(res.Body).Decode(&body)
-	if err != nil {
-		log.Fatalf("got err: %s when decoding body", err.Error())
-	}
-
-	fmt.Println(body.LatestTick)
-}
+const latestBlockHeight = block.height;
 ```
 
 2. Create and sign transaction
 
-## Javascript
 ```js
   // please find an extended example here: https://github.com/qubic/ts-library/blob/main/test/createTransactionTest.js
 
@@ -327,7 +392,6 @@ func main() {
 
 3. Send transaction
 
-## Javascript
 ```js
   // after creating and signing the tx it should be sent to the network
   const response = fetch(`${baseUrl}/broadcast-transaction`,
@@ -350,66 +414,8 @@ func main() {
   }
 ```
 
-## Go
-```go
-package main
-
-import (
-	"bytes"
-	"encoding/json"
-	"fmt"
-	"log"
-	"net/http"
-)
-
-const baseUrl = "https://testapi.qubic.org/v1"
-
-func main() {
-	url := baseUrl + "/broadcast-transaction"
-	payload := struct {
-		EncodedTransaction string `json:"encodedTransaction"`
-	}{
-		EncodedTransaction: "",
-	}
-
-	buff := new(bytes.Buffer)
-	err := json.NewEncoder(buff).Encode(payload)
-	if err != nil {
-		log.Fatalf("got err: %s when encoding payload", err.Error())
-	}
-
-	req, err := http.NewRequest(http.MethodPost, url, nil)
-	if err != nil {
-		log.Fatalf("got err: %s when creating request", err.Error())
-	}
-
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		log.Fatalf("got err: %s when performing request", err.Error())
-	}
-	defer res.Body.Close()
-
-	if res.StatusCode != http.StatusOK {
-		log.Fatalf("Got non 200 status code: %d", res.StatusCode)
-	}
-
-	type response struct {
-		PeersBroadcasted uint32 `json:"peersBroadcasted"`
-	}
-	var body response
-
-	err = json.NewDecoder(res.Body).Decode(&body)
-	if err != nil {
-		log.Fatalf("got err: %s when decoding body", err.Error())
-	}
-
-	fmt.Println(body.PeersBroadcasted)
-}
-```
-
 4. Verify transaction status
 
-## Javascript
 ```js
   // you can verify if a transaction was successful as soon the target tick has passed (true finality)
 
@@ -436,83 +442,6 @@ func main() {
 
 ```
 
-## Go
-```go
-package main
-
-import (
-  "encoding/json"
-  "fmt"
-  "log"
-  "net/http"
-)
-
-const baseUrl = "https://testapi.qubic.org/v1"
-
-func main() {
-  targetTick := 13201784
-  url := fmt.Sprintf("%s/ticks/%d/approved-transactions", baseUrl, targetTick)
-
-  req, err := http.NewRequest(http.MethodGet, url, nil)
-  if err != nil {
-    log.Fatalf("got err: %s when creating request", err.Error())
-  }
-
-  res, err := http.DefaultClient.Do(req)
-  if err != nil {
-    log.Fatalf("got err: %s when performing request", err.Error())
-  }
-  defer res.Body.Close()
-
-  if res.StatusCode == http.StatusOK {
-    type response struct {
-      ApprovedTransactions []struct {
-        SourceId     string `json:"sourceId"`
-        DestId       string `json:"destId"`
-        Amount       string `json:"amount"`
-        TickNumber   uint32 `json:"tickNumber"`
-        InputType    int    `json:"inputType"`
-        InputSize    int    `json:"inputSize"`
-        InputHex     string `json:"inputHex"`
-        SignatureHex string `json:"signatureHex"`
-        TxId         string `json:"txId"`
-      } `json:"approvedTransactions"`
-    }
-    var body response
-
-    err = json.NewDecoder(res.Body).Decode(&body)
-    if err != nil {
-      log.Fatalf("got err: %s when decoding body", err.Error())
-    }
-
-    fmt.Printf("%+v", body.ApprovedTransactions)
-  } else if res.StatusCode == http.StatusBadRequest {
-    type errResponse struct {
-      Code    int                      `json:"code"`
-      Message string                   `json:"message"`
-      Details []map[string]interface{} `json:"details"`
-    }
-    var body errResponse
-
-    err = json.NewDecoder(res.Body).Decode(&body)
-    if err != nil {
-      log.Fatalf("got err: %s when decoding error body", err.Error())
-    }
-
-    switch body.Code {
-    case 9:
-      lastProcessedTick := body.Details[0]["lastProcessedTick"]
-      fmt.Println(uint32((lastProcessedTick).(float64)))
-    case 11:
-      nextTickNumber := body.Details[0]["nextTickNumber"]
-      fmt.Println(uint32((nextTickNumber).(float64)))
-    }
-  } else {
-    //handle error
-  }
-}
-```
-
 when you ask the RPC server for `approved-transactions` you may receive a `400 Bad Request`.
 
 sample `Bad Request` response:
@@ -537,6 +466,7 @@ sample `Bad Request` response:
 |---	|---	|--- |
 | 9  	|  requested tick number `<TICKNUMBER>` is greater than last processed tick `<LASTPROCESSEDTICK>` 	| repeat your request until it works. you may track the the `LASTPROCESSEDTICK` from the endpoint `/latestTick`  |
 | 11  	|  provided tick number `<TICKNUMBER>` was skipped by the system, next available tick is `<NEXTAVAILABLETICKNUMBER>` 	| take the `nextTickNumber` from `details` and proceed with this tick.  |
+| X  	|   	| |
 
 
 ## Deposit Workflow
@@ -549,7 +479,6 @@ The following code samples contains pseudo code which you have to replace by you
 
 ### Scan Ticks/Blocks sequentially
 
-## Javascript
 ```js
   // don't forget to do a proper errorhandling!
   // if you request a tick which is yet not processed, you will receive a 404 with a specific message
@@ -577,85 +506,6 @@ The following code samples contains pseudo code which you have to replace by you
   });
 ```
 
-## Go
-```go
-package main
-
-import (
-	"encoding/json"
-	"fmt"
-	"log"
-	"net/http"
-)
-
-const baseUrl = "https://testapi.qubic.org/v1"
-
-func main() {
-	targetTick := 13201784
-	url := fmt.Sprintf("%s/ticks/%d/approved-transactions", baseUrl, targetTick)
-
-	req, err := http.NewRequest(http.MethodGet, url, nil)
-	if err != nil {
-		log.Fatalf("got err: %s when creating request", err.Error())
-	}
-
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		log.Fatalf("got err: %s when performing request", err.Error())
-	}
-	defer res.Body.Close()
-
-	if res.StatusCode != http.StatusOK {
-		log.Fatalf("got non 200 status code: %d", res.StatusCode)
-	}
-
-	type response struct {
-		ApprovedTransactions []struct {
-			SourceId     string `json:"sourceId"`
-			DestId       string `json:"destId"`
-			Amount       string `json:"amount"`
-			TickNumber   uint32 `json:"tickNumber"`
-			InputType    int    `json:"inputType"`
-			InputSize    int    `json:"inputSize"`
-			InputHex     string `json:"inputHex"`
-			SignatureHex string `json:"signatureHex"`
-			TxId         string `json:"txId"`
-		} `json:"approvedTransactions"`
-	}
-	var body response
-
-	err = json.NewDecoder(res.Body).Decode(&body)
-	if err != nil {
-		log.Fatalf("got err: %s when decoding body", err.Error())
-	}
-	
-	for _, approvedTx := range body.ApprovedTransactions {
-		if !isClientAddress(approvedTx.DestId) {
-			continue
-		}
-		
-		//insert business logic to credit client account and transfer to hot wallet
-	}
-
-	fmt.Printf("%+v", body.ApprovedTransactions)
-}
-
-func isClientAddress(addr string) bool {
-	clientAddresses := []string {
-		"a", "b", "c",
-	}
-	
-	for _, clientAddr := range clientAddresses {
-		if clientAddr == addr {
-			return true
-		}
-	}
-	
-	return false
-}
-
-```
-
 repeat the above code as long you don't get a `400 Bad Request`.
 
 #### Special case Qutil/SendMany SC
@@ -663,7 +513,6 @@ In general we suggest to not allow your clients to use their deposit accounts fo
 
 But, there is a send many smart contract which you should support. A such transaction can be identified as followed:
 
-## Javascript
 ```js
   // we assume you have in hand a tx object (e.g. from the approved-transactions endpoint)
   const tx = getTxFromApprovedTransactionsEndpoint();
@@ -726,7 +575,6 @@ A send many smart contract invocation is a qubic transactions with some specific
 
 the below example shows how to use it.
 
-## Javascript
 ```js
 
   // create the builder package
@@ -789,5 +637,4 @@ the below example shows how to use it.
 
 
 ```
-
 
