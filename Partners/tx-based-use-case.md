@@ -18,7 +18,7 @@ This documentation refers to the [Qubic V1 RPC API](qubic-rpc-doc.html).
 
 | Method  	| Endpoint    	| Description   	|  Body Payload |
 |---	|---	|---	|---|
-| GET  	| /block-height   	| Get the current tick/block height   	| -   |
+| GET  	| /latestTick   	| Get the current tick (block height)   	| -   |
 | POST  | /broadcast-transaction	| Broadcast a transaction    	| `{ "encodedTransaction": "<BASE64RAWTX>" }  `  |
 | GET  	| /ticks/{tickNumber}/approved-transactions  	| Get a List of approved transactions for the given tick 	|   - |
 | GET  	| /tx-status/{txId}  	| Get the status of a single transaction 	|   - |
@@ -261,8 +261,8 @@ We assume you have already all needed data to create and send the transaction:
 **Javascript**
 ```js
 const response = await fetch(`${baseUrl}/latestTick`);
-const block = await response.json();
-const latestBlockHeight = block.latestTick;
+const tickResponse = await response.json();
+const latestTick = tickResponse.latestTick;
 ```
 
 **Go**
@@ -320,7 +320,7 @@ func main() {
       .setAmount(amount)
       // it is important to set a target tick for the execution of this transaction
       // a suggested offset is 5-7 ticks
-      .setTick(latestBlockHeight + 5);
+      .setTick(latestTick + 5);
 
     // will build the tx: bundle all values and sign it
     // returns the raw bytes of signed transaction
@@ -548,8 +548,8 @@ sample `Bad Request` response:
 ## Deposit Workflow
 We assume that you have in your business logic the accounts of your clients. We refer to this accounts by `clientAcccount`. A client Account is a package of `seed`, `privateKey`, `publicKey` and `publicId`. The list of all `clientAccount` is called `clientAccountList`.
 
-To detect a deposit to a `clientAccount` we use the Qubic RPC and run a sequential blockscan.
-You will need to define an initial tick from which on you will start your block scans. For our example, we start with tick `13032965`.
+To detect a deposit to a `clientAccount` we use the Qubic RPC and run a sequential tick/blockscan.
+You will need to define an initial tick from which on you will start your tick scans. For our example, we start with tick `13032965`.
 
 The following code samples contains pseudo code which you have to replace by your own business logic.
 
@@ -787,7 +787,7 @@ the below example shows how to use it.
     // this id can presented to the client as reference
     const transactionId = tx.getId();
 
-    // after a tx has been send you can either check its status by block scan or by dedicated call to /tx-status/<TDID>
+    // after a tx has been send you can either check its status by tick scan or by dedicated call to /tx-status/<TDID>
 
   }else {
     // :( something went wrong, try again
