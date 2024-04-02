@@ -14,13 +14,15 @@ For all the follwing examples the `baseUrl` is set to:
 const baseUrl = 'https://testapi.qubic.org/v1';
 ```
 
-This documentation refers to the Qubic V1 RPC API.
+This documentation refers to the [Qubic V1 RPC API](qubic-rpc-doc.html).
 
-| Method  	| Endpoint    	| Description   	| 
-|---	|---	|---	|---
-| GET  	|   	|   	|   
-|   	|   	|   	|   
-|   	|   	|   	|   
+| Method  	| Endpoint    	| Description   	|  Body Payload |
+|---	|---	|---	|---|
+| GET  	| /block-height   	| Get the current tick/block height   	| -   |
+| POST  | /broadcast-transaction	| Broadcast a transaction    	| `{ "encodedTransaction": "<BASE64RAWTX>" }  `  |
+| GET  	| /ticks/{tickNumber}/approved-transactions  	| Get a List of approved transactions for the given tick 	|   - |
+| GET  	| /tx-status/{txId}  	| Get the status of a single transaction 	|   - |
+| GET  	| /status  	| Get the RPC status 	|   - |
 
 
 ## Table of Content
@@ -327,7 +329,6 @@ sample `Bad Request` response:
 |---	|---	|--- |
 | 9  	|  requested tick number `<TICKNUMBER>` is greater than last processed tick `<LASTPROCESSEDTICK>` 	| repeat your request until it works. you may track the the `LASTPROCESSEDTICK` from the endpoint `/latestTick`  |
 | 11  	|  provided tick number `<TICKNUMBER>` was skipped by the system, next available tick is `<NEXTAVAILABLETICKNUMBER>` 	| take the `nextTickNumber` from `details` and proceed with this tick.  |
-| X  	|   	| |
 
 
 ## Deposit Workflow
