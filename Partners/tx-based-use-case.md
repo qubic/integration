@@ -134,6 +134,7 @@ A seed is the private key in Qubic. Based on the seed, you can create the public
 
 The seed is a 55-lower-case-char string. Please use a proper random generator in your environment. The Example here is for demonstration purposes only.
 
+## Javascript
 ```js
     // generates a random seed
   seedGen() {
@@ -161,6 +162,31 @@ The seed is a 55-lower-case-char string. Please use a proper random generator in
   // publicId => the public key in human readable format. this is the address qubic users use
 ```
 
+## Go
+```go
+package main
+
+import (
+	"encoding/hex"
+	"fmt"
+	"github.com/qubic/go-node-connector/types"
+	"log"
+)
+
+func main() {
+	seed := types.GenerateRandomSeed()
+	fmt.Println(seed)
+	wallet, err := types.NewWallet(seed)
+	if err != nil {
+		log.Fatalf("got err: %s when creating wallet", err.Error())
+	}
+
+	fmt.Println(wallet.Identity.String())
+	fmt.Println(hex.EncodeToString(wallet.PrivKey[:]))
+	fmt.Println(hex.EncodeToString(wallet.PubKey[:]))
+}
+```
+
 ### Signing a Package
 For signing a package, you can either use the qubic crypto library () or e.g. for transactions the wrapper from the `ts-library`.
 
@@ -168,6 +194,7 @@ the pre condition to be able to sign a package is to have the `seed` or `private
 
 the following example assumes that we have already created our `idPackage` which includes our `privateKey`.
 
+## Javascript
 ```js
   // to sign a package, you need the private key which is derived from the seed and it's publicKey
   const seed = 'wqbdupxgcaimwdsnchitjmsplzclkqokhadgehdxqogeeiovzvadstt';
@@ -221,16 +248,61 @@ We assume you have already all needed data to create and send the transaction:
 - Amount
 
 #### Workflow
-1. Request latest block height
+1. Request the latest tick height
 
+## Javascript
 ```js
-const response = await fetch(`${baseUrl}/block-height`);
+const response = await fetch(`${baseUrl}/latestTick`);
 const block = await response.json();
-const latestBlockHeight = block.height;
+const latestBlockHeight = block.latestTick;
+```
+
+## Go
+```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
+)
+
+const baseUrl = "https://testapi.qubic.org/v1"
+
+func main() {
+	url := baseUrl + "/latestTick"
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		log.Fatalf("got err: %s when creating request", err.Error())
+	}
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatalf("got err: %s when performing request", err.Error())
+	}
+	defer res.Body.Close()
+
+    if res.StatusCode != http.StatusOK {
+      log.Fatalf("Got non 200 status code: %d", res.StatusCode)
+    }
+
+	type response struct {
+		LatestTick uint32 `json:"latestTick"`
+	}
+	var body response
+
+	err = json.NewDecoder(res.Body).Decode(&body)
+	if err != nil {
+		log.Fatalf("got err: %s when decoding body", err.Error())
+	}
+
+	fmt.Println(body.LatestTick)
+}
 ```
 
 2. Create and sign transaction
 
+## Javascript
 ```js
   // please find an extended example here: https://github.com/qubic/ts-library/blob/main/test/createTransactionTest.js
 
@@ -253,6 +325,7 @@ const latestBlockHeight = block.height;
 
 3. Send transaction
 
+## Javascript
 ```js
   // after creating and signing the tx it should be sent to the network
   const response = fetch(`${baseUrl}/broadcast-transaction`,
@@ -275,8 +348,66 @@ const latestBlockHeight = block.height;
   }
 ```
 
+## Go
+```go
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
+)
+
+const baseUrl = "https://testapi.qubic.org/v1"
+
+func main() {
+	url := baseUrl + "/broadcast-transaction"
+	payload := struct {
+		EncodedTransaction string `json:"encodedTransaction"`
+	}{
+		EncodedTransaction: "",
+	}
+
+	buff := new(bytes.Buffer)
+	err := json.NewEncoder(buff).Encode(payload)
+	if err != nil {
+		log.Fatalf("got err: %s when encoding payload", err.Error())
+	}
+
+	req, err := http.NewRequest(http.MethodPost, url, nil)
+	if err != nil {
+		log.Fatalf("got err: %s when creating request", err.Error())
+	}
+
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatalf("got err: %s when performing request", err.Error())
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode != http.StatusOK {
+		log.Fatalf("Got non 200 status code: %d", res.StatusCode)
+	}
+
+	type response struct {
+		PeersBroadcasted uint32 `json:"peersBroadcasted"`
+	}
+	var body response
+
+	err = json.NewDecoder(res.Body).Decode(&body)
+	if err != nil {
+		log.Fatalf("got err: %s when decoding body", err.Error())
+	}
+
+	fmt.Println(body.PeersBroadcasted)
+}
+```
+
 4. Verify transaction status
 
+## Javascript
 ```js
   // you can verify if a transaction was successful as soon the target tick has passed (true finality)
 
@@ -301,6 +432,83 @@ const latestBlockHeight = block.height;
       }
     }
 
+```
+
+## Go
+```go
+package main
+
+import (
+  "encoding/json"
+  "fmt"
+  "log"
+  "net/http"
+)
+
+const baseUrl = "https://testapi.qubic.org/v1"
+
+func main() {
+  targetTick := 13201784
+  url := fmt.Sprintf("%s/ticks/%d/approved-transactions", baseUrl, targetTick)
+
+  req, err := http.NewRequest(http.MethodGet, url, nil)
+  if err != nil {
+    log.Fatalf("got err: %s when creating request", err.Error())
+  }
+
+  res, err := http.DefaultClient.Do(req)
+  if err != nil {
+    log.Fatalf("got err: %s when performing request", err.Error())
+  }
+  defer res.Body.Close()
+
+  if res.StatusCode == http.StatusOK {
+    type response struct {
+      ApprovedTransactions []struct {
+        SourceId     string `json:"sourceId"`
+        DestId       string `json:"destId"`
+        Amount       string `json:"amount"`
+        TickNumber   uint32 `json:"tickNumber"`
+        InputType    int    `json:"inputType"`
+        InputSize    int    `json:"inputSize"`
+        InputHex     string `json:"inputHex"`
+        SignatureHex string `json:"signatureHex"`
+        TxId         string `json:"txId"`
+      } `json:"approvedTransactions"`
+    }
+    var body response
+
+    err = json.NewDecoder(res.Body).Decode(&body)
+    if err != nil {
+      log.Fatalf("got err: %s when decoding body", err.Error())
+    }
+
+    fmt.Printf("%+v", body.ApprovedTransactions)
+  } else if res.StatusCode == http.StatusBadRequest {
+    type errResponse struct {
+      Code    int                      `json:"code"`
+      Message string                   `json:"message"`
+      Details []map[string]interface{} `json:"details"`
+    }
+    var body errResponse
+
+    err = json.NewDecoder(res.Body).Decode(&body)
+    if err != nil {
+      log.Fatalf("got err: %s when decoding error body", err.Error())
+    }
+
+    switch body.Code {
+    case 9:
+      lastProcessedTick := body.Details[0]["lastProcessedTick"]
+      fmt.Println(uint32((lastProcessedTick).(float64)))
+    case 11:
+      nextTickNumber := body.Details[0]["nextTickNumber"]
+      fmt.Println(uint32((nextTickNumber).(float64)))
+    }
+  } else {
+    //handle error
+  }
+}
 ```
 
 when you ask the RPC server for `approved-transactions` you may receive a `400 Bad Request`.
@@ -340,6 +548,7 @@ The following code samples contains pseudo code which you have to replace by you
 
 ### Scan Ticks/Blocks sequentially
 
+## Javascript
 ```js
   // don't forget to do a proper errorhandling!
   // if you request a tick which is yet not processed, you will receive a 404 with a specific message
@@ -367,6 +576,85 @@ The following code samples contains pseudo code which you have to replace by you
   });
 ```
 
+## Go
+```go
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
+)
+
+const baseUrl = "https://testapi.qubic.org/v1"
+
+func main() {
+	targetTick := 13201784
+	url := fmt.Sprintf("%s/ticks/%d/approved-transactions", baseUrl, targetTick)
+
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		log.Fatalf("got err: %s when creating request", err.Error())
+	}
+
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatalf("got err: %s when performing request", err.Error())
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode != http.StatusOK {
+		log.Fatalf("got non 200 status code: %d", res.StatusCode)
+	}
+
+	type response struct {
+		ApprovedTransactions []struct {
+			SourceId     string `json:"sourceId"`
+			DestId       string `json:"destId"`
+			Amount       string `json:"amount"`
+			TickNumber   uint32 `json:"tickNumber"`
+			InputType    int    `json:"inputType"`
+			InputSize    int    `json:"inputSize"`
+			InputHex     string `json:"inputHex"`
+			SignatureHex string `json:"signatureHex"`
+			TxId         string `json:"txId"`
+		} `json:"approvedTransactions"`
+	}
+	var body response
+
+	err = json.NewDecoder(res.Body).Decode(&body)
+	if err != nil {
+		log.Fatalf("got err: %s when decoding body", err.Error())
+	}
+	
+	for _, approvedTx := range body.ApprovedTransactions {
+		if !isClientAddress(approvedTx.DestId) {
+			continue
+		}
+		
+		//insert business logic to credit client account and transfer to hot wallet
+	}
+
+	fmt.Printf("%+v", body.ApprovedTransactions)
+}
+
+func isClientAddress(addr string) bool {
+	clientAddresses := []string {
+		"a", "b", "c",
+	}
+	
+	for _, clientAddr := range clientAddresses {
+		if clientAddr == addr {
+			return true
+		}
+	}
+	
+	return false
+}
+
+```
+
 repeat the above code as long you don't get a `400 Bad Request`.
 
 #### Special case Qutil/SendMany SC
@@ -374,6 +662,7 @@ In general we suggest to not allow your clients to use their deposit accounts fo
 
 But, there is a send many smart contract which you should support. A such transaction can be identified as followed:
 
+## Javascript
 ```js
   // we assume you have in hand a tx object (e.g. from the approved-transactions endpoint)
   const tx = getTxFromApprovedTransactionsEndpoint();
@@ -436,6 +725,7 @@ A send many smart contract invocation is a qubic transactions with some specific
 
 the below example shows how to use it.
 
+## Javascript
 ```js
 
   // create the builder package
