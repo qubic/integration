@@ -34,9 +34,15 @@ This documentation refers to the [Qubic V1 RPC API](qubic-rpc-doc.html).
     - [Epoch change](#epoch-change)
   - [General Examples](#general-examples)
     - [Generating a Seed](#generating-a-seed)
+      - [Javascript](#javascript)
+      - [Go](#go)
     - [Signing a Package](#signing-a-package)
+      - [Javascript](#javascript-1)
     - [Create, sign, send and verify a transaction](#create-sign-send-and-verify-a-transaction)
-      - [Workflow](#workflow)
+    - [1. Request the latest tick height](#1-request-the-latest-tick-height)
+      - [2. Create and sign transaction](#2-create-and-sign-transaction)
+      - [3. Send transaction](#3-send-transaction)
+      - [4. Verify transaction status](#4-verify-transaction-status)
   - [Deposit Workflow](#deposit-workflow)
     - [Scan Ticks/Blocks sequentially](#scan-ticksblocks-sequentially)
       - [Special case Qutil/SendMany SC](#special-case-qutilsendmany-sc)
@@ -136,7 +142,7 @@ A seed is the private key in Qubic. Based on the seed, you can create the public
 
 The seed is a 55-lower-case-char string. Please use a proper random generator in your environment. The Example here is for demonstration purposes only.
 
-## Javascript
+#### Javascript
 ```js
     // generates a random seed
   seedGen() {
@@ -164,7 +170,7 @@ The seed is a 55-lower-case-char string. Please use a proper random generator in
   // publicId => the public key in human readable format. this is the address qubic users use
 ```
 
-## Go
+#### Go
 ```go
 package main
 
@@ -196,7 +202,7 @@ the pre condition to be able to sign a package is to have the `seed` or `private
 
 the following example assumes that we have already created our `idPackage` which includes our `privateKey`.
 
-## Javascript
+#### Javascript
 ```js
   // to sign a package, you need the private key which is derived from the seed and it's publicKey
   const seed = 'wqbdupxgcaimwdsnchitjmsplzclkqokhadgehdxqogeeiovzvadstt';
@@ -249,17 +255,17 @@ We assume you have already all needed data to create and send the transaction:
 - Receiver
 - Amount
 
-#### Workflow
-1. Request the latest tick height
 
-## Javascript
+### 1. Request the latest tick height
+
+**Javascript**
 ```js
 const response = await fetch(`${baseUrl}/latestTick`);
 const block = await response.json();
 const latestBlockHeight = block.latestTick;
 ```
 
-## Go
+**Go**
 ```go
 package main
 
@@ -302,9 +308,9 @@ func main() {
 }
 ```
 
-2. Create and sign transaction
+#### 2. Create and sign transaction
 
-## Javascript
+**Javascript**
 ```js
   // please find an extended example here: https://github.com/qubic/ts-library/blob/main/test/createTransactionTest.js
 
@@ -325,9 +331,9 @@ func main() {
     const transactionId = tx.getId();
 ```
 
-3. Send transaction
+#### 3. Send transaction
 
-## Javascript
+**Javascript**
 ```js
   // after creating and signing the tx it should be sent to the network
   const response = fetch(`${baseUrl}/broadcast-transaction`,
@@ -350,7 +356,7 @@ func main() {
   }
 ```
 
-## Go
+**Go**
 ```go
 package main
 
@@ -407,9 +413,9 @@ func main() {
 }
 ```
 
-4. Verify transaction status
+#### 4. Verify transaction status
 
-## Javascript
+**Javascript**
 ```js
   // you can verify if a transaction was successful as soon the target tick has passed (true finality)
 
@@ -436,7 +442,7 @@ func main() {
 
 ```
 
-## Go
+**Go**
 ```go
 package main
 
@@ -530,7 +536,7 @@ sample `Bad Request` response:
 ```
 
 > [!IMPORTANT]
-> You must check the code to know what happened.
+> You must check the responded error code to know what happened.
 
 
 | code   	|  reason  	| action |
@@ -549,7 +555,7 @@ The following code samples contains pseudo code which you have to replace by you
 
 ### Scan Ticks/Blocks sequentially
 
-## Javascript
+**Javascript**
 ```js
   // don't forget to do a proper errorhandling!
   // if you request a tick which is yet not processed, you will receive a 404 with a specific message
@@ -577,7 +583,7 @@ The following code samples contains pseudo code which you have to replace by you
   });
 ```
 
-## Go
+**Go**
 ```go
 package main
 
@@ -663,7 +669,7 @@ In general we suggest to not allow your clients to use their deposit accounts fo
 
 But, there is a send many smart contract which you should support. A such transaction can be identified as followed:
 
-## Javascript
+**Javascript**
 ```js
   // we assume you have in hand a tx object (e.g. from the approved-transactions endpoint)
   const tx = getTxFromApprovedTransactionsEndpoint();
@@ -726,7 +732,7 @@ A send many smart contract invocation is a qubic transactions with some specific
 
 the below example shows how to use it.
 
-## Javascript
+**Javascript**
 ```js
 
   // create the builder package
