@@ -7,9 +7,9 @@ The following use cases are based on the Qubic RPC V1.
 
 The following examples refer to the Qubic RPC V1 API and the [TS Library](https://github.com/qubic/ts-library)
 
-The TS Library uses a Webassembly for all cryptographical stuff.
+The TS Library uses a Webassembly for all the cryptographical stuff.
 
-For all the follwing examples the `baseUrl` is set to:
+For all the following examples the `baseUrl` is set to:
 ```js
 const baseUrl = 'https://testapi.qubic.org/v1';
 ```
@@ -25,7 +25,7 @@ This documentation refers to the [Qubic V1 RPC API](qubic-rpc-doc.html).
 | GET  	| /status  	| Get the RPC status 	|   - |
 
 
-## Table of Content
+## Table of Contents
 - [TX Based Exchange integration](#tx-based-exchange-integration)
   - [Table of Content](#table-of-content)
   - [Qubic Rules](#qubic-rules)
@@ -54,7 +54,7 @@ This documentation refers to the [Qubic V1 RPC API](qubic-rpc-doc.html).
 When using the Qubic RPC you should follow some important rules.
 
 ### One concurent TX per source Address
-Due to Qubics architecture from one source address can only exist one concurrent transaction in the network.
+Due to Qubics architecture, only one concurrent transaction from a source address can exist in the network.
 
 Sample pseudo workflow:
 ```
@@ -75,7 +75,7 @@ If Alice sends a tx for tick 9, nothing would change as the TX with the higher t
 the endpoint
 - `/status`
 
-return the current status of the RPC data.
+returns the current status of the RPC data.
 
 sample status response:
 ```json
@@ -130,7 +130,7 @@ sample status response:
 > [!IMPORTANT]
 > The `lastProcessedTick` indicates up to which tick the RPC server has processed data.
 
-> in the array `processedTickIntervalsPerEpoch` you find the processed ticks. it is possible due to updates, that apochs can have multiple tick ranges
+> In the array `processedTickIntervalsPerEpoch` you find the processed ticks. It is possible due to updates, that epochs can have multiple tick ranges.
 
 ### Epoch change
 > WIP
@@ -140,7 +140,7 @@ sample status response:
 ### Generating a Seed
 A seed is the private key in Qubic. Based on the seed, you can create the public address (id).
 
-The seed is a 55-lower-case-char string. Please use a proper random generator in your environment. The Example here is for demonstration purposes only.
+The seed is a 55-lower-case-char string. Please use a proper random generator in your environment. The code below is for demonstration purposes only.
 
 #### Javascript
 ```js
@@ -198,9 +198,9 @@ func main() {
 ### Signing a Package
 For signing a package, you can either use the qubic crypto library () or e.g. for transactions the wrapper from the `ts-library`.
 
-the pre condition to be able to sign a package is to have the `seed` or `privateKey`.
+The pre-condition to be able to sign a package is to have the `seed` or `privateKey`.
 
-the following example assumes that we have already created our `idPackage` which includes our `privateKey`.
+The following example assumes that we have already created our `idPackage` which includes our `privateKey`.
 
 #### Javascript
 ```js
@@ -247,7 +247,7 @@ the following example assumes that we have already created our `idPackage` which
         });
 ```
 
-Please find a complete example of transaction signing here: https://github.com/qubic/ts-library/blob/main/test/createTransactionTest.js The complete source code can be found in that repo too.
+Please find a complete example of transaction signing here: https://github.com/qubic/ts-library/blob/main/test/createTransactionTest.js The complete source code can be found in the same repo.
 
 ### Create, sign, send and verify a transaction
 We assume you have already all needed data to create and send the transaction:
@@ -541,12 +541,12 @@ sample `Bad Request` response:
 
 | code   	|  reason  	| action |
 |---	|---	|--- |
-| 9  	|  requested tick number `<TICKNUMBER>` is greater than last processed tick `<LASTPROCESSEDTICK>` 	| repeat your request until it works. you may track the the `LASTPROCESSEDTICK` from the endpoint `/latestTick`  |
-| 11  	|  provided tick number `<TICKNUMBER>` was skipped by the system, next available tick is `<NEXTAVAILABLETICKNUMBER>` 	| take the `nextTickNumber` from `details` and proceed with this tick.  |
+| 9  	|  Requested tick number `<TICKNUMBER>` is greater than last processed tick `<LASTPROCESSEDTICK>` 	| Repeat your request until it works. You may track the the `LASTPROCESSEDTICK` from the endpoint `/latestTick`  |
+| 11  	|  provided tick number `<TICKNUMBER>` was skipped by the system, next available tick is `<NEXTAVAILABLETICKNUMBER>` 	| Take the `nextTickNumber` from `details` and proceed with this tick.  |
 
 
 ## Deposit Workflow
-We assume that you have in your business logic the accounts of your clients. We refer to this accounts by `clientAcccount`. A client Account is a package of `seed`, `privateKey`, `publicKey` and `publicId`. The list of all `clientAccount` is called `clientAccountList`.
+We assume that you have in your business logic the accounts of your clients. We refer to these accounts as `clientAcccount`. A client Account is a package of `seed`, `privateKey`, `publicKey` and `publicId`. The list of all `clientAccount` is called `clientAccountList`.
 
 To detect a deposit to a `clientAccount` we use the Qubic RPC and run a sequential tick/blockscan.
 You will need to define an initial tick from which on you will start your tick scans. For our example, we start with tick `13032965`.
@@ -662,10 +662,10 @@ func isClientAddress(addr string) bool {
 
 ```
 
-repeat the above code as long you don't get a `400 Bad Request`.
+Repeat the code above as long you don't get a `400 Bad Request`.
 
 #### Special case Qutil/SendMany SC
-In general we suggest to not allow your clients to use their deposit accounts for smart contract usage. (e.g. pool payouts, quottery or any future use case)
+In general, we suggest to not allow your clients to use their deposit accounts for smart contract usage (e.g. pool payouts, quottery or any future use case).
 
 But, there is a send many smart contract which you should support. A such transaction can be identified as followed:
 
@@ -726,11 +726,11 @@ The plain transaction is limited to one transaction per hot wallet. With the sen
 This transaction is feeless, follow the process from [Create, sign, send and verify a transaction](#create-sign-send-and-verify-a-transaction)
 
 ### Qutil/Send Many Smart Contract
-The fee for using the Smart Contract are `10` Qubic.
+The fee for using the Smart Contract is `10` Qubic.
 
-A send many smart contract invocation is a qubic transactions with some specific settings.
+A send many smart contract invocation is a qubic transaction with some specific settings.
 
-the below example shows how to use it.
+The example below shows how to use it.
 
 **Javascript**
 ```js
