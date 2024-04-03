@@ -45,7 +45,7 @@ This documentation refers to the [Qubic V1 RPC API](qubic-rpc-doc.html).
       - [4. Verify transaction status](#4-verify-transaction-status)
   - [Deposit Workflow](#deposit-workflow)
     - [Scan Ticks/Blocks sequentially](#scan-ticksblocks-sequentially)
-      - [Special case Qutil/SendMany SC](#special-case-qutilsendmany-sc)
+    - [Qutil/SendMany Smart Contract](#special-case-qutilsendmany-sc)
   - [Withdraw Workflow](#withdraw-workflow)
     - [Plain Transaction](#plain-transaction)
     - [Qutil/Send Many Smart Contract](#qutilsend-many-smart-contract)
@@ -665,10 +665,10 @@ func isClientAddress(addr string) bool {
 
 Repeat the code above as long you don't get a `400 Bad Request`.
 
-#### Special case Qutil/SendMany SC
-In general, we suggest to not allow your clients to use their deposit accounts for smart contract usage (e.g. pool payouts, quottery or any future use case).
+#### Qutil/Send Many Smart Contract
+This is a special case. In general, we suggest to not allow your clients to use their deposit accounts for smart contract usage (e.g. pool payouts, quottery or any future use case).
 
-But, there is a send many smart contract which you should support. Such a transaction can be identified as follows:
+However, there is a send many smart contract case you should support. Such a transaction can be identified as follows:
 
 **Javascript**
 ```js
