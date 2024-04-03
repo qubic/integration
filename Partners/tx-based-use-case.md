@@ -27,11 +27,11 @@ This documentation refers to the [Qubic V1 RPC API](qubic-rpc-doc.html).
 
 ## Table of Contents
 - [TX Based Exchange integration](#tx-based-exchange-integration)
-  - [Table of Content](#table-of-content)
+  - [Table of Contents](#table-of-contents)
   - [Qubic Rules](#qubic-rules)
-    - [Rule 1: One concurent TX per source Address](#one-concurent-tx-per-source-address)
-    - [Rule 2: Respect RPC Status](#respect-rpc-status)
-    - [Rule 3: Epoch change](#epoch-change)
+    - [Rule 1: One concurent TX per source Address](#rule-1-one-concurent-tx-per-source-address)
+    - [Rule 2: Respect RPC Status](#rule-2-respect-rpc-status)
+    - [Rule 3: Epoch change](#rule-3-epoch-change)
   - [General Examples](#general-examples)
     - [Generating a Seed](#generating-a-seed)
       - [Javascript](#javascript)
@@ -39,16 +39,16 @@ This documentation refers to the [Qubic V1 RPC API](qubic-rpc-doc.html).
     - [Signing a Package](#signing-a-package)
       - [Javascript](#javascript-1)
     - [Create, sign, send and verify a transaction](#create-sign-send-and-verify-a-transaction)
-      - [Step 1: Request the latest tick height](#step-1:-request-the-latest-tick-height)
-      - [Step 2: Create and sign transaction](#step-2:-create-and-sign-transaction)
-      - [Step 3: Send transaction](#step-3:-send-transaction)
-      - [Step 4: Verify transaction status](#step-4:-verify-transaction-status)
+      - [Step 1: Request the latest tick height](#step-1-request-the-latest-tick-height)
+      - [Step 2: Create and sign transaction](#step-2-create-and-sign-transaction)
+      - [Step 3: Send transaction](#step-3-send-transaction)
+      - [Step 4: Verify transaction status](#step-4-verify-transaction-status)
   - [Deposit Workflow](#deposit-workflow)
     - [Scan Ticks/Blocks sequentially](#scan-ticksblocks-sequentially)
-    - [Qutil/Send Many Smart Contract](#this-is-a-test)
+    - [Qutil/Send Many Smart Contract for deposits](#qutilsend-many-smart-contract-for-deposits)
   - [Withdraw Workflow](#withdraw-workflow)
     - [Plain Transaction](#plain-transaction)
-    - [Qutil/Send Many Smart Contract](#qutilsend-many-smart-contract)
+    - [Qutil/Send Many Smart Contract for withdrawls](#qutilsend-many-smart-contract-for-withdrawls)
 
 ## Qubic Rules
 When using the Qubic RPC you should follow some important rules.
@@ -665,7 +665,7 @@ func isClientAddress(addr string) bool {
 
 Repeat the code above as long you don't get a `400 Bad Request`.
 
-#### [Qutil/Send Many Smart Contract](#){name=this-is-a-test}
+### Qutil/Send Many Smart Contract for deposits
 This is a special case. In general, we suggest to not allow your clients to use their deposit accounts for smart contract usage (e.g. pool payouts, quottery or any future use case).
 
 However, there is a send many smart contract case you should support. Such a transaction can be identified as follows:
@@ -726,7 +726,7 @@ To do withdraws you can either use a plain transaction or the send many smart co
 This transaction is feeless and limited to one transaction per hot wallet. 
 Follow the process from [Create, sign, send and verify a transaction](#create-sign-send-and-verify-a-transaction)
 
-### Qutil/Send Many Smart Contract
+### Qutil/Send Many Smart Contract for withdrawls
 The fee for using the Smart Contract is `10` Qubic and allows to withdraw to up to 25 clients in a single transaction.
 
 A send many smart contract invocation is a qubic transaction with some specific settings.
