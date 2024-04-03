@@ -45,10 +45,10 @@ This documentation refers to the [Qubic V1 RPC API](qubic-rpc-doc.html).
       - [Step 4: Verify transaction status](#step-4-verify-transaction-status)
   - [Deposit Workflow](#deposit-workflow)
     - [Scan Ticks/Blocks sequentially](#scan-ticksblocks-sequentially)
-    - [Qutil/Send Many Smart Contract for deposits](#qutilsend-many-smart-contract-for-deposits)
+      - [Special case Qutil(Send Many) Smart Contract](#special-case-qutilsend-many-smart-contract)
   - [Withdraw Workflow](#withdraw-workflow)
     - [Plain Transaction](#plain-transaction)
-    - [Qutil/Send Many Smart Contract for withdrawls](#qutilsend-many-smart-contract-for-withdrawls)
+    - [Qutil(Send Many) Smart Contract](#qutilsend-many-smart-contract)
 
 ## Qubic Rules
 When using the Qubic RPC you should follow some important rules.
@@ -550,9 +550,11 @@ When requesting the RPC server for `approved-transactions` you might receive a `
 
 ## Deposit Workflow
 
-To detect deposits you can either scan ticks sequentually or the send many smart contract.
+We assume that you have in your business logic the accounts of your clients. We refer to these accounts as `clientAcccount`. 
 
-We assume that you have in your business logic the accounts of your clients. We refer to these accounts as `clientAcccount`. A client Account is a package containing `seed`, `privateKey`, `publicKey` and `publicId`. The list of all `clientAccount` is called `clientAccountList`.
+A client Account is a package containing `seed`, `privateKey`, `publicKey` and `publicId`. 
+
+The list of all `clientAccount` is called `clientAccountList`.
 
 
 ### Scan Ticks/Blocks sequentially
@@ -560,7 +562,7 @@ We assume that you have in your business logic the accounts of your clients. We 
 To detect a deposit to a `clientAccount` we use the Qubic RPC and run a sequential tick/blockscan.
 You will need to define an initial tick from which on you will start your tick scans. In our example example below, we start with the tick `13032965`.
 
-The following code samples contains pseudo code which you have to replace by your own business logic.
+The following code samples contain pseudo code which you have to replace by your own business logic.
 
 **Javascript**
 ```js
@@ -575,7 +577,7 @@ The following code samples contains pseudo code which you have to replace by you
   // the result will contain all executed and approved transactions for the given tick
   const tickTransactions = await response.json();
 
-  // map this transactions to your `clientAccountList`
+  // map the transactions to your `clientAccountList`
   const clientDeposits = clientAccountList.filter(f => tickTransactions.find(t => t.destId == f.publicId))
 
   clientDeposits.forEach(clientAccount => {
@@ -585,7 +587,7 @@ The following code samples contains pseudo code which you have to replace by you
     // start here your internal business logic to credit your clients account
     creditClientAccount(clientAccount, internalTx);
 
-    // start transfering the deposit to your hot wallet here
+    // start transferring the deposit to your hot wallet here
     transferToHotWallet(clientAccount, internalTx);
   });
 ```
@@ -671,8 +673,8 @@ func isClientAddress(addr string) bool {
 
 Repeat the code above as long you don't get a `400 Bad Request`.
 
-### Qutil/Send Many Smart Contract for deposits
-This is a special case. In general, we suggest to not allow your clients to use their deposit accounts for smart contract usage (e.g. pool payouts, quottery or any future use case).
+#### Special case Qutil(Send Many) Smart Contract
+In general, we suggest to not allow your clients to use their deposit accounts for smart contract usage (e.g. pool payouts, quottery or any future use case).
 
 However, there is a send many smart contract case you should support. Such a transaction can be identified as follows:
 
@@ -683,7 +685,7 @@ However, there is a send many smart contract case you should support. Such a tra
 
   
   if(
-    // address of Qutil/SendMany SC
+    // address of Qutil(Send Many) SC
     tx.destId === 'EAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVWRF'
     &&
     // type must be 1
@@ -696,7 +698,7 @@ However, there is a send many smart contract case you should support. Such a tra
     tx.inputHex
     )
     {
-      // if we are here, this tx was a sendmany sc invovation
+      // if we are here, this tx was a send many sc invovation
       // in the input we have potentially 25 inlay transactions
 
       // translate input to transfers
@@ -713,7 +715,7 @@ However, there is a send many smart contract case you should support. Such a tra
         // start here your internal business logic to credit your clients account
         creditClientAccount(clientAccount, internalTx);
 
-        // start transfering the deposit to your hot wallet here
+        // start transferring the deposit to your hot wallet here
         transferToHotWallet(clientAccount, internalTx);
       });>
 
@@ -732,7 +734,7 @@ To do withdraws you can either use a plain transaction or the send many smart co
 This transaction is feeless and limited to one transaction per hot wallet. 
 Follow the process from [Create, sign, send and verify a transaction](#create-sign-send-and-verify-a-transaction)
 
-### Qutil/Send Many Smart Contract for withdrawls
+### Qutil(Send Many) Smart Contract
 The fee for using the Smart Contract is `10` Qubic and allows to withdraw to up to 25 clients in a single transaction.
 
 A send many smart contract invocation is a qubic transaction with some specific settings.
