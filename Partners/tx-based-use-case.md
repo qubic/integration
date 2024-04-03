@@ -58,13 +58,15 @@ Due to Qubics architecture, only one concurrent transaction from a source addres
 
 Sample pseudo workflow:
 ```
-Network is in tick 5.
+Pre-condition: For the sake of simplicity in this explanation, it is assumed that Alice has a single source address.
 
-If Alice has one tx in the network for future tick 10 and then sends another one for tick 11 it would overwrite the first one.
+1. Network is in tick 5.
+2. Alice sends one transaction in the network for tick 10.
+3. Network is still in a tick lower than 10 and Alice sends a new transaction in the network for tick 15.
+4. The transaction for tick 10 will be overwritten with the transaction for tick 15. In order to not ovewrite the transaction for tick 10, Alice should have waited for the tick 10 to pass before to send the new transaction.
+5. Network is still in a tick lower than 9 and Alice sends a new transaction for tick 9.
+6. The transaction sent for tick 9 will be ignored. The transaction with higher tick (the one for tick 15 in this example) will be kept in the network.
 
-So, one has to wait until tick 10 has passed. 
-
-If Alice sends a tx for tick 9, nothing would change as the TX with the higher tick set will stay in the network.
 ```
 
 > [!IMPORTANT]
