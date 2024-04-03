@@ -29,9 +29,9 @@ This documentation refers to the [Qubic V1 RPC API](qubic-rpc-doc.html).
 - [TX Based Exchange integration](#tx-based-exchange-integration)
   - [Table of Content](#table-of-content)
   - [Qubic Rules](#qubic-rules)
-    - [One concurent TX per source Address](#one-concurent-tx-per-source-address)
-    - [Respect RPC Status](#respect-rpc-status)
-    - [Epoch change](#epoch-change)
+    - [Rule 1: One concurent TX per source Address](#one-concurent-tx-per-source-address)
+    - [Rule 2: Respect RPC Status](#respect-rpc-status)
+    - [Rule 3: Epoch change](#epoch-change)
   - [General Examples](#general-examples)
     - [Generating a Seed](#generating-a-seed)
       - [Javascript](#javascript)
@@ -39,7 +39,7 @@ This documentation refers to the [Qubic V1 RPC API](qubic-rpc-doc.html).
     - [Signing a Package](#signing-a-package)
       - [Javascript](#javascript-1)
     - [Create, sign, send and verify a transaction](#create-sign-send-and-verify-a-transaction)
-    - [1. Request the latest tick height](#1-request-the-latest-tick-height)
+      - [1. Request the latest tick height](#1-request-the-latest-tick-height)
       - [2. Create and sign transaction](#2-create-and-sign-transaction)
       - [3. Send transaction](#3-send-transaction)
       - [4. Verify transaction status](#4-verify-transaction-status)
@@ -53,7 +53,7 @@ This documentation refers to the [Qubic V1 RPC API](qubic-rpc-doc.html).
 ## Qubic Rules
 When using the Qubic RPC you should follow some important rules.
 
-### One concurent TX per source Address
+### Rule 1: One concurent TX per source Address
 Due to Qubics architecture, only one concurrent transaction from a source address can exist in the network.
 
 Sample pseudo workflow:
@@ -71,13 +71,14 @@ If Alice sends a tx for tick 9, nothing would change as the TX with the higher t
 > Only one concurrent TX per sending ID, don’t send a new transaction from the same source address until the previous tx target tick has been passed.
 
 
-### Respect RPC Status
-the endpoint
+### Rule 2: Respect RPC Status
+The endpoint
 - `/status`
 
 returns the current status of the RPC data.
 
-sample status response:
+Example response can be found below:
+
 ```json
 {
     "lastProcessedTick": {
@@ -130,9 +131,9 @@ sample status response:
 > [!IMPORTANT]
 > The `lastProcessedTick` indicates up to which tick the RPC server has processed data.
 
-> In the array `processedTickIntervalsPerEpoch` you find the processed ticks. It is possible due to updates, that epochs can have multiple tick ranges.
+> In the array `processedTickIntervalsPerEpoch` you find the processed ticks. Due to updates, epochs might have multiple tick ranges.
 
-### Epoch change
+### Rule 3: Epoch change
 > WIP
 
 ## General Examples
@@ -204,7 +205,7 @@ The following example assumes that we have already created our `idPackage` which
 
 #### Javascript
 ```js
-  // to sign a package, you need the private key which is derived from the seed and it's publicKey
+  // to sign a package, you need the private key which is derived from the seed and its publicKey
   const seed = 'wqbdupxgcaimwdsnchitjmsplzclkqokhadgehdxqogeeiovzvadstt';
   const idPackage = await helper.createIdPackage(seed);
 
@@ -247,7 +248,7 @@ The following example assumes that we have already created our `idPackage` which
         });
 ```
 
-Please find a complete example of transaction signing here: https://github.com/qubic/ts-library/blob/main/test/createTransactionTest.js The complete source code can be found in the same repo.
+Please find a complete example of transaction signing here: https://github.com/qubic/ts-library/blob/main/test/createTransactionTest.js. The complete source code can be found in the same repo.
 
 ### Create, sign, send and verify a transaction
 We assume you have already all needed data to create and send the transaction:
@@ -256,7 +257,7 @@ We assume you have already all needed data to create and send the transaction:
 - Amount
 
 
-### 1. Request the latest tick height
+#### 1. Request the latest tick height
 
 **Javascript**
 ```js
@@ -519,9 +520,9 @@ func main() {
 }
 ```
 
-when you ask the RPC server for `approved-transactions` you may receive a `400 Bad Request`.
+When requesting the RPC server for `approved-transactions` you might receive a `400 Bad Request`.
 
-sample `Bad Request` response:
+`Bad Request` example response:
 ```json
 {
     "code": 11,
@@ -536,20 +537,20 @@ sample `Bad Request` response:
 ```
 
 > [!IMPORTANT]
-> You must check the responded error code to know what happened.
+> You must check the error code in the response to understand what has happened.
 
 
 | code   	|  reason  	| action |
 |---	|---	|--- |
-| 9  	|  Requested tick number `<TICKNUMBER>` is greater than last processed tick `<LASTPROCESSEDTICK>` 	| Repeat your request until it works. You may track the the `LASTPROCESSEDTICK` from the endpoint `/latestTick`  |
-| 11  	|  provided tick number `<TICKNUMBER>` was skipped by the system, next available tick is `<NEXTAVAILABLETICKNUMBER>` 	| Take the `nextTickNumber` from `details` and proceed with this tick.  |
+| 9  	|  Requested tick number `<TICKNUMBER>` is greater than last processed tick `<LASTPROCESSEDTICK>`. 	| Repeat your request until it works. You may track the the `LASTPROCESSEDTICK` from the endpoint `/latestTick`.  |
+| 11  	|  Provided tick number `<TICKNUMBER>` was skipped by the system, next available tick is `<NEXTAVAILABLETICKNUMBER>`. 	| Take the `nextTickNumber` from `details` and proceed with this tick.  |
 
 
 ## Deposit Workflow
-We assume that you have in your business logic the accounts of your clients. We refer to these accounts as `clientAcccount`. A client Account is a package of `seed`, `privateKey`, `publicKey` and `publicId`. The list of all `clientAccount` is called `clientAccountList`.
+We assume that you have in your business logic the accounts of your clients. We refer to these accounts as `clientAcccount`. A client Account is a package containing `seed`, `privateKey`, `publicKey` and `publicId`. The list of all `clientAccount` is called `clientAccountList`.
 
 To detect a deposit to a `clientAccount` we use the Qubic RPC and run a sequential tick/blockscan.
-You will need to define an initial tick from which on you will start your tick scans. For our example, we start with tick `13032965`.
+You will need to define an initial tick from which on you will start your tick scans. In our example example below, we start with the tick `13032965`.
 
 The following code samples contains pseudo code which you have to replace by your own business logic.
 
@@ -667,7 +668,7 @@ Repeat the code above as long you don't get a `400 Bad Request`.
 #### Special case Qutil/SendMany SC
 In general, we suggest to not allow your clients to use their deposit accounts for smart contract usage (e.g. pool payouts, quottery or any future use case).
 
-But, there is a send many smart contract which you should support. A such transaction can be identified as followed:
+But, there is a send many smart contract which you should support. Such a can be transaction can be identified as follows:
 
 **Javascript**
 ```js
@@ -719,14 +720,14 @@ But, there is a send many smart contract which you should support. A such transa
 
 
 ## Withdraw Workflow
-To do withdraws you can either use a plain transaction or the send many sc.
-The plain transaction is limited to one transaction per hot wallet. With the send many sc you can withdraw to up to 25 clients in one transaction.
+To do withdraws you can either use a plain transaction or the send many smart contract.
 
 ### Plain Transaction
-This transaction is feeless, follow the process from [Create, sign, send and verify a transaction](#create-sign-send-and-verify-a-transaction)
+This transaction is feeless and limited to one transaction per hot wallet. 
+Follow the process from [Create, sign, send and verify a transaction](#create-sign-send-and-verify-a-transaction)
 
 ### Qutil/Send Many Smart Contract
-The fee for using the Smart Contract is `10` Qubic.
+The fee for using the Smart Contract is `10` Qubic and allows to withdraw to up to 25 clients in a single transaction.
 
 A send many smart contract invocation is a qubic transaction with some specific settings.
 
