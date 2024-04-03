@@ -547,18 +547,22 @@ When requesting the RPC server for `approved-transactions` you might receive a `
 
 
 ## Deposit Workflow
+
+To detect deposits you can either scan ticks sequentually or the send many smart contract.
+
 We assume that you have in your business logic the accounts of your clients. We refer to these accounts as `clientAcccount`. A client Account is a package containing `seed`, `privateKey`, `publicKey` and `publicId`. The list of all `clientAccount` is called `clientAccountList`.
+
+
+### Scan Ticks/Blocks sequentially
 
 To detect a deposit to a `clientAccount` we use the Qubic RPC and run a sequential tick/blockscan.
 You will need to define an initial tick from which on you will start your tick scans. In our example example below, we start with the tick `13032965`.
 
 The following code samples contains pseudo code which you have to replace by your own business logic.
 
-### Scan Ticks/Blocks sequentially
-
 **Javascript**
 ```js
-  // don't forget to do a proper errorhandling!
+  // don't forget to do a proper error handling!
   // if you request a tick which is yet not processed, you will receive a 404 with a specific message
 
   const currentTick = 13032965;
