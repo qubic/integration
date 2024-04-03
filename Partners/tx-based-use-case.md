@@ -668,7 +668,7 @@ Repeat the code above as long you don't get a `400 Bad Request`.
 #### Special case Qutil/SendMany SC
 In general, we suggest to not allow your clients to use their deposit accounts for smart contract usage (e.g. pool payouts, quottery or any future use case).
 
-But, there is a send many smart contract which you should support. Such a can be transaction can be identified as follows:
+But, there is a send many smart contract which you should support. Such a transaction can be identified as follows:
 
 **Javascript**
 ```js
