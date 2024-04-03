@@ -39,13 +39,13 @@ This documentation refers to the [Qubic V1 RPC API](qubic-rpc-doc.html).
     - [Signing a Package](#signing-a-package)
       - [Javascript](#javascript-1)
     - [Create, sign, send and verify a transaction](#create-sign-send-and-verify-a-transaction)
-      - [1. Request the latest tick height](#1-request-the-latest-tick-height)
-      - [2. Create and sign transaction](#2-create-and-sign-transaction)
-      - [3. Send transaction](#3-send-transaction)
-      - [4. Verify transaction status](#4-verify-transaction-status)
+      - [Step 1: Request the latest tick height](#step-1:-request-the-latest-tick-height)
+      - [Step 2: Create and sign transaction](#step-2:-create-and-sign-transaction)
+      - [Step 3: Send transaction](#step-3:-send-transaction)
+      - [Step 4: Verify transaction status](#step-4:-verify-transaction-status)
   - [Deposit Workflow](#deposit-workflow)
     - [Scan Ticks/Blocks sequentially](#scan-ticksblocks-sequentially)
-    - [Qutil/SendMany Smart Contract](#special-case-qutilsendmany-sc)
+    - [Qutil/Send Many Smart Contract](#this-is-a-test)
   - [Withdraw Workflow](#withdraw-workflow)
     - [Plain Transaction](#plain-transaction)
     - [Qutil/Send Many Smart Contract](#qutilsend-many-smart-contract)
@@ -257,7 +257,7 @@ We assume you have already all needed data to create and send the transaction:
 - Amount
 
 
-#### 1. Request the latest tick height
+#### Step 1: Request the latest tick height
 
 **Javascript**
 ```js
@@ -309,7 +309,7 @@ func main() {
 }
 ```
 
-#### 2. Create and sign transaction
+#### Step 2: Create and sign transaction
 
 **Javascript**
 ```js
@@ -332,7 +332,7 @@ func main() {
     const transactionId = tx.getId();
 ```
 
-#### 3. Send transaction
+#### Step 3: Send transaction
 
 **Javascript**
 ```js
@@ -414,7 +414,7 @@ func main() {
 }
 ```
 
-#### 4. Verify transaction status
+#### Step 4: Verify transaction status
 
 **Javascript**
 ```js
@@ -665,7 +665,7 @@ func isClientAddress(addr string) bool {
 
 Repeat the code above as long you don't get a `400 Bad Request`.
 
-#### Qutil/Send Many Smart Contract
+#### [Qutil/Send Many Smart Contract](#){name=this-is-a-test}
 This is a special case. In general, we suggest to not allow your clients to use their deposit accounts for smart contract usage (e.g. pool payouts, quottery or any future use case).
 
 However, there is a send many smart contract case you should support. Such a transaction can be identified as follows:
