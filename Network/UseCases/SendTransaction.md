@@ -1,5 +1,5 @@
 # Send Transaction
-This Use Case describes how to send a Basic Transaction. A Bais Transaction is used to send $QBIC's from one Address to another.
+This Use Case describes how to send a Basic Transaction. A Basic Transaction is used to send $QBIC's from one Address to another.
 
 To send a Transaction, send a `BroadcastTransaction` Packet with the type set to **24**.
 
@@ -42,7 +42,7 @@ typedef struct
 > Set the target tick at minimum +5 from current network tick. Best results are achieved with current tick +10-20.
 
 > [!IMPORTANT]
-> Per source ID only **one** transaction can pe present in the Network. If you send another transaction with the same Source while the first was not yet executed, the existing will be overwritten.
+> Per source ID only **one** transaction can be present in the Network. If you send another transaction with the same Source while the first was not yet executed, the existing will be overwritten.
 
 ## Response Header
 none

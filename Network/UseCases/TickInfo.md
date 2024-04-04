@@ -28,7 +28,7 @@ typedef struct
 } CurrentTickInfo;
 ```
 
-All information in the response are related to the nodes status:
+All information in the response is related to the nodes status:
 
 - tickDuration: How long the current Node stays in that tick
 - epoch: the epoch
@@ -37,4 +37,4 @@ All information in the response are related to the nodes status:
 - numberOfMisalignedVotes: the votes from Computors the peer sees which are different from it's own view
 
 > [!NOTE]
-> It make sense to keep track of the Tick and save it in your application. If you get a response from a node with a lower Tick, ignore that packet. The peer seems to be not up to date.
+> It makes sense to keep track of the Tick and save it in your application. If you get a response from a node with a lower Tick, ignore that packet. The peer seems to be not up to date.
