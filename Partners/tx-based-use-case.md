@@ -1,8 +1,4 @@
 # TX Based Exchange integration
-
-> [!WARNING]
-> THIS PAGE IS WORK IN PROGRESS
-
 The following use cases are based on the Qubic RPC V1.
 
 The following examples refer to the Qubic RPC V1 API and the [TS Library](https://github.com/qubic/ts-library)
@@ -34,10 +30,7 @@ This documentation refers to the [Qubic V1 RPC API](qubic-rpc-doc.html).
     - [Rule 3: Epoch change](#rule-3-epoch-change)
   - [General Examples](#general-examples)
     - [Generating a Seed](#generating-a-seed)
-      - [Javascript](#javascript)
-      - [Go](#go)
     - [Signing a Package](#signing-a-package)
-      - [Javascript](#javascript-1)
     - [Create, sign, send and verify a transaction](#create-sign-send-and-verify-a-transaction)
       - [Step 1: Request the latest tick height](#step-1-request-the-latest-tick-height)
       - [Step 2: Create and sign transaction](#step-2-create-and-sign-transaction)
@@ -136,7 +129,8 @@ Example response can be found below:
 > In the array `processedTickIntervalsPerEpoch` you find the processed ticks. Due to updates, epochs might have multiple tick ranges.
 
 ### Rule 3: Epoch change
-> WIP
+Every Wednesday, Qubic has its epoch change. The epoch transition is at ~12:00 UTC.
+If the network gets a breaking update, the epoch transition may take a few minutes. Expect between 11:59 to 13:00 UTC a delay for transactions.
 
 ## General Examples
 
@@ -145,7 +139,7 @@ A seed is the private key in Qubic. Based on the seed, you can create the public
 
 The seed is a 55-lower-case-char string. Please use a proper random generator in your environment. The code below is for demonstration purposes only.
 
-#### Javascript
+**Javascript**
 ```js
     // generates a random seed
   seedGen() {
@@ -173,7 +167,7 @@ The seed is a 55-lower-case-char string. Please use a proper random generator in
   // publicId => the public key in human readable format. this is the address qubic users use
 ```
 
-#### Go
+**Go**
 ```go
 package main
 
@@ -199,13 +193,13 @@ func main() {
 ```
 
 ### Signing a Package
-For signing a package, you can either use the qubic crypto library () or e.g. for transactions the wrapper from the `ts-library`.
+For signing a package, you can either use the qubic crypto library or e.g. for transactions the wrapper from the `ts-library`.
 
 The pre-condition to be able to sign a package is to have the `seed` or `privateKey`.
 
 The following example assumes that we have already created our `idPackage` which includes our `privateKey`.
 
-#### Javascript
+**Javascript**
 ```js
   // to sign a package, you need the private key which is derived from the seed and its publicKey
   const seed = 'wqbdupxgcaimwdsnchitjmsplzclkqokhadgehdxqogeeiovzvadstt';
@@ -249,7 +243,10 @@ The following example assumes that we have already created our `idPackage` which
             };
         });
 ```
-
+**Go**
+```go
+  // coming soon
+```
 Please find a complete example of transaction signing here: https://github.com/qubic/ts-library/blob/main/test/createTransactionTest.js. The complete source code can be found in the same repo.
 
 ### Create, sign, send and verify a transaction
@@ -266,6 +263,9 @@ We assume you have already all needed data to create and send the transaction:
 const response = await fetch(`${baseUrl}/latestTick`);
 const tickResponse = await response.json();
 const latestTick = tickResponse.latestTick;
+
+// don't forget to do proper error handling!
+
 ```
 
 **Go**
@@ -333,7 +333,10 @@ func main() {
     // this id can presented to the client as reference
     const transactionId = tx.getId();
 ```
-
+**Go**
+```go
+  // coming soon
+```
 #### Step 3: Send transaction
 
 **Javascript**
@@ -803,6 +806,10 @@ The example below shows how to use it.
   }
 
 
+```
+**Go**
+```go
+  // coming soon
 ```
 
 
