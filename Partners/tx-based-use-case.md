@@ -811,5 +811,6 @@ The example below shows how to use it.
 ```go
   // coming soon
 ```
-
+## Logging
+It is important to log any transaction information also on the side of the integrator. The qubic network does not store transaction information over a period longer than seven days and transactions are pruned on every epoch change each Wednesday. The RPC infrastructure provides an archive which holds historical data.
 
