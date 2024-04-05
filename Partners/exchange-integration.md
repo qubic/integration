@@ -67,6 +67,11 @@ This section is about terms needed to understand Qubic. It explains the dos and 
 ## QU (Qubics)
 QU is the native currency of the Qubic network.
 
+## Seed and ID
+The **seed** is the equivalent to the private key in Bitcoin/Ethereum. As seed is a string of 55 low case characters [a-z]. Example: `lyvborkwdxwnghiohudjgrmvdadbecyvjrlrtqsyajpeajkgaxbohky`
+
+The **ID** is the equivalent of the public key, it is derived from the seed and has a length on 70 large cap characters [A-Z]. Example: `RCZDMCEENYZPHGEUTIIOTWIKTNSCGWWQGKMOBNIVDCDTSYSBTMKQWRQECPHM`
+
 ## Epoch
 An Epoch in Qubic is one week. It starts every Wednesday at 12 UTC and ends one week later before the new epoch starts.
 Epochs are important because every epoch change gives the node operators the chance to update their nodes. Currently every week is expected to have one core update.
