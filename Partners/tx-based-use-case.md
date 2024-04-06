@@ -66,6 +66,7 @@ Pre-condition: For the sake of simplicity in this explanation, it is assumed tha
 > Only one concurrent TX per sending ID, don’t send a new transaction from the same source address until the previous tx target tick has been passed.
 
 
+
 ### Rule 2: Respect RPC Status
 The endpoint
 - `/status`
@@ -243,9 +244,65 @@ The following example assumes that we have already created our `idPackage` which
             };
         });
 ```
+
+> [!IMPORTANT]
+> The go library that signs transactions is using cgo which means that you need to download `libfourq-qubic.so` shared object placed in
+> this repository (it's on the same level as this document) and needs to be found by your go software at runtime by setting
+> env variable LD_LIBRARY_PATH=/path/to/directory/ to the directory where you placed the .so
+> example: LD_LIBRARY_PATH=/root/qubic/libraries ./go-binary-to-process-deposits
+
 **Go**
 ```go
-  // coming soon
+package main
+
+import (
+  "encoding/hex"
+  "fmt"
+  schnorrq "github.com/qubic/cgo-schnorrq"
+  "github.com/qubic/go-node-connector/types"
+  "log"
+)
+
+const baseUrl = "https://testapi.qubic.org/v1"
+
+func main() {
+  tx, err := types.NewSimpleTransferTransaction(
+    "source-addr-here",
+    "dest-addr-here",
+    1,
+    13255850,
+  )
+  if err != nil {
+    log.Fatalf("got err: %s when creating simple transfer transaction", err.Error())
+  }
+  fmt.Printf("source pubkey: %s\n", hex.EncodeToString(tx.SourcePublicKey[:]))
+
+  unsignedDigest, err := tx.GetUnsignedDigest()
+  if err != nil {
+    log.Fatalf("got err: %s when getting unsigned digest local", err.Error())
+  }
+
+  // this requires cgo
+  sig, err := schnorrq.Sign("seed-here", tx.SourcePublicKey, unsignedDigest)
+  if err != nil {
+    log.Fatalf("got err: %s when signing", err.Error())
+  }
+  fmt.Printf("sig: %s\n", hex.EncodeToString(sig[:]))
+  tx.Signature = sig
+
+  encodedTx, err := tx.EncodeToBase64()
+  if err != nil {
+    log.Fatalf("got err: %s when encoding tx to base 64", err.Error())
+  }
+  fmt.Printf("encodedTx: %s\n", encodedTx)
+
+  id, err := tx.ID()
+  if err != nil {
+    log.Fatalf("got err: %s when getting tx id", err.Error())
+  }
+
+  fmt.Printf("tx id(hash): %s\n", id)
+}
 ```
 Please find a complete example of transaction signing here: https://github.com/qubic/ts-library/blob/main/test/createTransactionTest.js. The complete source code can be found in the same repo.
 
@@ -335,7 +392,101 @@ func main() {
 ```
 **Go**
 ```go
-  // coming soon
+package main
+
+import (
+  "bytes"
+  "encoding/hex"
+  "encoding/json"
+  "fmt"
+  schnorrq "github.com/qubic/cgo-schnorrq"
+  "github.com/qubic/go-node-connector/types"
+  "log"
+  "net/http"
+)
+
+const baseUrl = "https://testapi.qubic.org/v1"
+
+func main() {
+  tx, err := types.NewSimpleTransferTransaction(
+    "source-addr-here",
+    "dest-addr-here",
+    1,
+    13255850,
+  )
+  if err != nil {
+    log.Fatalf("got err: %s when creating simple transfer transaction", err.Error())
+  }
+  fmt.Printf("source pubkey: %s\n", hex.EncodeToString(tx.SourcePublicKey[:]))
+
+  unsignedDigest, err := tx.GetUnsignedDigest()
+  if err != nil {
+    log.Fatalf("got err: %s when getting unsigned digest local", err.Error())
+  }
+  
+  // this requires cgo
+  sig, err := schnorrq.Sign("seed-here", tx.SourcePublicKey, unsignedDigest)
+  if err != nil {
+    log.Fatalf("got err: %s when signing", err.Error())
+  }
+  fmt.Printf("sig: %s\n", hex.EncodeToString(sig[:]))
+  tx.Signature = sig
+
+  encodedTx, err := tx.EncodeToBase64()
+  if err != nil {
+    log.Fatalf("got err: %s when encoding tx to base 64", err.Error())
+  }
+  fmt.Printf("encodedTx: %s\n", encodedTx)
+
+  id, err := tx.ID()
+  if err != nil {
+    log.Fatalf("got err: %s when getting tx id", err.Error())
+  }
+
+  fmt.Printf("tx id(hash): %s\n", id)
+
+  url := baseUrl + "/broadcast-transaction"
+  payload := struct {
+    EncodedTransaction string `json:"encodedTransaction"`
+  }{
+    EncodedTransaction: encodedTx,
+  }
+
+  buff := new(bytes.Buffer)
+  err = json.NewEncoder(buff).Encode(payload)
+  if err != nil {
+    log.Fatalf("got err: %s when encoding payload", err.Error())
+  }
+
+  req, err := http.NewRequest(http.MethodPost, url, buff)
+  if err != nil {
+    log.Fatalf("got err: %s when creating request", err.Error())
+  }
+
+  res, err := http.DefaultClient.Do(req)
+  if err != nil {
+    log.Fatalf("got err: %s when performing request", err.Error())
+  }
+  defer res.Body.Close()
+
+  if res.StatusCode != http.StatusOK {
+    log.Fatalf("Got non 200 status code: %d", res.StatusCode)
+  }
+
+  type response struct {
+    PeersBroadcasted   uint32 `json:"peersBroadcasted"`
+    EncodedTransaction string `json:"encodedTransaction"`
+  }
+  var body response
+
+  err = json.NewDecoder(res.Body).Decode(&body)
+  if err != nil {
+    log.Fatalf("got err: %s when decoding body", err.Error())
+  }
+
+  fmt.Printf("%+v\n", body)
+}
+
 ```
 #### Step 3: Send transaction
 
@@ -372,16 +523,19 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+    "github.com/qubic/go-node-connector/types"
 )
 
 const baseUrl = "https://testapi.qubic.org/v1"
 
 func main() {
+	var tx types.Transaction
+	encodedTransaction, _ = tx.EncodeToBase64()
 	url := baseUrl + "/broadcast-transaction"
 	payload := struct {
 		EncodedTransaction string `json:"encodedTransaction"`
 	}{
-		EncodedTransaction: "",
+		EncodedTransaction: encodedTransaction,
 	}
 
 	buff := new(bytes.Buffer)
@@ -390,7 +544,7 @@ func main() {
 		log.Fatalf("got err: %s when encoding payload", err.Error())
 	}
 
-	req, err := http.NewRequest(http.MethodPost, url, nil)
+	req, err := http.NewRequest(http.MethodPost, url, buff)
 	if err != nil {
 		log.Fatalf("got err: %s when creating request", err.Error())
 	}
@@ -729,6 +883,107 @@ However, there is a send many smart contract case you should support. Such a tra
 
 ```
 
+**Go**
+```go
+package main
+
+import (
+	"encoding/hex"
+	"encoding/json"
+	"fmt"
+	"github.com/qubic/go-node-connector/types"
+	"log"
+	"net/http"
+)
+
+const baseUrl = "https://testapi.qubic.org/v1"
+
+func main() {
+	url := baseUrl + "/transactions/ereivwmylkkjicicsljuyhrhdgneoibmyyoxjwffobriggerszqoiudgtksm"
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		log.Fatalf("got err: %s when creating request", err.Error())
+	}
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatalf("got err: %s when performing request", err.Error())
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode != http.StatusOK {
+		log.Fatalf("Got non 200 status code: %d", res.StatusCode)
+	}
+
+	type response struct {
+		Transaction struct {
+			SourceId     string `json:"sourceId"`
+			DestId       string `json:"destId"`
+			Amount       string `json:"amount"`
+			TickNumber   int    `json:"tickNumber"`
+			InputType    int    `json:"inputType"`
+			InputSize    int    `json:"inputSize"`
+			InputHex     string `json:"inputHex"`
+			SignatureHex string `json:"signatureHex"`
+			TxId         string `json:"txId"`
+		} `json:"transaction"`
+	}
+	var body response
+
+	err = json.NewDecoder(res.Body).Decode(&body)
+	if err != nil {
+		log.Fatalf("got err: %s when decoding body", err.Error())
+	}
+
+	// check if tx dest addr is qutil and input type is 1 (send many) and size and input matches
+	if body.Transaction.DestId == types.QutilAddress &&
+		body.Transaction.InputType == 1 &&
+		body.Transaction.InputSize == types.QutilSendManyInputSize &&
+		body.Transaction.InputHex != "" {
+
+		decodedInput, err := hex.DecodeString(body.Transaction.InputHex)
+		if err != nil {
+			log.Fatalf("got err: %s when decoding input", err.Error())
+		}
+		var sendmanypayload types.SendManyTransferPayload
+		err = sendmanypayload.UnmarshallBinary(decodedInput)
+		if err != nil {
+			log.Fatalf("got err: %s when unmarshalling payload", err.Error())
+		}
+
+		transfers, err := sendmanypayload.GetTransfers()
+		if err != nil {
+			log.Fatalf("got err: %s when getting transfers", err.Error())
+		}
+
+		for _, transfer := range transfers {
+			if !isClientAddress(transfer.AddressID.String()) {
+				continue
+			}
+
+			//insert business logic to credit client account and transfer to hot wallet
+		}
+
+		fmt.Printf("transfers: %+v\n", transfers)
+	}
+
+}
+
+func isClientAddress(addr string) bool {
+	clientAddresses := []string{
+		"a", "b", "c",
+	}
+
+	for _, clientAddr := range clientAddresses {
+		if clientAddr == addr {
+			return true
+		}
+	}
+
+	return false
+}
+
+```
+
 
 ## Withdraw Workflow
 To do withdraws you can either use a plain transaction or the send many smart contract.
@@ -809,7 +1064,116 @@ The example below shows how to use it.
 ```
 **Go**
 ```go
-  // coming soon
+package main
+
+import (
+  "bytes"
+  "encoding/hex"
+  "encoding/json"
+  "fmt"
+  schnorrq "github.com/qubic/cgo-schnorrq"
+  "github.com/qubic/go-node-connector/types"
+  "log"
+  "net/http"
+)
+
+const baseUrl = "https://testapi.qubic.org/v1"
+
+func main() {
+  // max 25
+  transfers := []types.SendManyTransfer{
+    {
+      AddressID: "dest-addr-1",
+      Amount:    1,
+    },
+    {
+      AddressID: "dest-addr-2",
+      Amount:    2,
+    },
+  }
+  var sendManyPayload types.SendManyTransferPayload
+
+  err := sendManyPayload.AddTransfers(transfers)
+  if err != nil {
+    log.Fatalf("got err: %s when adding transfers", err.Error())
+  }
+  tx, err := types.NewSendManyTransferTransaction(
+    "source-addr",
+    13256050,
+    sendManyPayload,
+  )
+  if err != nil {
+    log.Fatalf("got err: %s when creating simple transfer transaction", err.Error())
+  }
+  fmt.Printf("source pubkey: %s\n", hex.EncodeToString(tx.SourcePublicKey[:]))
+
+  unsignedDigest, err := tx.GetUnsignedDigest()
+  if err != nil {
+    log.Fatalf("got err: %s when getting unsigned digest local", err.Error())
+  }
+
+  sig, err := schnorrq.Sign("seed-here", tx.SourcePublicKey, unsignedDigest)
+  if err != nil {
+    log.Fatalf("got err: %s when signing", err.Error())
+  }
+  fmt.Printf("sig: %s\n", hex.EncodeToString(sig[:]))
+  tx.Signature = sig
+
+  encodedTx, err := tx.EncodeToBase64()
+  if err != nil {
+    log.Fatalf("got err: %s when encoding tx to base 64", err.Error())
+  }
+  fmt.Printf("encodedTx: %s\n", encodedTx)
+
+  id, err := tx.ID()
+  if err != nil {
+    log.Fatalf("got err: %s when getting tx id", err.Error())
+  }
+
+  fmt.Printf("tx id(hash): %s\n", id)
+
+  url := baseUrl + "/broadcast-transaction"
+  payload := struct {
+    EncodedTransaction string `json:"encodedTransaction"`
+  }{
+    EncodedTransaction: encodedTx,
+  }
+
+  buff := new(bytes.Buffer)
+  err = json.NewEncoder(buff).Encode(payload)
+  if err != nil {
+    log.Fatalf("got err: %s when encoding sendManyPayload", err.Error())
+  }
+
+  req, err := http.NewRequest(http.MethodPost, url, buff)
+  if err != nil {
+    log.Fatalf("got err: %s when creating request", err.Error())
+  }
+
+  res, err := http.DefaultClient.Do(req)
+  if err != nil {
+    log.Fatalf("got err: %s when performing request", err.Error())
+  }
+  defer res.Body.Close()
+
+  if res.StatusCode != http.StatusOK {
+    log.Fatalf("Got non 200 status code: %d", res.StatusCode)
+  }
+
+  type response struct {
+    PeersBroadcasted   uint32 `json:"peersBroadcasted"`
+    EncodedTransaction string `json:"encodedTransaction"`
+  }
+  var body response
+
+  err = json.NewDecoder(res.Body).Decode(&body)
+  if err != nil {
+    log.Fatalf("got err: %s when decoding body", err.Error())
+  }
+
+  fmt.Printf("%+v\n", body)
+}
+
 ```
 ## Logging
 It is important to log any transaction information also on the side of the integrator. The qubic network does not store transaction information over a period longer than seven days and transactions are pruned on every epoch change each Wednesday. The RPC infrastructure provides an archive which holds historical data.
