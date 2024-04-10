@@ -20,7 +20,7 @@ A Core Node is responsible for, among other things:
 
 The Qubic Core Network is run by so called Computors. This section will help you to setup such a node.
 
-[Qubic Computor Setup](Computor-Setup/README.md)
+[Qubic Computor Setup](Computor-Setup/Readme.md)
 
 
 ## Qubic Partner Integration
