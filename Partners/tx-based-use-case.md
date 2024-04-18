@@ -248,11 +248,6 @@ The following example assumes that we have already created our `idPackage` which
         });
 ```
 
-> [!IMPORTANT]
-> The go library that signs transactions is using cgo which means that you need to download `libfourq-qubic.so` shared object placed in
-> this repository (it's on the same level as this document) and needs to be found by your go software at runtime by setting
-> env variable LD_LIBRARY_PATH=/path/to/directory/ to the directory where you placed the .so
-> example: LD_LIBRARY_PATH=/root/qubic/libraries ./go-binary-to-process-deposits
 
 **Go**
 ```go
@@ -261,7 +256,7 @@ package main
 import (
   "encoding/hex"
   "fmt"
-  schnorrq "github.com/qubic/cgo-schnorrq"
+  "github.com/qubic/go-schnorrq"
   "github.com/qubic/go-node-connector/types"
   "log"
 )
@@ -285,8 +280,12 @@ func main() {
     log.Fatalf("got err: %s when getting unsigned digest local", err.Error())
   }
 
-  // this requires cgo
-  sig, err := schnorrq.Sign("seed-here", tx.SourcePublicKey, unsignedDigest)
+  subSeed, err :=types.GetSubSeed("seed-here")
+  if err != nil {
+    log.Fatalf("got err: %s when getting subSeed", err.Error())
+  }
+  
+  sig, err := schnorrq.Sign(subSeed, tx.SourcePublicKey, unsignedDigest)
   if err != nil {
     log.Fatalf("got err: %s when signing", err.Error())
   }
@@ -402,7 +401,7 @@ import (
   "encoding/hex"
   "encoding/json"
   "fmt"
-  schnorrq "github.com/qubic/cgo-schnorrq"
+  "github.com/qubic/go-schnorrq"
   "github.com/qubic/go-node-connector/types"
   "log"
   "net/http"
@@ -426,9 +425,13 @@ func main() {
   if err != nil {
     log.Fatalf("got err: %s when getting unsigned digest local", err.Error())
   }
+
+  subSeed, err :=types.GetSubSeed("seed-here")
+  if err!= nil {
+    log.Fatalf("got err %s when getting subSeed", err.Error())
+  }
   
-  // this requires cgo
-  sig, err := schnorrq.Sign("seed-here", tx.SourcePublicKey, unsignedDigest)
+  sig, err := schnorrq.Sign(subSeed, tx.SourcePublicKey, unsignedDigest)
   if err != nil {
     log.Fatalf("got err: %s when signing", err.Error())
   }
@@ -1074,7 +1077,7 @@ import (
   "encoding/hex"
   "encoding/json"
   "fmt"
-  schnorrq "github.com/qubic/cgo-schnorrq"
+  "github.com/qubic/go-schnorrq"
   "github.com/qubic/go-node-connector/types"
   "log"
   "net/http"
@@ -1115,7 +1118,12 @@ func main() {
     log.Fatalf("got err: %s when getting unsigned digest local", err.Error())
   }
 
-  sig, err := schnorrq.Sign("seed-here", tx.SourcePublicKey, unsignedDigest)
+  subSeed, err :=types.GetSubSeed("seed-here")
+  if err!= nil {
+    log.Fatalf("got err %s when getting subSeed", err.Error())
+  }
+
+  sig, err := schnorrq.Sign(subSeed, tx.SourcePublicKey, unsignedDigest)
   if err != nil {
     log.Fatalf("got err: %s when signing", err.Error())
   }
