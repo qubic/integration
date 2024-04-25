@@ -707,7 +707,7 @@ When requesting the RPC server for `approved-transactions` you might receive a `
 
 | code   	|  reason  	| action |
 |---	|---	|--- |
-| 9  	|  Requested tick number `<TICKNUMBER>` is greater than last processed tick `<LASTPROCESSEDTICK>`. 	| Repeat your request until it works. You may track the the `LASTPROCESSEDTICK` from the endpoint `/latestTick`.  |
+| 9  	|  Requested tick number `<TICKNUMBER>` is greater than last processed tick `<LASTPROCESSEDTICK>`. 	| Repeat your request until it works. You may track the the `LASTPROCESSEDTICK` from the endpoint `/status`.  |
 | 11  	|  Provided tick number `<TICKNUMBER>` was skipped by the system, next available tick is `<NEXTAVAILABLETICKNUMBER>`. 	| Take the `nextTickNumber` from `details` and proceed with this tick.  |
 
 
