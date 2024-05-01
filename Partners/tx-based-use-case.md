@@ -309,7 +309,16 @@ func main() {
 Please find a complete example of transaction signing here: https://github.com/qubic/ts-library/blob/main/test/createTransactionTest.js. The complete source code can be found in the same repo.
 
 ### Create, sign, send and verify a transaction
-We assume you have already all needed data to create and send the transaction:
+#### Process overview
+The basic steps for this process are:
+- request `latestTick` from `/latestTick` endpoint
+- create and sign transaction
+- send transaction with `latestTick + 5` (= your `targetTick`), store tx hash
+- to verify, either:
+ - poll `/ticks/{tickNumber}/approved-transactions` until it returns 200 for your `targetTick` and then check if your tx was successful (as in examples down below), OR:
+ - poll `/status` for `lastProcessedTick` and as soon as `lastProcessedTick` > `targetTick`, check `/ticks/{tickNumber}/approved-transactions` if your tx was successful
+
+For the following examples of this flow, we assume you have already all needed data to create and send the transaction:
 - Sender (including seed)
 - Receiver
 - Amount
