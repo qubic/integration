@@ -45,6 +45,8 @@ This documentation refers to the [Qubic V1 RPC API](qubic-rpc-doc.html).
   - [Withdraw Workflow](#withdraw-workflow)
     - [Plain Transaction](#plain-transaction)
     - [Qutil(Send Many) Smart Contract](#qutilsend-many-smart-contract)
+  - [Error Handling](#error-handling)
+
 
 ## Qubic Rules
 When using the Qubic RPC you should follow some important rules.
@@ -710,15 +712,6 @@ When requesting the RPC server for `approved-transactions` you might receive a `
 }
 ```
 
-> [!IMPORTANT]
-> You must check the error code in the response to understand what has happened.
-
-
-| code   	|  reason  	| action |
-|---	|---	|--- |
-| 9  	|  Requested tick number `<TICKNUMBER>` is greater than last processed tick `<LASTPROCESSEDTICK>`. 	| Repeat your request until it works. You may track the the `LASTPROCESSEDTICK` from the endpoint `/status`.  |
-| 11  	|  Provided tick number `<TICKNUMBER>` was skipped by the system, next available tick is `<NEXTAVAILABLETICKNUMBER>`. 	| Take the `nextTickNumber` from `details` and proceed with this tick.  |
-
 
 ## Deposit Workflow
 
@@ -1195,6 +1188,20 @@ func main() {
 }
 
 ```
+## Error Handling
+In case you receive a http resonse `400` for the endpoints\
+`/ticks/{tickNumber}/approved-transactions`\
+`/ticks/{tickNumber}/transactions`\
+`/ticks/{tickNumber}/tick-data`\
+`/ticks/{tickNumber}/quorum-data`
+
+Make sure to implement error handling for the following cases (generally we are following the status codes from https://grpc.io/docs/guides/status-codes/):
+| code   	|  reason  	| action |
+|---	|---	|--- |
+| 9  	|  Requested tick number is greater than `lastProcessedTick`.	| Repeat your request until it works. You may track the the `lastProcessedTick` from the endpoint `/status` until `lastProcessedTick` > your `targetTick`.  |
+| 11  	|  Provided tick number was skipped by the system, next available tick is `<NEXTAVAILABLETICKNUMBER>`. 	| Take the `nextTickNumber` from `details` in response and proceed with this tick. In this case, pending transactions with `targetTick` < `nextTickNumber` won't be processed and need to be reissued.  |
+
+
 ## Logging
 It is important to log any transaction information also on the side of the integrator. The qubic network does not store transaction information over a period longer than seven days and transactions are pruned on every epoch change each Wednesday. The RPC infrastructure provides an archive which holds historical data.
 
