@@ -317,8 +317,10 @@ The basic steps for this process are:
 - create and sign transaction
 - send transaction with `latestTick + 5` (= your `targetTick`), store tx hash
 - to verify, either:
- - poll `/ticks/{tickNumber}/approved-transactions` until it returns 200 for your `targetTick` and then check if your tx was successful (as in examples down below), OR:
- - poll `/status` for `lastProcessedTick` and as soon as `lastProcessedTick` > `targetTick`, check `/ticks/{tickNumber}/approved-transactions` if your tx was successful
+ - poll `/ticks/{tickNumber}/approved-transactions` until it returns 200 for your `targetTick`. If the tx hash is available there, the tx was successful (as in examples down below), OR:
+ - poll `/status` for `lastProcessedTick` and as soon as `lastProcessedTick` > `targetTick`, check `/ticks/{tickNumber}/approved-transactions`. If the tx hash is available there, the tx was successful OR:
+ - poll `/status` for `lastProcessedTick` and as soon as `lastProcessedTick` > `targetTick`, check `/tx-status/{txId}`. If `moneyFlew = true`, the transaction was successful
+- **only after those steps you may create another transaction as you will overwrite an existing one if sent to the network before the target tick has passed.**
 
 For the following examples of this flow, we assume you have already all needed data to create and send the transaction:
 - Sender (including seed)
