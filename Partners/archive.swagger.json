@@ -16,7 +16,7 @@
     "application/json"
   ],
   "paths": {
-    "/epochs/{epoch}/computors": {
+    "/v1/epochs/{epoch}/computors": {
       "get": {
         "operationId": "ArchiveService_GetComputors",
         "responses": {
@@ -47,7 +47,29 @@
         ]
       }
     },
-    "/identities/{identity}/transfer-transactions": {
+    "/v1/healthcheck": {
+      "get": {
+        "operationId": "ArchiveService_GetHealthCheck",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetHealthCheckResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ArchiveService"
+        ]
+      }
+    },
+    "/v1/identities/{identity}/transfer-transactions": {
       "get": {
         "operationId": "ArchiveService_GetTransferTransactionsPerTick",
         "responses": {
@@ -91,7 +113,7 @@
         ]
       }
     },
-    "/latestTick": {
+    "/v1/latestTick": {
       "get": {
         "operationId": "ArchiveService_GetLatestTick",
         "responses": {
@@ -113,7 +135,7 @@
         ]
       }
     },
-    "/status": {
+    "/v1/status": {
       "get": {
         "operationId": "ArchiveService_GetStatus",
         "responses": {
@@ -135,7 +157,38 @@
         ]
       }
     },
-    "/ticks/{tickNumber}/chain-hash": {
+    "/v1/ticks/{tickNumber}/approved-transactions": {
+      "get": {
+        "operationId": "ArchiveService_GetTickApprovedTransactions",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetTickApprovedTransactionsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tickNumber",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "ArchiveService"
+        ]
+      }
+    },
+    "/v1/ticks/{tickNumber}/chain-hash": {
       "get": {
         "operationId": "ArchiveService_GetChainHash",
         "responses": {
@@ -166,7 +219,7 @@
         ]
       }
     },
-    "/ticks/{tickNumber}/quorum-tick-data": {
+    "/v1/ticks/{tickNumber}/quorum-tick-data": {
       "get": {
         "operationId": "ArchiveService_GetQuorumTickData",
         "responses": {
@@ -197,7 +250,38 @@
         ]
       }
     },
-    "/ticks/{tickNumber}/tick-data": {
+    "/v1/ticks/{tickNumber}/store-hash": {
+      "get": {
+        "operationId": "ArchiveService_GetStoreHash",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetChainHashResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tickNumber",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "ArchiveService"
+        ]
+      }
+    },
+    "/v1/ticks/{tickNumber}/tick-data": {
       "get": {
         "operationId": "ArchiveService_GetTickData",
         "responses": {
@@ -228,7 +312,7 @@
         ]
       }
     },
-    "/ticks/{tickNumber}/transactions": {
+    "/v1/ticks/{tickNumber}/transactions": {
       "get": {
         "operationId": "ArchiveService_GetTickTransactions",
         "responses": {
@@ -259,7 +343,7 @@
         ]
       }
     },
-    "/ticks/{tickNumber}/transfer-transactions": {
+    "/v1/ticks/{tickNumber}/transfer-transactions": {
       "get": {
         "operationId": "ArchiveService_GetTickTransferTransactions",
         "responses": {
@@ -290,7 +374,7 @@
         ]
       }
     },
-    "/transactions/{txId}": {
+    "/v1/transactions/{txId}": {
       "get": {
         "operationId": "ArchiveService_GetTransaction",
         "responses": {
@@ -298,6 +382,279 @@
             "description": "A successful response.",
             "schema": {
               "$ref": "#/definitions/pbGetTransactionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "txId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ArchiveService"
+        ]
+      }
+    },
+    "/v1/tx-status/{txId}": {
+      "get": {
+        "operationId": "ArchiveService_GetTransactionStatus",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetTransactionStatusResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "txId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ArchiveService"
+        ]
+      }
+    },
+    "/v2/identities/{identity}/transfers": {
+      "get": {
+        "description": "Uses V1 request",
+        "operationId": "ArchiveService_GetIdentityTransfersInTickRangeV2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetIdentityTransfersInTickRangeResponseV2"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "identity",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startTick",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "endTick",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "ArchiveService"
+        ]
+      }
+    },
+    "/v2/ticks/{tickNumber}/hash": {
+      "get": {
+        "description": "Uses V1 response",
+        "operationId": "ArchiveService_GetTickChainHashV2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetChainHashResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tickNumber",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "ArchiveService"
+        ]
+      }
+    },
+    "/v2/ticks/{tickNumber}/quorum-data": {
+      "get": {
+        "description": "Uses V1 response",
+        "operationId": "ArchiveService_GetTickQuorumDataV2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetQuorumTickDataResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tickNumber",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "ArchiveService"
+        ]
+      }
+    },
+    "/v2/ticks/{tickNumber}/store-hash": {
+      "get": {
+        "operationId": "ArchiveService_GetTickStoreHashV2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetChainHashResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tickNumber",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "ArchiveService"
+        ]
+      }
+    },
+    "/v2/ticks/{tickNumber}/transactions": {
+      "get": {
+        "operationId": "ArchiveService_GetTickTransactionsV2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetTickTransactionsResponseV2"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tickNumber",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "transfers",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "approved",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "tags": [
+          "ArchiveService"
+        ]
+      }
+    },
+    "/v2/transactions/{txId}": {
+      "get": {
+        "operationId": "ArchiveService_GetTransactionV2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetTransactionResponseV2"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "txId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ArchiveService"
+        ]
+      }
+    },
+    "/v2/transactions/{txId}/sendmany": {
+      "get": {
+        "operationId": "ArchiveService_GetSendManyTransactionV2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetSendManyTransactionResponseV2"
             }
           },
           "default": {
@@ -356,6 +713,26 @@
         }
       }
     },
+    "pbGetHealthCheckResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "boolean"
+        }
+      }
+    },
+    "pbGetIdentityTransfersInTickRangeResponseV2": {
+      "type": "object",
+      "properties": {
+        "transactions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbPerTickIdentityTransfers"
+          }
+        }
+      }
+    },
     "pbGetLatestTickResponse": {
       "type": "object",
       "properties": {
@@ -370,6 +747,21 @@
       "properties": {
         "quorumTickData": {
           "$ref": "#/definitions/pbQuorumTickData"
+        }
+      }
+    },
+    "pbGetSendManyTransactionResponseV2": {
+      "type": "object",
+      "properties": {
+        "transaction": {
+          "$ref": "#/definitions/pbSendManyTransaction"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "moneyFlew": {
+          "type": "boolean"
         }
       }
     },
@@ -402,6 +794,18 @@
         }
       }
     },
+    "pbGetTickApprovedTransactionsResponse": {
+      "type": "object",
+      "properties": {
+        "approvedTransactions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbTransaction"
+          }
+        }
+      }
+    },
     "pbGetTickDataResponse": {
       "type": "object",
       "properties": {
@@ -422,11 +826,46 @@
         }
       }
     },
+    "pbGetTickTransactionsResponseV2": {
+      "type": "object",
+      "properties": {
+        "transactions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbTransactionData"
+          }
+        }
+      }
+    },
     "pbGetTransactionResponse": {
       "type": "object",
       "properties": {
         "transaction": {
           "$ref": "#/definitions/pbTransaction"
+        }
+      }
+    },
+    "pbGetTransactionResponseV2": {
+      "type": "object",
+      "properties": {
+        "transaction": {
+          "$ref": "#/definitions/pbTransaction"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "moneyFlew": {
+          "type": "boolean"
+        }
+      }
+    },
+    "pbGetTransactionStatusResponse": {
+      "type": "object",
+      "properties": {
+        "transactionStatus": {
+          "$ref": "#/definitions/pbTransactionStatus"
         }
       }
     },
@@ -438,6 +877,25 @@
           "items": {
             "type": "object",
             "$ref": "#/definitions/pbTransferTransactionsPerTick"
+          }
+        }
+      }
+    },
+    "pbPerTickIdentityTransfers": {
+      "type": "object",
+      "properties": {
+        "tickNumber": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "identity": {
+          "type": "string"
+        },
+        "transactions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbTransactionData"
           }
         }
       }
@@ -553,6 +1011,47 @@
         }
       }
     },
+    "pbSendManyTransaction": {
+      "type": "object",
+      "properties": {
+        "sourceId": {
+          "type": "string"
+        },
+        "tickNumber": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "transfers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbSendManyTransfer"
+          }
+        },
+        "totalAmount": {
+          "type": "string",
+          "format": "int64"
+        },
+        "signatureHex": {
+          "type": "string"
+        },
+        "txId": {
+          "type": "string"
+        }
+      }
+    },
+    "pbSendManyTransfer": {
+      "type": "object",
+      "properties": {
+        "destId": {
+          "type": "string"
+        },
+        "amount": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
     "pbSkippedTicksInterval": {
       "type": "object",
       "properties": {
@@ -644,6 +1143,32 @@
         },
         "txId": {
           "type": "string"
+        }
+      }
+    },
+    "pbTransactionData": {
+      "type": "object",
+      "properties": {
+        "transaction": {
+          "$ref": "#/definitions/pbTransaction"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "moneyFlew": {
+          "type": "boolean"
+        }
+      }
+    },
+    "pbTransactionStatus": {
+      "type": "object",
+      "properties": {
+        "txId": {
+          "type": "string"
+        },
+        "moneyFlew": {
+          "type": "boolean"
         }
       }
     },
