@@ -1,0 +1,218 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "stats-api.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "StatsService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/epochs/{epoch}/rich-list": {
+      "get": {
+        "operationId": "StatsService_GetRichListSlice",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetRichListSliceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "epoch",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "StatsService"
+        ]
+      }
+    },
+    "/v1/latest-stats": {
+      "get": {
+        "operationId": "StatsService_GetLatestData",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetLatestDataResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "StatsService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "pbGetLatestDataResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/pbQubicData"
+        }
+      }
+    },
+    "pbGetRichListSliceResponse": {
+      "type": "object",
+      "properties": {
+        "pagination": {
+          "$ref": "#/definitions/pbPagination"
+        },
+        "richList": {
+          "$ref": "#/definitions/pbRichList"
+        }
+      }
+    },
+    "pbPagination": {
+      "type": "object",
+      "properties": {
+        "totalRecords": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "currentPage": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "totalPages": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "pbQubicData": {
+      "type": "object",
+      "properties": {
+        "timestamp": {
+          "type": "string",
+          "format": "int64"
+        },
+        "circulatingSupply": {
+          "type": "string",
+          "format": "int64"
+        },
+        "activeAddresses": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "price": {
+          "type": "number",
+          "format": "float"
+        },
+        "marketCap": {
+          "type": "string",
+          "format": "int64"
+        },
+        "epoch": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "currentTick": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "ticksInCurrentEpoch": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "emptyTicksInCurrentEpoch": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "epochTickQuality": {
+          "type": "number",
+          "format": "float"
+        },
+        "burnedQus": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
+    "pbRichList": {
+      "type": "object",
+      "properties": {
+        "entities": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbRichListEntity"
+          }
+        }
+      }
+    },
+    "pbRichListEntity": {
+      "type": "object",
+      "properties": {
+        "identity": {
+          "type": "string"
+        },
+        "balance": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}
