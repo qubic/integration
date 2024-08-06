@@ -16,43 +16,6 @@
     "application/json"
   ],
   "paths": {
-    "/v1/epochs/{epoch}/rich-list": {
-      "get": {
-        "operationId": "StatsService_GetRichListSlice",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbGetRichListSliceResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "epoch",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int32"
-          }
-        ],
-        "tags": [
-          "StatsService"
-        ]
-      }
-    },
     "/v1/latest-stats": {
       "get": {
         "operationId": "StatsService_GetLatestData",
@@ -74,6 +37,44 @@
           "StatsService"
         ]
       }
+    },
+    "/v1/rich-list": {
+      "get": {
+        "operationId": "StatsService_GetRichListSlice",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetRichListSliceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "StatsService"
+        ]
+      }
     }
   },
   "definitions": {
@@ -90,6 +91,10 @@
       "properties": {
         "pagination": {
           "$ref": "#/definitions/pbPagination"
+        },
+        "epoch": {
+          "type": "integer",
+          "format": "int64"
         },
         "richList": {
           "$ref": "#/definitions/pbRichList"
