@@ -283,6 +283,7 @@
     },
     "/v1/ticks/{tickNumber}/tick-data": {
       "get": {
+        "summary": "V1 Endpoints",
         "operationId": "ArchiveService_GetTickData",
         "responses": {
           "200": {
@@ -436,6 +437,7 @@
     },
     "/v2/identities/{identity}/transfers": {
       "get": {
+        "summary": "Identity",
         "description": "Uses V1 request",
         "operationId": "ArchiveService_GetIdentityTransfersInTickRangeV2",
         "responses": {
@@ -472,6 +474,18 @@
             "required": false,
             "type": "integer",
             "format": "int64"
+          },
+          {
+            "name": "scOnly",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "desc",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "tags": [
@@ -481,6 +495,7 @@
     },
     "/v2/ticks/{tickNumber}/hash": {
       "get": {
+        "summary": "Chain hash",
         "description": "Uses V1 response",
         "operationId": "ArchiveService_GetTickChainHashV2",
         "responses": {
@@ -513,6 +528,7 @@
     },
     "/v2/ticks/{tickNumber}/quorum-data": {
       "get": {
+        "summary": "Quorum data",
         "description": "Uses V1 response",
         "operationId": "ArchiveService_GetTickQuorumDataV2",
         "responses": {
@@ -545,6 +561,8 @@
     },
     "/v2/ticks/{tickNumber}/store-hash": {
       "get": {
+        "summary": "Store hash",
+        "description": "Uses V1 response",
         "operationId": "ArchiveService_GetTickStoreHashV2",
         "responses": {
           "200": {
@@ -576,6 +594,7 @@
     },
     "/v2/ticks/{tickNumber}/transactions": {
       "get": {
+        "summary": "Tick transactions",
         "operationId": "ArchiveService_GetTickTransactionsV2",
         "responses": {
           "200": {
@@ -619,6 +638,7 @@
     },
     "/v2/transactions/{txId}": {
       "get": {
+        "summary": "Normal",
         "operationId": "ArchiveService_GetTransactionV2",
         "responses": {
           "200": {
@@ -649,6 +669,7 @@
     },
     "/v2/transactions/{txId}/sendmany": {
       "get": {
+        "summary": "SendMany",
         "operationId": "ArchiveService_GetSendManyTransactionV2",
         "responses": {
           "200": {
@@ -790,6 +811,13 @@
           "items": {
             "type": "object",
             "$ref": "#/definitions/pbProcessedTickIntervalsPerEpoch"
+          }
+        },
+        "emptyTicksPerEpoch": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "format": "int64"
           }
         }
       }
@@ -1050,7 +1078,8 @@
           "type": "string",
           "format": "int64"
         }
-      }
+      },
+      "title": "SendMany Transaction"
     },
     "pbSkippedTicksInterval": {
       "type": "object",
@@ -1159,7 +1188,8 @@
         "moneyFlew": {
           "type": "boolean"
         }
-      }
+      },
+      "title": "Wrapper around transaction and additional data"
     },
     "pbTransactionStatus": {
       "type": "object",
