@@ -16,6 +16,96 @@
     "application/json"
   ],
   "paths": {
+    "/assets/{identity}/issued": {
+      "get": {
+        "operationId": "QubicLiveService_GetIssuedAssets",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbIssuedAssetsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "identity",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "QubicLiveService"
+        ]
+      }
+    },
+    "/assets/{identity}/owned": {
+      "get": {
+        "operationId": "QubicLiveService_GetOwnedAssets",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbOwnedAssetsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "identity",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "QubicLiveService"
+        ]
+      }
+    },
+    "/assets/{identity}/possessed": {
+      "get": {
+        "operationId": "QubicLiveService_GetPossessedAssets",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbPossessedAssetsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "identity",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "QubicLiveService"
+        ]
+      }
+    },
     "/balances/{id}": {
       "get": {
         "operationId": "QubicLiveService_GetBalance",
@@ -100,6 +190,38 @@
         ]
       }
     },
+    "/querySmartContract": {
+      "post": {
+        "operationId": "QubicLiveService_QuerySmartContract",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbQuerySmartContractResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbQuerySmartContractRequest"
+            }
+          }
+        ],
+        "tags": [
+          "QubicLiveService"
+        ]
+      }
+    },
     "/tick-info": {
       "get": {
         "operationId": "QubicLiveService_GetTickInfo",
@@ -124,6 +246,19 @@
     }
   },
   "definitions": {
+    "pbAssetInfo": {
+      "type": "object",
+      "properties": {
+        "tick": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "universeIndex": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
     "pbBalance": {
       "type": "object",
       "properties": {
@@ -145,6 +280,22 @@
         "latestOutgoingTransferTick": {
           "type": "integer",
           "format": "int64"
+        },
+        "incomingAmount": {
+          "type": "string",
+          "format": "int64"
+        },
+        "outgoingAmount": {
+          "type": "string",
+          "format": "int64"
+        },
+        "numberOfIncomingTransfers": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "numberOfOutgoingTransfers": {
+          "type": "integer",
+          "format": "int64"
         }
       }
     },
@@ -162,6 +313,12 @@
         "peersBroadcasted": {
           "type": "integer",
           "format": "int32"
+        },
+        "encodedTransaction": {
+          "type": "string"
+        },
+        "transactionId": {
+          "type": "string"
         }
       }
     },
@@ -186,6 +343,194 @@
       "properties": {
         "tickInfo": {
           "$ref": "#/definitions/pbTickInfo"
+        }
+      }
+    },
+    "pbIssuedAsset": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/pbIssuedAssetData"
+        },
+        "info": {
+          "$ref": "#/definitions/pbAssetInfo"
+        }
+      }
+    },
+    "pbIssuedAssetData": {
+      "type": "object",
+      "properties": {
+        "issuerIdentity": {
+          "type": "string"
+        },
+        "type": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "numberOfDecimalPlaces": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "unitOfMeasurement": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "title": "Issued"
+    },
+    "pbIssuedAssetsResponse": {
+      "type": "object",
+      "properties": {
+        "issuedAssets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbIssuedAsset"
+          }
+        }
+      }
+    },
+    "pbOwnedAsset": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/pbOwnedAssetData"
+        },
+        "info": {
+          "$ref": "#/definitions/pbAssetInfo"
+        }
+      }
+    },
+    "pbOwnedAssetData": {
+      "type": "object",
+      "properties": {
+        "ownerIdentity": {
+          "type": "string"
+        },
+        "type": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "padding": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "managingContractIndex": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "issuanceIndex": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "numberOfUnits": {
+          "type": "string",
+          "format": "int64"
+        },
+        "issuedAsset": {
+          "$ref": "#/definitions/pbIssuedAssetData"
+        }
+      },
+      "title": "Owned"
+    },
+    "pbOwnedAssetsResponse": {
+      "type": "object",
+      "properties": {
+        "ownedAssets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbOwnedAsset"
+          }
+        }
+      }
+    },
+    "pbPossessedAsset": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/pbPossessedAssetData"
+        },
+        "info": {
+          "$ref": "#/definitions/pbAssetInfo"
+        }
+      }
+    },
+    "pbPossessedAssetData": {
+      "type": "object",
+      "properties": {
+        "possessorIdentity": {
+          "type": "string"
+        },
+        "type": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "padding": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "managingContractIndex": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "issuanceIndex": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "numberOfUnits": {
+          "type": "string",
+          "format": "int64"
+        },
+        "ownedAsset": {
+          "$ref": "#/definitions/pbOwnedAssetData"
+        }
+      },
+      "title": "Possessed"
+    },
+    "pbPossessedAssetsResponse": {
+      "type": "object",
+      "properties": {
+        "possessedAssets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbPossessedAsset"
+          }
+        }
+      }
+    },
+    "pbQuerySmartContractRequest": {
+      "type": "object",
+      "properties": {
+        "contractIndex": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "inputType": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "inputSize": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "requestData": {
+          "type": "string"
+        }
+      }
+    },
+    "pbQuerySmartContractResponse": {
+      "type": "object",
+      "properties": {
+        "responseData": {
+          "type": "string"
         }
       }
     },
