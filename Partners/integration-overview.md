@@ -17,6 +17,7 @@ This service continuously requests information from the network, and it saves it
 
 ## An architecture overview
 ![archiver.png](archiver.png)
+
 Archiver is mainly composed of three parts:
 
 ### The processor
@@ -61,6 +62,7 @@ Before any information is saved to the database, it must be photographically val
 
 ## An architecture overview
 ![qubic-http](qubic-http.png "qubic-http")
+
 The HTTP API acts as a bridge to the Qubic network. Some of it's features include:
 - Balance checking
 - Transaction broadcasting
@@ -69,8 +71,9 @@ The HTTP API acts as a bridge to the Qubic network. Some of it's features includ
 - Identity assets
     - Issued
     - Owned
-    - Possessed
-      The difference between the HTTP API and the Archiver is that the HTTP API does not perform any information storage, it only feeds live information from the network.
+    - Possessed 
+
+#### The difference between the HTTP API and the Archiver is that the HTTP API does not perform any information storage, it only feeds live information from the network.
 ## How does it work
 The service requires the "Nodes Service" as a dependency, in order to maintain a list of reliable node connections.
 In the event of a web request, the service connects to one of the nodes in the node pool, and requests the information needed by the user.
@@ -88,5 +91,14 @@ Some of the information includes:
 - Epoch tick quality
 - Number of burned QUs
 - Rich list
+
+# New developments in progress:
+
+## go-qubic
+A repo that will contain:
+- a revamp of node-connector sdk with performance and usability in mind
+- http/grpc servers for core and multiple smart contracts interaction; this will be used by qubic-cli directly to communicate with the nodes
+- grpc clients with proto messages (human readable) to be used by multiple programming languages
+- websocket server for serving millions of users/clients
 
 
