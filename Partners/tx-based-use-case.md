@@ -869,7 +869,8 @@ However, there is a send many smart contract case you should support. Such a tra
       // in the input we have potentially 25 inlay transactions
 
       // translate input to transfers
-      const parsedSendManyPayload = await new QubicTransferSendManyPayload().parse(newPayload).getTransfers();
+      const txPayload = tx.getPayload().getPackageData();
+      const sendManyTransfers = await new QubicTransferSendManyPayload().parse(txPayload).getTransfers();
 
       // get all client accounts which have got a tx
       const clientDeposits = clientAccountList.filter(f => sendManyTransfers.find(t => t.destId == f.publicId))
