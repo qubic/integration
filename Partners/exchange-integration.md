@@ -38,7 +38,7 @@ This document describes the Qubic RPC infrastructure and how it can be used to i
 * Discord: [https://discord.com/invite/qubic](https://discord.com/invite/qubic)
 * Telegram: [https://t.me/qubic_network](https://t.me/qubic_network)
 * Youtube: [https://www.youtube.com/@_qubic_](https://www.youtube.com/@_qubic_)
-* Explorer: [https://app.qubic.li/network/explorer](https://app.qubic.li/network/explorer) 
+* Explorer: [https://explorer.qubic.org/network](https://explorer.qubic.org/network) 
 * Medium, Reddit, Facebook, Instagram: n/a
 
 ### Tech Integration Basics
