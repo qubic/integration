@@ -317,10 +317,15 @@ The basic steps for this process are:
 - create and sign transaction
 - send transaction with `latestTick + 5` (= your `targetTick`), store tx hash
 - to verify, either:
- - poll `/ticks/{tickNumber}/approved-transactions` until it returns 200 for your `targetTick`. If the tx hash is available there, the tx was successful (as in examples down below), OR:
- - poll `/status` for `lastProcessedTick` and as soon as `lastProcessedTick` > `targetTick`, check `/ticks/{tickNumber}/approved-transactions`. If the tx hash is available there, the tx was successful OR:
+ - poll `/ticks/{targetTick}/approved-transactions` until it returns 200 for your `targetTick`. If the tx hash is available there, the tx was successful (as in examples down below), OR:
+ - poll `/status` for `lastProcessedTick` and as soon as `lastProcessedTick` > `targetTick`, check `/ticks/{targetTick}/approved-transactions`. If the tx hash is available there, the tx was successful OR:
  - poll `/status` for `lastProcessedTick` and as soon as `lastProcessedTick` > `targetTick`, check `/tx-status/{txId}`. If `moneyFlew = true`, the transaction was successful
-- **only after those steps you may create another transaction as you will overwrite an existing one if sent to the network before the target tick has passed.**
+ - if the transaction was NOT successful: start over with the process
+
+#### Please note:
+- **transactions in Qubic may fail by design**, therefore it is important to follow the steps above. 
+- **please don't create another transaction before the process above has been completed**, otherwise you may overwrite an existing transaction in the network as Qubic allows only one transaction simultaneously from the same sender ID.
+- **make sure to implement proper error handling**, eg. "tick jumps" as defined [here](#error-handling): as seen above, a sender needs to set a target tick for their transaction. In certain cases (eg. an epoch change), this tick may not be created at all. It may be skipped. In this case an error with code 11 is returned which also includes the next available tick. In this case, you need to resend the transaction with a new target tick.
 
 For the following examples of this flow, we assume you have already all needed data to create and send the transaction:
 - Sender (including seed)
