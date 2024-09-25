@@ -317,8 +317,8 @@ The basic steps for this process are:
 - create and sign transaction
 - send transaction with `latestTick + 5` (= your `targetTick`), store tx hash
 - to verify, either:
- - poll `/ticks/targetTick/approved-transactions` until it returns 200 for your `targetTick`. If the tx hash is available there, the tx was successful (as in examples down below), OR:
- - poll `/status` for `lastProcessedTick` and as soon as `lastProcessedTick` > `targetTick`, check `/ticks/targetTick/approved-transactions`. If the tx hash is available there, the tx was successful OR:
+ - poll `/ticks/{targetTick}/approved-transactions` until it returns 200 for your `targetTick`. If the tx hash is available there, the tx was successful (as in examples down below), OR:
+ - poll `/status` for `lastProcessedTick` and as soon as `lastProcessedTick` > `targetTick`, check `/ticks/{targetTick}/approved-transactions`. If the tx hash is available there, the tx was successful OR:
  - poll `/status` for `lastProcessedTick` and as soon as `lastProcessedTick` > `targetTick`, check `/tx-status/{txId}`. If `moneyFlew = true`, the transaction was successful
  - if the transaction was NOT successful: start over with the process
 
