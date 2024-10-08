@@ -16,7 +16,7 @@
     "application/json"
   ],
   "paths": {
-    "/assets/{identity}/issued": {
+    "/v1/assets/{identity}/issued": {
       "get": {
         "operationId": "QubicLiveService_GetIssuedAssets",
         "responses": {
@@ -46,7 +46,7 @@
         ]
       }
     },
-    "/assets/{identity}/owned": {
+    "/v1/assets/{identity}/owned": {
       "get": {
         "operationId": "QubicLiveService_GetOwnedAssets",
         "responses": {
@@ -76,7 +76,7 @@
         ]
       }
     },
-    "/assets/{identity}/possessed": {
+    "/v1/assets/{identity}/possessed": {
       "get": {
         "operationId": "QubicLiveService_GetPossessedAssets",
         "responses": {
@@ -106,7 +106,7 @@
         ]
       }
     },
-    "/balances/{id}": {
+    "/v1/balances/{id}": {
       "get": {
         "operationId": "QubicLiveService_GetBalance",
         "responses": {
@@ -136,7 +136,7 @@
         ]
       }
     },
-    "/block-height": {
+    "/v1/block-height": {
       "get": {
         "operationId": "QubicLiveService_GetBlockHeight",
         "responses": {
@@ -158,7 +158,7 @@
         ]
       }
     },
-    "/broadcast-transaction": {
+    "/v1/broadcast-transaction": {
       "post": {
         "operationId": "QubicLiveService_BroadcastTransaction",
         "responses": {
@@ -190,7 +190,7 @@
         ]
       }
     },
-    "/querySmartContract": {
+    "/v1/querySmartContract": {
       "post": {
         "operationId": "QubicLiveService_QuerySmartContract",
         "responses": {
@@ -222,7 +222,7 @@
         ]
       }
     },
-    "/tick-info": {
+    "/v1/tick-info": {
       "get": {
         "operationId": "QubicLiveService_GetTickInfo",
         "responses": {
