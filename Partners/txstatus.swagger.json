@@ -16,7 +16,7 @@
     "application/json"
   ],
   "paths": {
-    "/ticks/{tickNumber}/approved-transactions": {
+    "/v1/ticks/{tickNumber}/approved-transactions": {
       "get": {
         "operationId": "TxStatusService_GetTickApprovedTransactions",
         "responses": {
@@ -47,7 +47,7 @@
         ]
       }
     },
-    "/tx-status/status": {
+    "/v1/tx-status/status": {
       "get": {
         "operationId": "TxStatusService_GetStatus",
         "responses": {
@@ -69,7 +69,7 @@
         ]
       }
     },
-    "/tx-status/{txId}": {
+    "/v1/tx-status/{txId}": {
       "get": {
         "operationId": "TxStatusService_GetTransactionStatus",
         "responses": {
