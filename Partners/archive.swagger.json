@@ -18,6 +18,7 @@
   "paths": {
     "/v1/epochs/{epoch}/computors": {
       "get": {
+        "summary": "Returns the list of computors for the given epoch.",
         "operationId": "ArchiveService_GetComputors",
         "responses": {
           "200": {
@@ -49,6 +50,7 @@
     },
     "/v1/healthcheck": {
       "get": {
+        "summary": "A method that is mainly used by the load-balancer to decide if the instance should be added to the balancing rotation based on if it's up-to-date with the network or not.",
         "operationId": "ArchiveService_GetHealthCheck",
         "responses": {
           "200": {
@@ -71,6 +73,7 @@
     },
     "/v1/identities/{identity}/transfer-transactions": {
       "get": {
+        "summary": "Deprecated: Use /v2/identities/{identity}/transfers instead.",
         "operationId": "ArchiveService_GetTransferTransactionsPerTick",
         "responses": {
           "200": {
@@ -115,6 +118,7 @@
     },
     "/v1/latestTick": {
       "get": {
+        "summary": "Returns the latest tick processed by the archiver instance.",
         "operationId": "ArchiveService_GetLatestTick",
         "responses": {
           "200": {
@@ -137,6 +141,7 @@
     },
     "/v1/status": {
       "get": {
+        "summary": "Returns information regarding the status of the archiver instance.",
         "operationId": "ArchiveService_GetStatus",
         "responses": {
           "200": {
@@ -159,6 +164,7 @@
     },
     "/v1/ticks/{tickNumber}/approved-transactions": {
       "get": {
+        "summary": "Deprecated: Use /v2/ticks/{tick_number}/transactions instead.",
         "operationId": "ArchiveService_GetTickApprovedTransactions",
         "responses": {
           "200": {
@@ -190,6 +196,7 @@
     },
     "/v1/ticks/{tickNumber}/chain-hash": {
       "get": {
+        "summary": "Returns the hash of the given processed tick. This is mainly used to compare archiver instances and verify they process ticks the same.",
         "operationId": "ArchiveService_GetChainHash",
         "responses": {
           "200": {
@@ -283,7 +290,7 @@
     },
     "/v1/ticks/{tickNumber}/tick-data": {
       "get": {
-        "summary": "V1 Endpoints",
+        "summary": "Returns the information for the given tick.",
         "operationId": "ArchiveService_GetTickData",
         "responses": {
           "200": {
@@ -315,6 +322,7 @@
     },
     "/v1/ticks/{tickNumber}/transactions": {
       "get": {
+        "summary": "Deprecated: Use /v2/ticks/{tick_number}/transactions instead.",
         "operationId": "ArchiveService_GetTickTransactions",
         "responses": {
           "200": {
@@ -346,6 +354,7 @@
     },
     "/v1/ticks/{tickNumber}/transfer-transactions": {
       "get": {
+        "summary": "Deprecated: Use /v2/ticks/{tick_number}/transactions instead.",
         "operationId": "ArchiveService_GetTickTransferTransactions",
         "responses": {
           "200": {
@@ -377,6 +386,7 @@
     },
     "/v1/transactions/{txId}": {
       "get": {
+        "summary": "Deprecated: Use /v2/transactions/{tx_id} instead.",
         "operationId": "ArchiveService_GetTransaction",
         "responses": {
           "200": {
@@ -407,6 +417,7 @@
     },
     "/v1/tx-status/{txId}": {
       "get": {
+        "summary": "Deprecated: Use /v2/transactions/{tx_id} instead.",
         "operationId": "ArchiveService_GetTransactionStatus",
         "responses": {
           "200": {
@@ -435,9 +446,101 @@
         ]
       }
     },
+    "/v2/epochs/{epoch}/empty-ticks": {
+      "get": {
+        "summary": "Returns the list of empty ticks for the specified epoch. Paginated.",
+        "operationId": "ArchiveService_GetEmptyTickListV2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetEmptyTickListResponseV2"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "epoch",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "ArchiveService"
+        ]
+      }
+    },
+    "/v2/epochs/{epoch}/ticks": {
+      "get": {
+        "summary": "Returns the the tick numbers for the the specified epoch, alongside with the 'isEmpty' status. Paginated.",
+        "operationId": "ArchiveService_GetEpochTickListV2",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetEpochTickListResponseV2"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "epoch",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "ArchiveService"
+        ]
+      }
+    },
     "/v2/identities/{identity}/transfers": {
       "get": {
-        "summary": "Identity",
+        "summary": "Returns the list of transfers for the given identity, their status and timestamp, grouped by tick.",
         "description": "Uses V1 request",
         "operationId": "ArchiveService_GetIdentityTransfersInTickRangeV2",
         "responses": {
@@ -594,7 +697,7 @@
     },
     "/v2/ticks/{tickNumber}/transactions": {
       "get": {
-        "summary": "Tick transactions",
+        "summary": "Returns the list of transactions for the given tick, including timestamp and transfer status.",
         "operationId": "ArchiveService_GetTickTransactionsV2",
         "responses": {
           "200": {
@@ -638,7 +741,7 @@
     },
     "/v2/transactions/{txId}": {
       "get": {
-        "summary": "Normal",
+        "summary": "Returns the information for the given transaction id, including timestamp and transfer status.",
         "operationId": "ArchiveService_GetTransactionV2",
         "responses": {
           "200": {
@@ -731,6 +834,36 @@
       "properties": {
         "computors": {
           "$ref": "#/definitions/pbComputors"
+        }
+      }
+    },
+    "pbGetEmptyTickListResponseV2": {
+      "type": "object",
+      "properties": {
+        "pagination": {
+          "$ref": "#/definitions/pbPagination"
+        },
+        "emptyTicks": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      }
+    },
+    "pbGetEpochTickListResponseV2": {
+      "type": "object",
+      "properties": {
+        "pagination": {
+          "$ref": "#/definitions/pbPagination"
+        },
+        "ticks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbTickStatus"
+          }
         }
       }
     },
@@ -906,6 +1039,35 @@
             "type": "object",
             "$ref": "#/definitions/pbTransferTransactionsPerTick"
           }
+        }
+      }
+    },
+    "pbPagination": {
+      "type": "object",
+      "properties": {
+        "totalRecords": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "currentPage": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "totalPages": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "nextPage": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "previousPage": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -1139,6 +1301,18 @@
         }
       }
     },
+    "pbTickStatus": {
+      "type": "object",
+      "properties": {
+        "tickNumber": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "isEmpty": {
+          "type": "boolean"
+        }
+      }
+    },
     "pbTransaction": {
       "type": "object",
       "properties": {
@@ -1249,9 +1423,5 @@
         }
       }
     }
-  },
-  "host": "rpc.qubic.org",
-  "schemes": [
-    "https"
-  ]
+  }
 }
