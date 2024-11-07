@@ -1423,5 +1423,9 @@
         }
       }
     }
-  }
+  },
+  "host": "api.qubic.org",
+  "schemes": [
+    "https"
+  ]
 }
