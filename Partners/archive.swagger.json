@@ -1424,7 +1424,7 @@
       }
     }
   },
-  "host": "api.qubic.org",
+  "host": "rpc.qubic.org",
   "schemes": [
     "https"
   ]
