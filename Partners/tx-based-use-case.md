@@ -12,15 +12,15 @@ const baseUrl = 'https://testapi.qubic.org/v1';
 
 This documentation refers to the [Qubic V1 RPC API](qubic-rpc-doc.html).
 
-| Method  	| Endpoint    	                                | Description   	                                               |  Body Payload |
-|---	|----------------------------------------------|---------------------------------------------------------------|---|
-| GET  	| /latestTick   	                              | Get the current tick (block height)   	                       | -   |
-| POST  | /broadcast-transaction	                      | Broadcast a transaction    	                                  | `{ "encodedTransaction": "<BASE64RAWTX>" }  `  |
-| GET  	| /ticks/{tickNumber}/approved-transactions  	 | Get a List of approved transactions for the given tick 	      |   - |
-| GET  	| /tx-status/{txId}  	                         | Get the status of a single transaction 	                      |   - |
-| GET  	| /ticks/{tickNumber}/tick-data  	             | Get tick information like timestamp, epoch, included tx ids 	 |   - |
-| GET  	| /balances/{addressID}	                       | Get balance for specified address ID	                         |   - |
-| GET  	| /status  	                                   | Get the RPC status 	                                          |   - |
+| Method  	| Endpoint    	                                | Description   	                                               |  Body Payload | Example |
+|---	|----------------------------------------------|---------------------------------------------------------------|---|---|
+| GET  	| /latestTick   	                       | Get the current tick (block height)   	                       | -   						| [Example](https://testapi.qubic.org/v1/latestTick) |
+| POST  | /broadcast-transaction                       | Broadcast a transaction    	                               | `{ "encodedTransaction": "<BASE64RAWTX>" }  `  | n/a |
+| GET  	| /ticks/{tickNumber}/approved-transactions    | Get a List of approved transactions for the given tick        |   - 						| [Example](https://testapi.qubic.org/v1/ticks/13254066/approved-transactions) |
+| GET  	| /tx-status/{txId}  	                       | Get the status of a single transaction 	               |   - 						| [Example](https://testapi.qubic.org/v1/tx-status/nfdedauqxkdcvcltfomepinjogdgtpnvvbhpwkajzgvjlxagjefadcdaukgn) |
+| GET  	| /ticks/{tickNumber}/tick-data  	       | Get tick information like timestamp, epoch, included tx ids   |   - 						| [Example](https://testapi.qubic.org/v1/ticks/13254066/tick-data) |
+| GET  	| /balances/{addressID}	                       | Get balance for specified address ID	                       |   - 						| [Example](https://testapi.qubic.org/v1/balances/WTKMJKIJDTMGHBFUPYNBRVLQOCACPRYVKBSSOCBICHPPRQVBIMAFDATFBPIN) |
+| GET  	| /status  	                               | Get the RPC status 	                                       |   - 						| [Example](https://testapi.qubic.org/v1/status) |
 
 
 
