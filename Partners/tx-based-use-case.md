@@ -7,7 +7,7 @@ The TS Library uses a Webassembly for all the cryptographical stuff.
 
 For all the following examples the `baseUrl` is set to:
 ```js
-const baseUrl = 'https://testapi.qubic.org/v1';
+const baseUrl = 'https://rpc.qubic.org/v1';
 ```
 
 This documentation refers to the [Qubic V1 RPC API](qubic-rpc-doc.html).
@@ -263,7 +263,7 @@ import (
   "log"
 )
 
-const baseUrl = "https://testapi.qubic.org/v1"
+const baseUrl = "https://rpc.qubic.org/v1"
 
 func main() {
   tx, err := types.NewSimpleTransferTransaction(
@@ -353,7 +353,7 @@ import (
 	"net/http"
 )
 
-const baseUrl = "https://testapi.qubic.org/v1"
+const baseUrl = "https://rpc.qubic.org/v1"
 
 func main() {
 	url := baseUrl + "/latestTick"
@@ -422,7 +422,7 @@ import (
   "net/http"
 )
 
-const baseUrl = "https://testapi.qubic.org/v1"
+const baseUrl = "https://rpc.qubic.org/v1"
 
 func main() {
   tx, err := types.NewSimpleTransferTransaction(
@@ -547,7 +547,7 @@ import (
     "github.com/qubic/go-node-connector/types"
 )
 
-const baseUrl = "https://testapi.qubic.org/v1"
+const baseUrl = "https://rpc.qubic.org/v1"
 
 func main() {
 	var tx types.Transaction
@@ -634,7 +634,7 @@ import (
   "net/http"
 )
 
-const baseUrl = "https://testapi.qubic.org/v1"
+const baseUrl = "https://rpc.qubic.org/v1"
 
 func main() {
   targetTick := 13201784
@@ -772,7 +772,7 @@ import (
 	"net/http"
 )
 
-const baseUrl = "https://testapi.qubic.org/v1"
+const baseUrl = "https://rpc.qubic.org/v1"
 
 func main() {
 	targetTick := 13201784
@@ -909,7 +909,7 @@ import (
 	"net/http"
 )
 
-const baseUrl = "https://testapi.qubic.org/v1"
+const baseUrl = "https://rpc.qubic.org/v1"
 
 func main() {
 	url := baseUrl + "/transactions/ereivwmylkkjicicsljuyhrhdgneoibmyyoxjwffobriggerszqoiudgtksm"
@@ -1090,7 +1090,7 @@ import (
   "net/http"
 )
 
-const baseUrl = "https://testapi.qubic.org/v1"
+const baseUrl = "https://rpc.qubic.org/v1"
 
 func main() {
   // max 25
