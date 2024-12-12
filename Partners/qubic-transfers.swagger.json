@@ -1,0 +1,299 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "transfers.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "TransferService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/v1/entities/{identity}/events/asset-transfer": {
+      "get": {
+        "operationId": "TransferService_GetAssetChangeEventsForEntity",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/protoAssetChangeEventsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "identity",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "TransferService"
+        ]
+      }
+    },
+    "/api/v1/entities/{identity}/events/qu-transfer": {
+      "get": {
+        "operationId": "TransferService_GetQuTransferEventsForEntity",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/protoQuTransferEventsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "identity",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "TransferService"
+        ]
+      }
+    },
+    "/api/v1/ticks/{tick}/events/asset-transfer": {
+      "get": {
+        "operationId": "TransferService_GetAssetChangeEventsForTick",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/protoAssetChangeEventsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tick",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "TransferService"
+        ]
+      }
+    },
+    "/api/v1/ticks/{tick}/events/qu-transfer": {
+      "get": {
+        "operationId": "TransferService_GetQuTransferEventsForTick",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/protoQuTransferEventsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tick",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "TransferService"
+        ]
+      }
+    },
+    "/status/health": {
+      "get": {
+        "operationId": "TransferService_Health",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/protoHealthResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "TransferService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protoAssetChangeEvent": {
+      "type": "object",
+      "properties": {
+        "sourceId": {
+          "type": "string"
+        },
+        "destinationId": {
+          "type": "string"
+        },
+        "issuerId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "numberOfShares": {
+          "type": "string",
+          "format": "uint64",
+          "title": "will be serialized as string over rest"
+        },
+        "transactionHash": {
+          "type": "string"
+        },
+        "tick": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "eventType": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "protoAssetChangeEventsResponse": {
+      "type": "object",
+      "properties": {
+        "latestTick": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protoAssetChangeEvent"
+          }
+        }
+      }
+    },
+    "protoHealthResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "protoQuTransferEvent": {
+      "type": "object",
+      "properties": {
+        "sourceId": {
+          "type": "string"
+        },
+        "destinationId": {
+          "type": "string"
+        },
+        "amount": {
+          "type": "string",
+          "format": "uint64",
+          "title": "will be serialized as string over rest"
+        },
+        "transactionHash": {
+          "type": "string"
+        },
+        "tick": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "eventType": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "protoQuTransferEventsResponse": {
+      "type": "object",
+      "properties": {
+        "latestTick": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protoQuTransferEvent"
+          }
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  },
+  "host": "qxinfo.qubic.org",
+  "basePath": "/gotr",
+  "schemes": [
+    "https"
+  ]
+}
