@@ -3,27 +3,6 @@
 ## Management Summary
 This document describes the Qubic RPC infrastructure and how it can be used to integrate Qubic into an exchange environment.
 
-## About qubic
-* Launched: 13.4.2022 (mainnet)
-* Fair Launch: no VC or team allocations
-* Circulating Supply: 71.4trn (trilion)
-* Weekly Emission: 1trn
-* Hard Cap/Max Supply: 1000trn (will most likely never be reached due to burn mechanisms)
-
-### Available to buy
-* [SafeTrade](https://safe.trade/)
-* [Tradeogre](https://tradeogre.com/markets)
-* [Seven Seas Exchange](https://www.sevenseas.exchange/)
-* [Bitkonan](https://www.bitkonan.com)
-
-### Trackers
-* [Coinmarketcap](https://coinmarketcap.com/currencies/qubic/)
-* [Coingecko](https://www.coingecko.com/en/coins/qubic-network)
-* [Delta mobile app](http://delta.app)
-* [Livecoinwatch](https://www.livecoinwatch.com/price/QUBIC-QUBIC)
-* [Coinpaprika](https://coinpaprika.com/coin/qubic-qubic/)
-
-
 ## Exchange Related Information
 * Project Name: Qubic
 * Ticker: QUBIC 
@@ -42,15 +21,9 @@ This document describes the Qubic RPC infrastructure and how it can be used to i
 * Medium, Reddit, Facebook, Instagram: n/a
 
 ### Tech Integration Basics
-* Base URL for production environment: `https://ex.qubic.org/v1`
-* Base URL for test environment (points to test infrastructure which accesses the production chain): `https://testapi.qubic.org/v1`
-* Access to the production environment is IP restricted.
-* Individual rate limits can be set by source ip address.
+* Base URL for production environment: `https://rpc.qubic.org/v1`
 * The HTTP API is open and doesn’t require any special authentication.
 * All infrastructure is protected by Cloudflare
-
-> [!IMPORTANT]
-> Use `https://testapi.qubic.org/v1` for testing and let us know your IP addresses in order to access `https://ex.qubic.org/v1`
 
 ### Tech FAQ
 * **Is there a need to run an own node?** \
@@ -60,12 +33,11 @@ No, it doesn’t.
 * **Where do I get test tokens?** \
 Just get in touch, we’re happy to send some. \
 
-
 # General Qubic Terms
 This section is about terms needed to understand Qubic. It explains the dos and don’ts.
 
-## QU (Qubics)
-QU is the native currency of the Qubic network.
+## QUBIC (Qubics)
+QUBIC is the native currency of the Qubic network.
 
 ## Seed and ID
 The **seed** is the equivalent to the private key in Bitcoin/Ethereum. As seed is a string of 55 low case characters [a-z]. Example: `lyvborkwdxwnghiohudjgrmvdadbecyvjrlrtqsyajpeajkgaxbohky`
@@ -79,7 +51,7 @@ During epoch change ~11:00 to ~13:00 UTC the general network availability is dep
 Using the Qubic RPC interface you will have responsiveness also during epoch transition because all important data is cached.
 
 > [!IMPORTANT]
-> We suggest <strong>not</strong> to  send out transactions during the transition phase. Every Wednesday 11:45 UTC and 12:45 UTC.
+> We suggest <strong>not</strong> to send out transactions during the transition phase. Every Wednesday 11:45 UTC and 12:45 UTC.
 
 ## Computor
 A Computor is one of 676 validators in Qubic.
