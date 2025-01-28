@@ -6,7 +6,6 @@ window.onload = function() {
     urls: [
       {url: "archive.swagger.json", name: "Qubic RPC Archive Tree"},
       {url: "qubic-http.swagger.json", name: "Qubic RPC Live Tree"},
-      {url: "txstatus.swagger.json", name: "Qubic RPC TX Status Tree"},
       {url: "stats-api.swagger.json", name: "Qubic Stats API"},
       {url: "qubic-transfers.swagger.json", name: "Qubic Transfers API"},
     ],
