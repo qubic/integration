@@ -16,7 +16,7 @@
     "application/json"
   ],
   "paths": {
-    "/api/v1/entities/{identity}/events/asset-transfer": {
+    "/api/v1/entities/{identity}/events/asset-transfers": {
       "get": {
         "operationId": "TransferService_GetAssetChangeEventsForEntity",
         "responses": {
@@ -46,7 +46,7 @@
         ]
       }
     },
-    "/api/v1/entities/{identity}/events/qu-transfer": {
+    "/api/v1/entities/{identity}/events/qu-transfers": {
       "get": {
         "operationId": "TransferService_GetQuTransferEventsForEntity",
         "responses": {
@@ -76,7 +76,38 @@
         ]
       }
     },
-    "/api/v1/ticks/{tick}/events/asset-transfer": {
+    "/api/v1/ticks/{tick}/events/asset-issuances": {
+      "get": {
+        "operationId": "TransferService_GetAssetIssuanceEventsForTick",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/protoAssetIssuanceEventResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tick",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "TransferService"
+        ]
+      }
+    },
+    "/api/v1/ticks/{tick}/events/asset-transfers": {
       "get": {
         "operationId": "TransferService_GetAssetChangeEventsForTick",
         "responses": {
@@ -107,7 +138,38 @@
         ]
       }
     },
-    "/api/v1/ticks/{tick}/events/qu-transfer": {
+    "/api/v1/ticks/{tick}/events/assets": {
+      "get": {
+        "operationId": "TransferService_GetAssetEventsForTick",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/protoAssetEventsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tick",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "TransferService"
+        ]
+      }
+    },
+    "/api/v1/ticks/{tick}/events/qu-transfers": {
       "get": {
         "operationId": "TransferService_GetQuTransferEventsForTick",
         "responses": {
@@ -179,8 +241,7 @@
         },
         "numberOfShares": {
           "type": "string",
-          "format": "uint64",
-          "title": "will be serialized as string over rest"
+          "format": "uint64"
         },
         "transactionHash": {
           "type": "string"
@@ -211,11 +272,103 @@
         }
       }
     },
+    "protoAssetEventsResponse": {
+      "type": "object",
+      "properties": {
+        "latestTick": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "changeEvents": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protoAssetChangeEvent"
+          }
+        },
+        "issuanceEvents": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protoAssetIssuanceEvent"
+          }
+        }
+      }
+    },
+    "protoAssetIssuanceEvent": {
+      "type": "object",
+      "properties": {
+        "issuerId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "numberOfShares": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "unitOfMeasurement": {
+          "type": "string"
+        },
+        "numberOfDecimalPlaces": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "transactionHash": {
+          "type": "string"
+        },
+        "tick": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "eventType": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "protoAssetIssuanceEventResponse": {
+      "type": "object",
+      "properties": {
+        "latestTick": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protoAssetIssuanceEvent"
+          }
+        }
+      }
+    },
+    "protoComponent": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string"
+        },
+        "details": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "protoHealthResponse": {
       "type": "object",
       "properties": {
         "status": {
           "type": "string"
+        },
+        "components": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/protoComponent"
+          }
         }
       }
     },
@@ -230,8 +383,7 @@
         },
         "amount": {
           "type": "string",
-          "format": "uint64",
-          "title": "will be serialized as string over rest"
+          "format": "uint64"
         },
         "transactionHash": {
           "type": "string"
