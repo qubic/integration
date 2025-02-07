@@ -332,9 +332,10 @@ For the following examples of this flow, we assume you have already all needed d
 - Receiver
 - Amount
 
-#### Step 1: Request the latest tick height
 
-**Javascript**
+#### JavaScript
+
+##### Step 1: Request the latest tick height
 ```js
 const response = await fetch(`${baseUrl}/latestTick`);
 const tickResponse = await response.json();
@@ -344,52 +345,7 @@ const latestTick = tickResponse.latestTick;
 
 ```
 
-**Go**
-```go
-package main
-
-import (
-	"encoding/json"
-	"fmt"
-	"log"
-	"net/http"
-)
-
-const baseUrl = "https://rpc.qubic.org/v1"
-
-func main() {
-	url := baseUrl + "/latestTick"
-	req, err := http.NewRequest(http.MethodGet, url, nil)
-	if err != nil {
-		log.Fatalf("got err: %s when creating request", err.Error())
-	}
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		log.Fatalf("got err: %s when performing request", err.Error())
-	}
-	defer res.Body.Close()
-
-    if res.StatusCode != http.StatusOK {
-      log.Fatalf("Got non 200 status code: %d", res.StatusCode)
-    }
-
-	type response struct {
-		LatestTick uint32 `json:"latestTick"`
-	}
-	var body response
-
-	err = json.NewDecoder(res.Body).Decode(&body)
-	if err != nil {
-		log.Fatalf("got err: %s when decoding body", err.Error())
-	}
-
-	fmt.Println(body.LatestTick)
-}
-```
-
-#### Step 2: Create and sign transaction
-
-**Javascript**
+##### Step 2: Create and sign transaction
 ```js
   // please find an extended example here: https://github.com/qubic/ts-library/blob/main/test/createTransactionTest.js
 
@@ -409,111 +365,9 @@ func main() {
     // this id can presented to the client as reference
     const transactionId = tx.getId();
 ```
-**Go**
-```go
-package main
 
-import (
-  "bytes"
-  "encoding/hex"
-  "encoding/json"
-  "fmt"
-  "github.com/qubic/go-schnorrq"
-  "github.com/qubic/go-node-connector/types"
-  "log"
-  "net/http"
-)
+##### Step 3: Send transaction
 
-const baseUrl = "https://rpc.qubic.org/v1"
-
-func main() {
-  tx, err := types.NewSimpleTransferTransaction(
-    "source-addr-here",
-    "dest-addr-here",
-    1,
-    13255850,
-  )
-  if err != nil {
-    log.Fatalf("got err: %s when creating simple transfer transaction", err.Error())
-  }
-  fmt.Printf("source pubkey: %s\n", hex.EncodeToString(tx.SourcePublicKey[:]))
-
-  unsignedDigest, err := tx.GetUnsignedDigest()
-  if err != nil {
-    log.Fatalf("got err: %s when getting unsigned digest local", err.Error())
-  }
-
-  subSeed, err :=types.GetSubSeed("seed-here")
-  if err!= nil {
-    log.Fatalf("got err %s when getting subSeed", err.Error())
-  }
-  
-  sig, err := schnorrq.Sign(subSeed, tx.SourcePublicKey, unsignedDigest)
-  if err != nil {
-    log.Fatalf("got err: %s when signing", err.Error())
-  }
-  fmt.Printf("sig: %s\n", hex.EncodeToString(sig[:]))
-  tx.Signature = sig
-
-  encodedTx, err := tx.EncodeToBase64()
-  if err != nil {
-    log.Fatalf("got err: %s when encoding tx to base 64", err.Error())
-  }
-  fmt.Printf("encodedTx: %s\n", encodedTx)
-
-  id, err := tx.ID()
-  if err != nil {
-    log.Fatalf("got err: %s when getting tx id", err.Error())
-  }
-
-  fmt.Printf("tx id(hash): %s\n", id)
-
-  url := baseUrl + "/broadcast-transaction"
-  payload := struct {
-    EncodedTransaction string `json:"encodedTransaction"`
-  }{
-    EncodedTransaction: encodedTx,
-  }
-
-  buff := new(bytes.Buffer)
-  err = json.NewEncoder(buff).Encode(payload)
-  if err != nil {
-    log.Fatalf("got err: %s when encoding payload", err.Error())
-  }
-
-  req, err := http.NewRequest(http.MethodPost, url, buff)
-  if err != nil {
-    log.Fatalf("got err: %s when creating request", err.Error())
-  }
-
-  res, err := http.DefaultClient.Do(req)
-  if err != nil {
-    log.Fatalf("got err: %s when performing request", err.Error())
-  }
-  defer res.Body.Close()
-
-  if res.StatusCode != http.StatusOK {
-    log.Fatalf("Got non 200 status code: %d", res.StatusCode)
-  }
-
-  type response struct {
-    PeersBroadcasted   uint32 `json:"peersBroadcasted"`
-    EncodedTransaction string `json:"encodedTransaction"`
-  }
-  var body response
-
-  err = json.NewDecoder(res.Body).Decode(&body)
-  if err != nil {
-    log.Fatalf("got err: %s when decoding body", err.Error())
-  }
-
-  fmt.Printf("%+v\n", body)
-}
-
-```
-#### Step 3: Send transaction
-
-**Javascript**
 ```js
   // after creating and signing the tx it should be sent to the network
   const response = fetch(`${baseUrl}/broadcast-transaction`,
@@ -536,69 +390,67 @@ func main() {
   }
 ```
 
-**Go**
+#### Go
+
 ```go
 package main
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
+	"github.com/pkg/errors"
+	"github.com/qubic/go-node-connector/types"
 	"log"
-	"net/http"
-    "github.com/qubic/go-node-connector/types"
 )
 
-const baseUrl = "https://rpc.qubic.org/v1"
+func SimpleTransactionExample() error {
 
-func main() {
-	var tx types.Transaction
-	encodedTransaction, _ = tx.EncodeToBase64()
-	url := baseUrl + "/broadcast-transaction"
-	payload := struct {
-		EncodedTransaction string `json:"encodedTransaction"`
-	}{
-		EncodedTransaction: encodedTransaction,
-	}
+	senderAddress := ""
+	senderSeed := ""
+	destinationAddress := ""
+	amount := int64(100)
 
-	buff := new(bytes.Buffer)
-	err := json.NewEncoder(buff).Encode(payload)
+	// Create live service client and get current tick / block number
+	lsc := types.NewLiveServiceClient("https://rpc.qubic.org")
+	currentTickInfo, err := lsc.GetTickInfo()
 	if err != nil {
-		log.Fatalf("got err: %s when encoding payload", err.Error())
+		return errors.Wrap(err, "getting current tick info")
 	}
 
-	req, err := http.NewRequest(http.MethodPost, url, buff)
+	// Schedule transaction for a future tick
+	targetTick := currentTickInfo.TickInfo.Tick + 15
+
+	// Create transaction
+	tx, err := types.NewSimpleTransferTransaction(senderAddress, destinationAddress, amount, targetTick)
 	if err != nil {
-		log.Fatalf("got err: %s when creating request", err.Error())
+		return errors.Wrap(err, "creating transaction")
 	}
 
-	res, err := http.DefaultClient.Do(req)
+	// Create signer based on the sender's seed and sign the transaction
+	signer, err := types.NewSigner(senderSeed)
 	if err != nil {
-		log.Fatalf("got err: %s when performing request", err.Error())
-	}
-	defer res.Body.Close()
-
-	if res.StatusCode != http.StatusOK {
-		log.Fatalf("Got non 200 status code: %d", res.StatusCode)
+		return errors.Wrap(err, "creating signer")
 	}
 
-	type response struct {
-		PeersBroadcasted uint32 `json:"peersBroadcasted"`
-	}
-	var body response
-
-	err = json.NewDecoder(res.Body).Decode(&body)
+	err = signer.SignTx(&tx)
 	if err != nil {
-		log.Fatalf("got err: %s when decoding body", err.Error())
+		return errors.Wrap(err, "signing transaction")
 	}
 
-	fmt.Println(body.PeersBroadcasted)
+	// Broadcast the transaction
+	response, err := lsc.BroadcastTransaction(tx)
+	if err != nil {
+		return errors.Wrap(err, "broadcasting transaction")
+	}
+
+	log.Printf("Broadcasted transaction '%s' to %d peers. Scheduled for tick %d\n", response.TransactionId, response.PeersBroadcasted, targetTick)
+
+	return nil
 }
 ```
 
-#### Step 4: Verify transaction status
+#### Verifying transaction status
 
-**Javascript**
+
+**JavaScript**
 ```js
   // you can verify if a transaction was successful as soon the target tick has passed (true finality)
 
@@ -717,7 +569,6 @@ When requesting the RPC server for `approved-transactions` you might receive a `
     ]
 }
 ```
-
 
 ## Deposit Workflow
 
@@ -1079,122 +930,166 @@ The example below shows how to use it.
 ```
 **Go**
 ```go
+
 package main
 
 import (
-  "bytes"
-  "encoding/hex"
-  "encoding/json"
-  "fmt"
-  "github.com/qubic/go-schnorrq"
+  "github.com/pkg/errors"
   "github.com/qubic/go-node-connector/types"
   "log"
-  "net/http"
 )
 
-const baseUrl = "https://rpc.qubic.org/v1"
+func SendManyTransactionExample() error {
 
-func main() {
-  // max 25
-  transfers := []types.SendManyTransfer{
-    {
-      AddressID: "dest-addr-1",
-      Amount:    1,
-    },
-    {
-      AddressID: "dest-addr-2",
-      Amount:    2,
-    },
-  }
-  var sendManyPayload types.SendManyTransferPayload
+	senderAddress := ""
+	senderSeed := ""
 
-  err := sendManyPayload.AddTransfers(transfers)
-  if err != nil {
-    log.Fatalf("got err: %s when adding transfers", err.Error())
-  }
-  tx, err := types.NewSendManyTransferTransaction(
-    "source-addr",
-    13256050,
-    sendManyPayload,
-  )
-  if err != nil {
-    log.Fatalf("got err: %s when creating simple transfer transaction", err.Error())
-  }
-  fmt.Printf("source pubkey: %s\n", hex.EncodeToString(tx.SourcePublicKey[:]))
+	// Create the list of recipients
+	transfers := []types.SendManyTransfer{
+		{
+			AddressID: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+			Amount:    10,
+		},
+		{
+			AddressID: "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+			Amount:    20,
+		},
+	}
 
-  unsignedDigest, err := tx.GetUnsignedDigest()
-  if err != nil {
-    log.Fatalf("got err: %s when getting unsigned digest local", err.Error())
-  }
+	var payload types.SendManyTransferPayload
 
-  subSeed, err :=types.GetSubSeed("seed-here")
-  if err!= nil {
-    log.Fatalf("got err %s when getting subSeed", err.Error())
-  }
+	err := payload.AddTransfers(transfers)
+	if err != nil {
+		return errors.Wrap(err, "adding transfers to send many payload")
+	}
 
-  sig, err := schnorrq.Sign(subSeed, tx.SourcePublicKey, unsignedDigest)
-  if err != nil {
-    log.Fatalf("got err: %s when signing", err.Error())
-  }
-  fmt.Printf("sig: %s\n", hex.EncodeToString(sig[:]))
-  tx.Signature = sig
+	// Create live service client and get current tick / block number
+	lsc := types.NewLiveServiceClient("https://rpc.qubic.org")
+	currentTickInfo, err := lsc.GetTickInfo()
+	if err != nil {
+		return errors.Wrap(err, "getting current tick info")
+	}
 
-  encodedTx, err := tx.EncodeToBase64()
-  if err != nil {
-    log.Fatalf("got err: %s when encoding tx to base 64", err.Error())
-  }
-  fmt.Printf("encodedTx: %s\n", encodedTx)
+	// Schedule transaction for a future tick
+	targetTick := currentTickInfo.TickInfo.Tick + 15
 
-  id, err := tx.ID()
-  if err != nil {
-    log.Fatalf("got err: %s when getting tx id", err.Error())
-  }
+	// Create transaction
+	tx, err := types.NewSendManyTransferTransaction(senderAddress, targetTick, payload)
+	if err != nil {
+		return errors.Wrap(err, "creating send many transaction")
+	}
 
-  fmt.Printf("tx id(hash): %s\n", id)
+	// Create signer based on the sender's seed and sign the transaction
+	signer, err := types.NewSigner(senderSeed)
+	if err != nil {
+		return errors.Wrap(err, "creating signer")
+	}
 
-  url := baseUrl + "/broadcast-transaction"
-  payload := struct {
-    EncodedTransaction string `json:"encodedTransaction"`
-  }{
-    EncodedTransaction: encodedTx,
-  }
+	err = signer.SignTx(&tx)
+	if err != nil {
+		return errors.Wrap(err, "signing transaction")
+	}
 
-  buff := new(bytes.Buffer)
-  err = json.NewEncoder(buff).Encode(payload)
-  if err != nil {
-    log.Fatalf("got err: %s when encoding sendManyPayload", err.Error())
-  }
+	// Broadcast the transaction
+	response, err := lsc.BroadcastTransaction(tx)
+	if err != nil {
+		return errors.Wrap(err, "broadcasting transaction")
+	}
 
-  req, err := http.NewRequest(http.MethodPost, url, buff)
-  if err != nil {
-    log.Fatalf("got err: %s when creating request", err.Error())
-  }
+	log.Printf("Broadcasted transaction '%s' to %d peers. Scheduled for tick %d\n", response.TransactionId, response.PeersBroadcasted, targetTick)
 
-  res, err := http.DefaultClient.Do(req)
-  if err != nil {
-    log.Fatalf("got err: %s when performing request", err.Error())
-  }
-  defer res.Body.Close()
-
-  if res.StatusCode != http.StatusOK {
-    log.Fatalf("Got non 200 status code: %d", res.StatusCode)
-  }
-
-  type response struct {
-    PeersBroadcasted   uint32 `json:"peersBroadcasted"`
-    EncodedTransaction string `json:"encodedTransaction"`
-  }
-  var body response
-
-  err = json.NewDecoder(res.Body).Decode(&body)
-  if err != nil {
-    log.Fatalf("got err: %s when decoding body", err.Error())
-  }
-
-  fmt.Printf("%+v\n", body)
+	return nil
 }
 
 ```
+
+> The send many transaction requires a feed to pe paid by the sender.  
+> The JavaScript example requires that you add the fee manually.
+> In the case of the go example, this fee is added automatically when creating the transaction.
+
+
+## Asset Transfers
+In order to transfer assets, you can refer to this example:
+
+**GO**
+
+```go
+package main
+
+import (
+  "github.com/pkg/errors"
+  "github.com/qubic/go-node-connector/types"
+  "log"
+)
+func AssetTransferTransactionExample() error {
+
+	senderAddress := ""
+	senderSeed := ""
+
+	destinationAddress := ""
+
+	assetName := ""
+	assetIssuer := ""
+	numberOfUnits := int64(1)
+	
+	// The transfer fee may be subject to change in the future.
+	transferFee := int64(100)
+
+	// Create the asset transfer payload
+	payload, err := types.NewAssetTransferPayload(assetIssuer, destinationAddress, assetName, numberOfUnits)
+	if err != nil {
+		return errors.Wrap(err, "creating asset transfer payload")
+	}
+
+	// Create live service client and get current tick / block number
+	lsc := types.NewLiveServiceClient("https://rpc.qubic.org")
+	currentTickInfo, err := lsc.GetTickInfo()
+	if err != nil {
+		return errors.Wrap(err, "getting current tick info")
+	}
+
+	// Schedule transaction for a future tick
+	targetTick := currentTickInfo.TickInfo.Tick + 15
+
+	// Create transaction
+	tx, err := types.NewAssetTransferTransaction(senderAddress, targetTick, transferFee, payload)
+	if err != nil {
+		return errors.Wrap(err, "creating asset transfer transaction")
+	}
+
+	// Create signer based on the sender's seed and sign the transaction
+	signer, err := types.NewSigner(senderSeed)
+	if err != nil {
+		return errors.Wrap(err, "creating signer")
+	}
+
+	err = signer.SignTx(&tx)
+	if err != nil {
+		return errors.Wrap(err, "signing transaction")
+	}
+
+	// Broadcast the transaction
+	response, err := lsc.BroadcastTransaction(tx)
+	if err != nil {
+		return errors.Wrap(err, "broadcasting transaction")
+	}
+
+	log.Printf("Broadcasted transaction '%s' to %d peers. Scheduled for tick %d\n", response.TransactionId, response.PeersBroadcasted, targetTick)
+
+	return nil
+}
+
+```
+
+> Note that the in order to transfer assets, a fee must be paid to the smart contract.  
+> For the time being, the fee may be queried at this address: 
+
+```bash
+  curl -X 'GET' \
+  'https://api.qubic.org/v1/qx/getFees' \
+  -H 'accept: application/json'
+```
+
 ## Error Handling
 In case you receive a http resonse `400` for the endpoints\
 `/ticks/{tickNumber}/approved-transactions`\
