@@ -1036,7 +1036,7 @@ func AssetTransferTransactionExample() error {
 	transferFee := int64(100)
 
 	// Create the asset transfer payload
-	payload, err := types.NewAssetTransferPayload(assetIssuer, destinationAddress, assetName, numberOfUnits)
+	payload, err := types.NewAssetTransferPayload(assetName, assetIssuer, destinationAddress, numberOfUnits)
 	if err != nil {
 		return errors.Wrap(err, "creating asset transfer payload")
 	}
