@@ -409,7 +409,8 @@ func SimpleTransactionExample() error {
 	senderAddress := ""
 	senderSeed := ""
 	destinationAddress := ""
-	amount := int64(100)
+	// Change the transacted amount the desired value
+	amount := int64(1)
 
 	// Create live service client and get current tick / block number
 	lsc := types.NewLiveServiceClient("https://rpc.qubic.org")
