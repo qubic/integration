@@ -360,13 +360,13 @@ const latestTick = tickResponse.latestTick;
       // a suggested offset is 5-7 ticks
       .setTick(latestTick + 5);
 
-    // will build the tx: bundle all values and sign it
-    // returns the raw bytes of signed transaction
-    const signedTransactionData = await tx.build(signSeed);
+  // will build the tx: bundle all values and sign it
+  // returns the raw bytes of signed transaction
+  const signedTransactionData = await tx.build(signSeed);
 
-    // by requesting getId() you receive the txId of this transaction
-    // this id can presented to the client as reference
-    const transactionId = tx.getId();
+  // by requesting getId() you receive the txId of this transaction
+  // this id can presented to the client as reference
+  const transactionId = tx.getId();
 ```
 
 ##### Step 3: Send transaction
