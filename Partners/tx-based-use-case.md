@@ -45,6 +45,7 @@ This documentation refers to the [Qubic V1 RPC API](qubic-rpc-doc.html).
   - [Withdraw Workflow](#withdraw-workflow)
     - [Plain Transaction](#plain-transaction)
     - [Qutil(Send Many) Smart Contract](#qutilsend-many-smart-contract)
+  - [Asset Transfers](#asset-transfers)
   - [Error Handling](#error-handling)
 
 
@@ -139,6 +140,8 @@ Every Wednesday, Qubic has its epoch change. The epoch transition is at ~12:00 U
 If the network gets a breaking update, the epoch transition may take a few minutes. Expect between 11:59 to 13:00 UTC a delay for transactions.
 
 ## General Examples
+
+> The Go examples use the [go-node-connector](https://github.com/qubic/go-node-connector) library.
 
 ### Generating a Seed
 A seed is the private key in Qubic. Based on the seed, you can create the public address (id).
@@ -429,8 +432,8 @@ func SimpleTransactionExample() error {
 	if err != nil {
 		return errors.Wrap(err, "creating signer")
 	}
-
-    tx, err = signer.SignTx(tx)
+	
+	tx, err = signer.SignTx(tx)
 	if err != nil {
 		return errors.Wrap(err, "signing transaction")
 	}
@@ -947,11 +950,11 @@ func SendManyTransactionExample() error {
 	// Create the list of recipients
 	transfers := []types.SendManyTransfer{
 		{
-			AddressID: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+			AddressID: "AAA...",
 			Amount:    10,
 		},
 		{
-			AddressID: "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+			AddressID: "BBB...",
 			Amount:    20,
 		},
 	}
@@ -984,7 +987,7 @@ func SendManyTransactionExample() error {
 	if err != nil {
 		return errors.Wrap(err, "creating signer")
 	}
-
+	
     tx, err = signer.SignTx(tx)
 	if err != nil {
 		return errors.Wrap(err, "signing transaction")
@@ -1062,7 +1065,7 @@ func AssetTransferTransactionExample() error {
 	if err != nil {
 		return errors.Wrap(err, "creating signer")
 	}
-
+	
     tx, err = signer.SignTx(tx)
 	if err != nil {
 		return errors.Wrap(err, "signing transaction")
@@ -1081,7 +1084,7 @@ func AssetTransferTransactionExample() error {
 
 ```
 
-> Note that the in order to transfer assets, a fee must be paid to the smart contract.  
+> Note that in order to transfer assets, a fee must be paid to the smart contract.  
 > For the time being, the fee may be queried at this address: 
 
 ```bash
