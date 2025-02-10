@@ -988,7 +988,7 @@ func SendManyTransactionExample() error {
 		return errors.Wrap(err, "creating signer")
 	}
 	
-    tx, err = signer.SignTx(tx)
+    	tx, err = signer.SignTx(tx)
 	if err != nil {
 		return errors.Wrap(err, "signing transaction")
 	}
@@ -1065,8 +1065,8 @@ func AssetTransferTransactionExample() error {
 	if err != nil {
 		return errors.Wrap(err, "creating signer")
 	}
-	
-    tx, err = signer.SignTx(tx)
+
+	tx, err = signer.SignTx(tx)
 	if err != nil {
 		return errors.Wrap(err, "signing transaction")
 	}
