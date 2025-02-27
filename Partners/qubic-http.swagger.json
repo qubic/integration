@@ -138,6 +138,7 @@
     },
     "/v1/block-height": {
       "get": {
+        "summary": "/v1/block-height Deprecated in favor of /v1/tick-info",
         "operationId": "QubicLiveService_GetBlockHeight",
         "responses": {
           "200": {
