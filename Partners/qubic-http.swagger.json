@@ -16,6 +16,252 @@
     "application/json"
   ],
   "paths": {
+    "/v1/assets/issuances": {
+      "get": {
+        "summary": "Returns a list of issued assets.",
+        "operationId": "QubicLiveService_GetIssuedAssetsByFilter",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbAssetIssuances"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "issuerIdentity",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "assetName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "QubicLiveService"
+        ]
+      }
+    },
+    "/v1/assets/issuances/{index}": {
+      "get": {
+        "summary": "Returns an asset issuance by universe index.",
+        "operationId": "QubicLiveService_GetIssuedAssetByUniverseIndex",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbAssetIssuance"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "index",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "QubicLiveService"
+        ]
+      }
+    },
+    "/v1/assets/ownerships": {
+      "get": {
+        "summary": "Returns a list of asset owners. Asset name and issuer are required. Issuer defaults to zero address.",
+        "operationId": "QubicLiveService_GetOwnedAssetsByFilter",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbAssetOwnerships"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "issuerIdentity",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "assetName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "ownerIdentity",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "ownershipManagingContract",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "QubicLiveService"
+        ]
+      }
+    },
+    "/v1/assets/ownerships/{index}": {
+      "get": {
+        "summary": "Returns an asset ownership by universe index.",
+        "operationId": "QubicLiveService_GetOwnedAssetByUniverseIndex",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbAssetOwnership"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "index",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "QubicLiveService"
+        ]
+      }
+    },
+    "/v1/assets/possessions": {
+      "get": {
+        "summary": "Returns a list of asset possessors. Asset name and issuer are required. Issuer defaults to zero address.",
+        "operationId": "QubicLiveService_GetPossessedAssetsByFilter",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbAssetPossessions"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "issuerIdentity",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "assetName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "ownerIdentity",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "possessorIdentity",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "ownershipManagingContract",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "possessionManagingContract",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "QubicLiveService"
+        ]
+      }
+    },
+    "/v1/assets/possessions/{index}": {
+      "get": {
+        "summary": "Returns an asset possession by universe index.",
+        "operationId": "QubicLiveService_GetPossessedAssetByUniverseIndex",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbAssetPossession"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "index",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "QubicLiveService"
+        ]
+      }
+    },
     "/v1/assets/{identity}/issued": {
       "get": {
         "operationId": "QubicLiveService_GetIssuedAssets",
@@ -138,7 +384,6 @@
     },
     "/v1/block-height": {
       "get": {
-        "summary": "/v1/block-height Deprecated in favor of /v1/tick-info",
         "operationId": "QubicLiveService_GetBlockHeight",
         "responses": {
           "200": {
@@ -257,6 +502,164 @@
         "universeIndex": {
           "type": "integer",
           "format": "int64"
+        }
+      }
+    },
+    "pbAssetIssuance": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/pbAssetIssuanceData"
+        },
+        "tick": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "universeIndex": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "pbAssetIssuanceData": {
+      "type": "object",
+      "properties": {
+        "issuerIdentity": {
+          "type": "string"
+        },
+        "type": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "numberOfDecimalPlaces": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "unitOfMeasurement": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+    },
+    "pbAssetIssuances": {
+      "type": "object",
+      "properties": {
+        "assets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbAssetIssuance"
+          }
+        }
+      }
+    },
+    "pbAssetOwnership": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/pbAssetOwnershipData"
+        },
+        "tick": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "universeIndex": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "pbAssetOwnershipData": {
+      "type": "object",
+      "properties": {
+        "ownerIdentity": {
+          "type": "string"
+        },
+        "type": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "managingContractIndex": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "issuanceIndex": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "numberOfUnits": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "pbAssetOwnerships": {
+      "type": "object",
+      "properties": {
+        "assets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbAssetOwnership"
+          }
+        }
+      }
+    },
+    "pbAssetPossession": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/pbAssetPossessionData"
+        },
+        "tick": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "universeIndex": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "pbAssetPossessionData": {
+      "type": "object",
+      "properties": {
+        "possessorIdentity": {
+          "type": "string"
+        },
+        "type": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "managingContractIndex": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "ownershipIndex": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "numberOfUnits": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "pbAssetPossessions": {
+      "type": "object",
+      "properties": {
+        "assets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbAssetPossession"
+          }
         }
       }
     },
