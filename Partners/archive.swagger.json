@@ -531,6 +531,12 @@
             "required": false,
             "type": "integer",
             "format": "int32"
+          },
+          {
+            "name": "desc",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "tags": [
@@ -589,6 +595,20 @@
             "in": "query",
             "required": false,
             "type": "boolean"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
           }
         ],
         "tags": [
@@ -878,6 +898,9 @@
     "pbGetIdentityTransfersInTickRangeResponseV2": {
       "type": "object",
       "properties": {
+        "pagination": {
+          "$ref": "#/definitions/pbPagination"
+        },
         "transactions": {
           "type": "array",
           "items": {
@@ -1152,6 +1175,9 @@
         },
         "signatureHex": {
           "type": "string"
+        },
+        "saltedTransactionBodyHex": {
+          "type": "string"
         }
       }
     },
@@ -1197,6 +1223,9 @@
           "type": "string"
         },
         "txDigestHex": {
+          "type": "string"
+        },
+        "prevTransactionBodyHex": {
           "type": "string"
         }
       }
@@ -1423,9 +1452,5 @@
         }
       }
     }
-  },
-  "host": "rpc.qubic.org",
-  "schemes": [
-    "https"
-  ]
+  }
 }
