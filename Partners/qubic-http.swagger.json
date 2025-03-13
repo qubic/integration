@@ -384,6 +384,7 @@
     },
     "/v1/block-height": {
       "get": {
+        "summary": "/block-height Deprecated in favor of /tick-info",
         "operationId": "QubicLiveService_GetBlockHeight",
         "responses": {
           "200": {
@@ -987,9 +988,5 @@
         }
       }
     }
-  },
-  "host": "rpc.qubic.org",
-  "schemes": [
-    "https"
-  ]
+  }
 }
