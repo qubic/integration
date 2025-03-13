@@ -16,6 +16,56 @@
     "application/json"
   ],
   "paths": {
+    "/v1/issuers/{issuerIdentity}/assets/{assetName}/owners": {
+      "get": {
+        "operationId": "StatsService_GetAssetOwners",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetAssetOwnershipResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "issuerIdentity",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "assetName",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "StatsService"
+        ]
+      }
+    },
     "/v1/latest-stats": {
       "get": {
         "operationId": "StatsService_GetLatestData",
@@ -78,6 +128,37 @@
     }
   },
   "definitions": {
+    "pbAssetOwnership": {
+      "type": "object",
+      "properties": {
+        "identity": {
+          "type": "string"
+        },
+        "numberOfShares": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "pbGetAssetOwnershipResponse": {
+      "type": "object",
+      "properties": {
+        "pagination": {
+          "$ref": "#/definitions/pbPagination"
+        },
+        "tick": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "owners": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbAssetOwnership"
+          }
+        }
+      }
+    },
     "pbGetLatestDataResponse": {
       "type": "object",
       "properties": {
@@ -113,6 +194,10 @@
           "format": "int32"
         },
         "totalPages": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "pageSize": {
           "type": "integer",
           "format": "int32"
         }
@@ -219,9 +304,5 @@
         }
       }
     }
-  },
-  "host": "rpc.qubic.org",
-  "schemes": [
-    "https"
-  ]
+  }
 }
