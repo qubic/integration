@@ -304,5 +304,9 @@
         }
       }
     }
-  }
+  },
+  "host": "rpc.qubic.org",
+  "schemes": [
+    "https"
+  ]
 }
