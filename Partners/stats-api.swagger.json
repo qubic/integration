@@ -135,7 +135,7 @@
           "type": "string"
         },
         "numberOfShares": {
-          "type": "integer",
+          "type": "string",
           "format": "int64"
         }
       }
