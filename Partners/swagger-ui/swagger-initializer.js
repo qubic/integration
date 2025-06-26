@@ -7,6 +7,7 @@ window.onload = function() {
       {url: "archive.swagger.json", name: "Qubic RPC Archive Tree"},
       {url: "qubic-http.swagger.json", name: "Qubic RPC Live Tree"},
       {url: "stats-api.swagger.json", name: "Qubic Stats API"},
+      {url: "query_services.swagger.json", name: "Qubic Query V2 Tree"},
     ],
     dom_id: '#swagger-ui',
     deepLinking: true,
