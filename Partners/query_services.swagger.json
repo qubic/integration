@@ -16,14 +16,62 @@
     "application/json"
   ],
   "paths": {
+    "/getLastProcessedTick": {
+      "get": {
+        "operationId": "ArchiveQueryService_GetLastProcessedTick",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetLastProcessedTickResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ArchiveQueryService"
+        ]
+      }
+    },
+    "/getProcessedTicksIntervals": {
+      "get": {
+        "operationId": "ArchiveQueryService_GetProcessedTickIntervals",
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "$ref": "#/definitions/pbProcessedTickInterval"
+              }
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "ArchiveQueryService"
+        ]
+      }
+    },
     "/getTickData": {
       "post": {
         "operationId": "ArchiveQueryService_GetTickData",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/pbTickData"
+              "$ref": "#/definitions/pbGetTickDataResponse"
             }
           },
           "default": {
@@ -154,6 +202,27 @@
     }
   },
   "definitions": {
+    "pbGetLastProcessedTickResponse": {
+      "type": "object",
+      "properties": {
+        "tickNumber": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "pbGetProcessedTicksIntervalsResponse": {
+      "type": "object",
+      "properties": {
+        "processedTicksIntervals": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbProcessedTickInterval"
+          }
+        }
+      }
+    },
     "pbGetTickDataRequest": {
       "type": "object",
       "properties": {
@@ -225,6 +294,23 @@
             "type": "object",
             "$ref": "#/definitions/pbTransaction"
           }
+        }
+      }
+    },
+    "pbProcessedTickInterval": {
+      "type": "object",
+      "properties": {
+        "epoch": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "firstTick": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "lastTick": {
+          "type": "integer",
+          "format": "int64"
         }
       }
     },
