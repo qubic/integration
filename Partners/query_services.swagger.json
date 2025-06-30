@@ -4,6 +4,10 @@
     "title": "query_services.proto",
     "version": "version not set"
   },
+  "host": "api.qubic.org",
+  "schemes": [
+    "https"
+  ]
   "tags": [
     {
       "name": "ArchiveQueryService"
