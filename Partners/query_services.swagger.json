@@ -7,7 +7,7 @@
   "host": "api.qubic.org",
   "schemes": [
     "https"
-  ]
+  ],
   "tags": [
     {
       "name": "ArchiveQueryService"
