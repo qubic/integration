@@ -137,13 +137,9 @@
         "operationId": "ArchiveQueryService_GetTransactionsForIdentity",
         "responses": {
           "200": {
-            "description": "",
+            "description": "A successful response.",
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "$ref": "#/definitions/pbTransaction"
-              }
+              "$ref": "#/definitions/pbGetTransactionsForIdentityResponse"
             }
           },
           "default": {
@@ -265,12 +261,34 @@
       "properties": {
         "identity": {
           "type": "string"
+        },
+        "filters": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "ranges": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/pbRange"
+          }
+        },
+        "pagination": {
+          "$ref": "#/definitions/pbPagination"
         }
       }
     },
     "pbGetTransactionsForIdentityResponse": {
       "type": "object",
       "properties": {
+        "validForTick": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "hits": {
+          "$ref": "#/definitions/pbHits"
+        },
         "transactions": {
           "type": "array",
           "items": {
@@ -301,6 +319,36 @@
         }
       }
     },
+    "pbHits": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "from": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "pbPagination": {
+      "type": "object",
+      "properties": {
+        "offset": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
     "pbProcessedTickInterval": {
       "type": "object",
       "properties": {
@@ -315,6 +363,23 @@
         "lastTick": {
           "type": "integer",
           "format": "int64"
+        }
+      }
+    },
+    "pbRange": {
+      "type": "object",
+      "properties": {
+        "gt": {
+          "type": "string"
+        },
+        "gte": {
+          "type": "string"
+        },
+        "lt": {
+          "type": "string"
+        },
+        "lte": {
+          "type": "string"
         }
       }
     },
@@ -369,7 +434,7 @@
         },
         "amount": {
           "type": "string",
-          "format": "int64"
+          "format": "uint64"
         },
         "source": {
           "type": "string"
