@@ -20,6 +20,37 @@
     "application/json"
   ],
   "paths": {
+    "/getComputorsListForEpoch": {
+      "get": {
+        "operationId": "ArchiveQueryService_GetComputorsListsForEpoch",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetComputorsListForEpochResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "epoch",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "ArchiveQueryService"
+        ]
+      }
+    },
     "/getLastProcessedTick": {
       "get": {
         "operationId": "ArchiveQueryService_GetLastProcessedTick",
@@ -202,6 +233,40 @@
     }
   },
   "definitions": {
+    "pbComputorsList": {
+      "type": "object",
+      "properties": {
+        "epoch": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "tickNumber": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "identities": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "signature": {
+          "type": "string"
+        }
+      }
+    },
+    "pbGetComputorsListForEpochResponse": {
+      "type": "object",
+      "properties": {
+        "computorsLists": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbComputorsList"
+          }
+        }
+      }
+    },
     "pbGetLastProcessedTickResponse": {
       "type": "object",
       "properties": {
