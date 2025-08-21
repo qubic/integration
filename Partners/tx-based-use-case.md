@@ -7,22 +7,21 @@ The TS Library uses a Webassembly for all the cryptographical stuff.
 
 For all the following examples the `baseUrl` is set to:
 ```js
-const baseUrl = 'https://rpc.qubic.org/v1';
+const baseUrl = 'https://rpc.qubic.org';
 ```
 
-This documentation refers to the [Qubic V1 RPC API](qubic-rpc-doc.html).
+This documentation refers to the [Qubic RPC API](qubic-rpc-doc.html).
 
-| Method  	| Endpoint    	                                | Description   	                                               |  Body Payload |
-|---	|----------------------------------------------|---------------------------------------------------------------|---|
-| GET  	| /latestTick   	                              | Get the current tick (block height)   	                       | -   |
-| POST  | /broadcast-transaction	                      | Broadcast a transaction    	                                  | `{ "encodedTransaction": "<BASE64RAWTX>" }  `  |
-| GET  	| /ticks/{tickNumber}/approved-transactions  	 | Get a List of approved transactions for the given tick 	      |   - |
-| GET  	| /tx-status/{txId}  	                         | Get the status of a single transaction 	                      |   - |
-| GET  	| /ticks/{tickNumber}/tick-data  	             | Get tick information like timestamp, epoch, included tx ids 	 |   - |
-| GET  	| /balances/{addressID}	                       | Get balance for specified address ID	                         |   - |
-| GET  	| /status  	                                   | Get the RPC status 	                                          |   - |
-
-
+| Method  	 | Endpoint    	                                | Description                                                 | Body Payload                                  |
+|-----------|----------------------------------------------|-------------------------------------------------------------|-----------------------------------------------|
+| GET       | /v1/latestTick                               | Get the latest archived tick (block height)                 | -                                             |
+| GET       | /v1/tick-info                                | Get the current network tick                                | -                                             |
+| POST      | /v1/broadcast-transaction                    | Broadcast a transaction                                     | `{ "encodedTransaction": "<BASE64RAWTX>" }  ` |
+| GET       | /v1/ticks/{tickNumber}/approved-transactions | Get a List of approved transactions for the given tick      | -                                             |
+| GET       | /v1/tx-status/{txId}                         | Get the status of a single transaction                      | -                                             |
+| GET       | /v1/ticks/{tickNumber}/tick-data             | Get tick information like timestamp, epoch, included tx ids | -                                             |
+| GET       | /v1/balances/{addressID}	                    | Get balance for specified address ID                        | -                                             |
+| GET       | /v1/status  	                                | Get the RPC status                                          | -                                             |
 
 ## Table of Contents
 - [TX Based Exchange integration](#tx-based-exchange-integration)
@@ -316,10 +315,11 @@ Please find a complete example of transaction signing here: https://github.com/q
 ### Create, sign, send and verify a transaction
 #### Process overview
 The basic steps for this process are (including basic error handling):
-- request `latestTick` from `/latestTick` endpoint
+- request (current) tick from `/tick-info` endpoint
   - pot. error: `5xx` --> retry until valid response
 - create and sign transaction
-- send transaction with `latestTick + 5` (= your `targetTick`), store tx hash
+- send transaction with `latestTick + 15` (= your `targetTick`), store tx hash
+  - you can adjust the target tick offset according to your needs. A good range is between `10` and `20` at the time of this writing.
   - pot. error: `5xx` --> get new `latestTick` and try again with new `targetTick` until it works
 - to verify, poll `/status` for `lastProcessedTick` and as soon as `lastProcessedTick` > `targetTick`, check `/ticks/{targetTick}/approved-transactions`
   - if the tx hash is available there, the tx was successful --> can continue with next tx
@@ -340,9 +340,9 @@ For the following examples of this flow, we assume you have already all needed d
 
 ##### Step 1: Request the latest tick height
 ```js
-const response = await fetch(`${baseUrl}/latestTick`);
+const response = await fetch(`${baseUrl}/tick-info`);
 const tickResponse = await response.json();
-const latestTick = tickResponse.latestTick;
+const latestTick = tickResponse.tickInfo.tick;
 
 // don't forget to do proper error handling!
 
@@ -357,8 +357,7 @@ const latestTick = tickResponse.latestTick;
       .setDestinationPublicKey(destinationPublicKey)
       .setAmount(amount)
       // it is important to set a target tick for the execution of this transaction
-      // a suggested offset is 5-7 ticks
-      .setTick(latestTick + 5);
+      .setTick(latestTick + 15);
 
   // will build the tx: bundle all values and sign it
   // returns the raw bytes of signed transaction
