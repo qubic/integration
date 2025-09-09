@@ -18,7 +18,7 @@
   "paths": {
     "/v1/epochs/{epoch}/computors": {
       "get": {
-        "summary": "Returns the list of computors for the given epoch.",
+        "summary": "Deprecated. Use /getComputorsListForEpoch (query API) instead.",
         "operationId": "ArchiveService_GetComputors",
         "responses": {
           "200": {
@@ -50,7 +50,7 @@
     },
     "/v1/healthcheck": {
       "get": {
-        "summary": "A method that is mainly used by the load-balancer to decide if the instance should be added to the balancing rotation based on if it's up-to-date with the network or not.",
+        "summary": "Deprecated. Will be removed soon.",
         "operationId": "ArchiveService_GetHealthCheck",
         "responses": {
           "200": {
@@ -73,7 +73,7 @@
     },
     "/v1/identities/{identity}/transfer-transactions": {
       "get": {
-        "summary": "Deprecated: Use /v2/identities/{identity}/transfers instead.",
+        "summary": "Deprecated. Use /getTransactionsForIdentity (query API) instead.",
         "operationId": "ArchiveService_GetTransferTransactionsPerTick",
         "responses": {
           "200": {
@@ -141,7 +141,7 @@
     },
     "/v1/status": {
       "get": {
-        "summary": "Returns information regarding the status of the archiver instance.",
+        "summary": "Deprecated. Use /getLastProcessedTick (query API) or /getProcessedTicksIntervals (query API) instead.",
         "operationId": "ArchiveService_GetStatus",
         "responses": {
           "200": {
@@ -164,7 +164,7 @@
     },
     "/v1/ticks/{tickNumber}/approved-transactions": {
       "get": {
-        "summary": "Deprecated: Use /v2/ticks/{tick_number}/transactions instead.",
+        "summary": "Deprecated. Use /getTransactionsForTick (query API) instead.",
         "operationId": "ArchiveService_GetTickApprovedTransactions",
         "responses": {
           "200": {
@@ -196,7 +196,7 @@
     },
     "/v1/ticks/{tickNumber}/chain-hash": {
       "get": {
-        "summary": "Returns the hash of the given processed tick. This is mainly used to compare archiver instances and verify they process ticks the same.",
+        "summary": "Deprecated. Will be removed soon.",
         "operationId": "ArchiveService_GetChainHash",
         "responses": {
           "200": {
@@ -228,6 +228,7 @@
     },
     "/v1/ticks/{tickNumber}/quorum-tick-data": {
       "get": {
+        "summary": "Deprecated. Will be removed soon.",
         "operationId": "ArchiveService_GetQuorumTickData",
         "responses": {
           "200": {
@@ -259,6 +260,7 @@
     },
     "/v1/ticks/{tickNumber}/store-hash": {
       "get": {
+        "summary": "Deprecated. Will be removed soon.",
         "operationId": "ArchiveService_GetStoreHash",
         "responses": {
           "200": {
@@ -290,7 +292,7 @@
     },
     "/v1/ticks/{tickNumber}/tick-data": {
       "get": {
-        "summary": "Returns the information for the given tick.",
+        "summary": "Deprecated. Use /getTickData (query API) instead.",
         "operationId": "ArchiveService_GetTickData",
         "responses": {
           "200": {
@@ -322,7 +324,7 @@
     },
     "/v1/ticks/{tickNumber}/transactions": {
       "get": {
-        "summary": "Deprecated: Use /v2/ticks/{tick_number}/transactions instead.",
+        "summary": "Deprecated. Use /getTransactionsForTick (query API) instead.",
         "operationId": "ArchiveService_GetTickTransactions",
         "responses": {
           "200": {
@@ -354,7 +356,7 @@
     },
     "/v1/ticks/{tickNumber}/transfer-transactions": {
       "get": {
-        "summary": "Deprecated: Use /v2/ticks/{tick_number}/transactions instead.",
+        "summary": "Deprecated. Use /getTransactionsForTick (query API) instead.",
         "operationId": "ArchiveService_GetTickTransferTransactions",
         "responses": {
           "200": {
@@ -386,7 +388,7 @@
     },
     "/v1/transactions/{txId}": {
       "get": {
-        "summary": "Deprecated: Use /v2/transactions/{tx_id} instead.",
+        "summary": "Deprecated. Use /getTransactionByHash (query API) instead.",
         "operationId": "ArchiveService_GetTransaction",
         "responses": {
           "200": {
@@ -417,7 +419,7 @@
     },
     "/v1/tx-status/{txId}": {
       "get": {
-        "summary": "Deprecated: Use /v2/transactions/{tx_id} instead.",
+        "summary": "Deprecated. Use /getTransactionByHash (query API) instead.",
         "operationId": "ArchiveService_GetTransactionStatus",
         "responses": {
           "200": {
@@ -448,7 +450,7 @@
     },
     "/v2/epochs/{epoch}/empty-ticks": {
       "get": {
-        "summary": "Returns the list of empty ticks for the specified epoch. Paginated.",
+        "summary": "Deprecated. Will be removed soon.",
         "operationId": "ArchiveService_GetEmptyTickListV2",
         "responses": {
           "200": {
@@ -494,7 +496,7 @@
     },
     "/v2/epochs/{epoch}/ticks": {
       "get": {
-        "summary": "Returns the the tick numbers for the the specified epoch, alongside with the 'isEmpty' status. Paginated.",
+        "summary": "Deprecated. Will be removed soon.",
         "operationId": "ArchiveService_GetEpochTickListV2",
         "responses": {
           "200": {
@@ -546,7 +548,7 @@
     },
     "/v2/identities/{identity}/transfers": {
       "get": {
-        "summary": "Returns the list of transfers for the given identity, their status and timestamp, grouped by tick.",
+        "summary": "Deprecated. Use /getTransactionsForIdentity (query API) instead.",
         "description": "Uses V1 request",
         "operationId": "ArchiveService_GetIdentityTransfersInTickRangeV2",
         "responses": {
@@ -618,7 +620,7 @@
     },
     "/v2/ticks/{tickNumber}/hash": {
       "get": {
-        "summary": "Chain hash",
+        "summary": "Deprecated. Will be removed soon.",
         "description": "Uses V1 response",
         "operationId": "ArchiveService_GetTickChainHashV2",
         "responses": {
@@ -651,7 +653,7 @@
     },
     "/v2/ticks/{tickNumber}/quorum-data": {
       "get": {
-        "summary": "Quorum data",
+        "summary": "Deprecated. Will be removed soon.",
         "description": "Uses V1 response",
         "operationId": "ArchiveService_GetTickQuorumDataV2",
         "responses": {
@@ -684,7 +686,7 @@
     },
     "/v2/ticks/{tickNumber}/store-hash": {
       "get": {
-        "summary": "Store hash",
+        "summary": "Deprecated. Will be removed soon.",
         "description": "Uses V1 response",
         "operationId": "ArchiveService_GetTickStoreHashV2",
         "responses": {
@@ -717,7 +719,7 @@
     },
     "/v2/ticks/{tickNumber}/transactions": {
       "get": {
-        "summary": "Returns the list of transactions for the given tick, including timestamp and transfer status.",
+        "summary": "Deprecated. Use /getTransactionsForTick (query API) instead.",
         "operationId": "ArchiveService_GetTickTransactionsV2",
         "responses": {
           "200": {
@@ -761,7 +763,7 @@
     },
     "/v2/transactions/{txId}": {
       "get": {
-        "summary": "Returns the information for the given transaction id, including timestamp and transfer status.",
+        "summary": "Deprecated. Use /getTransactionByHash (query API) instead.",
         "operationId": "ArchiveService_GetTransactionV2",
         "responses": {
           "200": {
@@ -792,7 +794,7 @@
     },
     "/v2/transactions/{txId}/sendmany": {
       "get": {
-        "summary": "SendMany",
+        "summary": "Deprecated. Will be removed soon.",
         "operationId": "ArchiveService_GetSendManyTransactionV2",
         "responses": {
           "200": {
