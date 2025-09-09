@@ -118,7 +118,7 @@
     },
     "/v1/latestTick": {
       "get": {
-        "summary": "Returns the latest tick processed by the archiver instance.",
+        "summary": "Deprecated: Use /v1/tick-info (live API) for the latest network tick or /getLastProcessedTick (query API) for the latest tick available in the archive.",
         "operationId": "ArchiveService_GetLatestTick",
         "responses": {
           "200": {
