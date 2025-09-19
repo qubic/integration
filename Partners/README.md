@@ -1,53 +1,26 @@
-# Qubic Partner Integration
+# Qubic partner integration
 
-This documentation describes best practices to integrate/interact with Qubic for partners.
+This documentation describes the best practices to integrate and interact with Qubic.
 
 ## Qubic RPC
-The Qubic RPC is your gateway to the Qubic Network. For testing purposes, you can use https://testapi.qubic.org as baseUrl.
 
-> [Swagger/OpenAPI Documentation](qubic-rpc-doc.html)
+The Qubic RPC API is the main way to interact with Qubic.
 
-> Learn how to operate your own RPC Server for Qubic: [How to build your own Qubic RPC Server](how-to-qubic-rpc.md)
+> [Swagger / OpenAPI Documentation](swagger/qubic-query-doc.html)
 
-### Public available RPC/API's
+### API version
 
-| Base Url | Use Case |
-| -------- | ---- |
-| rpc-staging.qubic.org | Public RPC/API for staging (production testing) purposes. Normally only for internal Testing. Ask us if you want to test the latest features that will be in production soon.   |
-| rpc.qubic.org    | Public RPC/API for general purposes. Use this in your productive applications. |
+| Base URL               | Use case                                                                   |
+|------------------------|----------------------------------------------------------------------------|
+| https://api.qubic.org/ | Public API for general use-cases. Use this to build your applications.     |
+| https://rpc.qubic.org/ | Deprecated legacy API. See the legacy documentation [here](old/README.md). |
+
+> If migrating from the deprecated API, please refer to [this](migration.md) page for the endpoints that got replaced and their new counterparts.  
 
 ## Exchange integration
-To partner up with Qubic from a perspective of an exchange, there are two main approaches how you can integrate Qubic into your business logic:
 
-1. TX Based
-2. Balance Based
+When integrating Qubic into your business logic, we recommend you use a TX based workflow.  
+You may already be familiar with this approach from other blockchains. It mainly consists of performing block scans for deposits 
+and sending transactions via an API call to the RPC infrastructure.
 
-### TX Based Workflow
-This is the classical way you may already know from other blockchains. You can do block scans for deposits and send transactions via RPC call to the network.
-
-> [Read more about the TX Based Workflow](tx-based-use-case.md).
-
-For the transaction based approach, Qubic offers a RPC Server. Please ask us for detailed information and access.
-
-The Qubic RPC Server is built and operated with the following software:
-
-- `qubic-http` https://github.com/qubic/qubic-http
-- `go-archiver` https://github.com/qubic/go-archiver
-- `go-node-fetcher` https://github.com/qubic/go-node-fetcher
-- `go-node-connector` https://github.com/qubic/go-node-connector
-- `ts-library` https://github.com/qubic/ts-library (https://www.npmjs.com/package/qubic-ts-library)
-
-
-### Balance Based Workflow
-In contrary to the TX Based Workflow, with the balance workflow you can implement Qubics native way of integration.
-
-In Qubic the Balance of an Address can be altered without a Transaction being issued. This can be invoked by any Smart Contract.
-
-Therefore you can also use the Balance Based approach to interact with Qubic.
-
-We are building the application `qubic-lrv` for this. Which is currently in testing state.
-
-Please read here more when testing state is passed.
-
-References:
-- `qubic-lrv` https://github.com/computor-tools/qubic-lrv
+> [Read more about the TX based workflow](tx-based-workflow.md)

@@ -10,7 +10,7 @@ For all the following examples the `baseUrl` is set to:
 const baseUrl = 'https://rpc.qubic.org';
 ```
 
-This documentation refers to the [Qubic RPC API](qubic-rpc-doc.html).
+This documentation refers to the [Qubic RPC API](../swagger/qubic-rpc-doc.html).
 
 | Method  	 | Endpoint    	                                | Description                                                 | Body Payload                                  |
 |-----------|----------------------------------------------|-------------------------------------------------------------|-----------------------------------------------|

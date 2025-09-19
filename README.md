@@ -26,13 +26,4 @@ The Qubic Core Network is run by so called Computors. This section will help you
 ## Qubic Partner Integration
 If you want to partner up with Qubic, you can read this integration guide. It is meant for Exchanges and other institutions that needs to interact with Qubic.
 
-[Qubic Partner Integration](Partners/README.md)
-
-
-
-
-
-
-
-
-
+[Qubic Partner Integration](Partners/old/README.md)
