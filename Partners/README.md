@@ -11,10 +11,11 @@ The Qubic RPC is your gateway to the Qubic Network. For testing purposes, you ca
 
 ### Public available RPC/API's
 
-| Base Url | Use Case |
-| -------- | ---- |
-| rpc-staging.qubic.org | Public RPC/API for staging (production testing) purposes. Normally only for internal Testing. Ask us if you want to test the latest features that will be in production soon.   |
-| rpc.qubic.org    | Public RPC/API for general purposes. Use this in your productive applications. |
+| Base Url              | Use Case                                                                                                                                                                      |
+|-----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| rpc-staging.qubic.org | Public RPC/API for staging (production testing) purposes. Normally only for internal Testing. Ask us if you want to test the latest features that will be in production soon. |
+| rpc.qubic.org         | Current home of the V1 integration infrastructure, **soon to be deprecated**.                                                                                                 |
+| api.qubic.org         | Public RPC/API, V2 infrastructure.                                                                                                                                            |
 
 ## Exchange integration
 To partner up with Qubic from a perspective of an exchange, there are two main approaches how you can integrate Qubic into your business logic:
@@ -29,7 +30,7 @@ This is the classical way you may already know from other blockchains. You can d
 
 For the transaction based approach, Qubic offers a RPC Server. Please ask us for detailed information and access.
 
-The Qubic RPC Server is built and operated with the following software:
+The Qubic V1 RPC Server is built and operated with the following software:
 
 - `qubic-http` https://github.com/qubic/qubic-http
 - `go-archiver` https://github.com/qubic/go-archiver

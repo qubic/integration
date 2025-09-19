@@ -1,11 +1,50 @@
 # TX Based Exchange integration
-The following use cases are based on the Qubic RPC V1.
 
-The following examples refer to the Qubic RPC V1 API and the [TS Library](https://github.com/qubic/ts-library)
+## V2 RPC infrastructure
 
-The TS Library uses a Webassembly for all the cryptographical stuff.
+> In order to support the increasing demand, the integration layer has received a massive revamp and upgrade.  
+> You can learn in our [blog post](https://qubic.org/blog-detail/rpc-2-0-qubic-integration-layer-functionality-upgrade).
 
+**Base url:** `https://api.qubic.org`
+
+### Current endpoints
+
+> This is a short description of the new endpoints available with the V2 RPC infrastructure, and the endpoints they are
+> supposed to replace.  
+> Please refer to the endpoint documentation for a detailed reference on the input and output structure:
+> **[Swagger doc](qubic-rpc-doc.html?urls.primaryName=Qubic%20Query%20V2%20Tree)**
+
+> **Note:** Endpoint input is sent via JSON payloads in the request body. Please refer to the above documentation for
+> the expected input.  
+> We recommend the inclusion of the **`Content-Type`** and **`Accepts`** request headers. Their value should be *
+*`application/json`**.
+
+| HTTP Method | Endpoint                      | Description                                                     | Replaces V1 endpoint                                             |
+|-------------|-------------------------------|-----------------------------------------------------------------|------------------------------------------------------------------|
+| POST        | `/getTransactionByHash`       | Query a transaction by it's hash (ID)                           | `/v2/transactions/{tx_id}`                                       |
+| POST        | `/getTransactionsForTick`     | Query the transactions of a tick                                | `/v2/ticks/{tick_number}/transactions`                           |
+| POST        | `/getTransactionsForIdentity` | Query the transactions for an identity (address)                | `/v2/identities/{identity}/transactions`                         |
+| POST        | `/getTickData`                | Query the information of a tick (block)                         | `/v1/ticks/{tick_number}/tick-data`                              |
+| GET         | `/getLastProcessedTick`       | Fetch the last tick processed by the integration infrastructure | `/v1/tick-info`                                                  |
+| GET         | `/getProcessedTicksIntervals` | Fetch the tick intervals for all archived epochs                | No direct analogue, part of `/v1/status` would return this data. |
+| GET         | `/getComputorsListForEpoch`   | Fetch the list of computors for a certain epoch                 | `/v1/epochs/{epoch}/computors`                                   |
+
+### Usage and migration
+
+The same rules and methodology still apply as from the V1 RPC, the main difference being the endpoints and their input /
+output.  
+Improved documentation on the integration layer is still in the works.  
+For the time being we recommend that you still have a look through the below V1 documentation in order to learn about
+the general usage of the integration layer.  
+**Migration instructions are available [here](rpc-v2-migration.md).**
+
+## V1 RPC infrastructure
+
+The following use cases are based on the Qubic RPC V1.  
+The following examples refer to the Qubic RPC V1 API and the [TS Library](https://github.com/qubic/ts-library)  
+The TS Library uses a Webassembly for all the cryptographical stuff.  
 For all the following examples the `baseUrl` is set to:
+
 ```js
 const baseUrl = 'https://rpc.qubic.org';
 ```
@@ -24,37 +63,40 @@ This documentation refers to the [Qubic RPC API](qubic-rpc-doc.html).
 | GET       | /v1/status  	                                | Get the RPC status                                          | -                                             |
 
 ## Table of Contents
-- [TX Based Exchange integration](#tx-based-exchange-integration)
-  - [Table of Contents](#table-of-contents)
-  - [Qubic Rules](#qubic-rules)
-    - [Rule 1: One concurent TX per source Address](#rule-1-one-concurent-tx-per-source-address)
-    - [Rule 2: Respect RPC Status](#rule-2-respect-rpc-status)
-    - [Rule 3: Epoch change](#rule-3-epoch-change)
-  - [General Examples](#general-examples)
-    - [Generating a Seed](#generating-a-seed)
-    - [Signing a Package](#signing-a-package)
-    - [Create, sign, send and verify a transaction](#create-sign-send-and-verify-a-transaction)
-      - [Step 1: Request the latest tick height](#step-1-request-the-latest-tick-height)
-      - [Step 2: Create and sign transaction](#step-2-create-and-sign-transaction)
-      - [Step 3: Send transaction](#step-3-send-transaction)
-      - [Step 4: Verify transaction status](#step-4-verify-transaction-status)
-  - [Deposit Workflow](#deposit-workflow)
-    - [Scan Ticks/Blocks sequentially](#scan-ticksblocks-sequentially)
-      - [Special case Qutil(Send Many) Smart Contract](#special-case-qutilsend-many-smart-contract)
-  - [Withdraw Workflow](#withdraw-workflow)
-    - [Plain Transaction](#plain-transaction)
-    - [Qutil(Send Many) Smart Contract](#qutilsend-many-smart-contract)
-  - [Asset Transfers](#asset-transfers)
-  - [Error Handling](#error-handling)
 
+- [TX Based Exchange integration](#tx-based-exchange-integration)
+    - [Table of Contents](#table-of-contents)
+    - [Qubic Rules](#qubic-rules)
+        - [Rule 1: One concurent TX per source Address](#rule-1-one-concurent-tx-per-source-address)
+        - [Rule 2: Respect RPC Status](#rule-2-respect-rpc-status)
+        - [Rule 3: Epoch change](#rule-3-epoch-change)
+    - [General Examples](#general-examples)
+        - [Generating a Seed](#generating-a-seed)
+        - [Signing a Package](#signing-a-package)
+        - [Create, sign, send and verify a transaction](#create-sign-send-and-verify-a-transaction)
+            - [Step 1: Request the latest tick height](#step-1-request-the-latest-tick-height)
+            - [Step 2: Create and sign transaction](#step-2-create-and-sign-transaction)
+            - [Step 3: Send transaction](#step-3-send-transaction)
+            - [Step 4: Verify transaction status](#step-4-verify-transaction-status)
+    - [Deposit Workflow](#deposit-workflow)
+        - [Scan Ticks/Blocks sequentially](#scan-ticksblocks-sequentially)
+            - [Special case Qutil(Send Many) Smart Contract](#special-case-qutilsend-many-smart-contract)
+    - [Withdraw Workflow](#withdraw-workflow)
+        - [Plain Transaction](#plain-transaction)
+        - [Qutil(Send Many) Smart Contract](#qutilsend-many-smart-contract)
+    - [Asset Transfers](#asset-transfers)
+    - [Error Handling](#error-handling)
 
 ## Qubic Rules
+
 When using the Qubic RPC you should follow some important rules.
 
 ### Rule 1: One concurent TX per source Address
+
 Due to Qubics architecture, only one concurrent transaction from a source address can exist in the network.
 
 Sample pseudo workflow:
+
 ```
 Pre-condition: For the sake of simplicity in this explanation, it is assumed that Alice has a single source address.
 
@@ -68,12 +110,13 @@ Pre-condition: For the sake of simplicity in this explanation, it is assumed tha
 ```
 
 > [!IMPORTANT]
-> Only one concurrent TX per sending ID, don’t send a new transaction from the same source address until the previous tx target tick has been passed.
-
-
+> Only one concurrent TX per sending ID, don’t send a new transaction from the same source address until the previous tx
+> target tick has been passed.
 
 ### Rule 2: Respect RPC Status
+
 The endpoint
+
 - `/status`
 
 returns the current status of the RPC data.
@@ -82,108 +125,117 @@ Example response can be found below:
 
 ```json
 {
-    "lastProcessedTick": {
-        "tickNumber": 13189868,
-        "epoch": 102
+  "lastProcessedTick": {
+    "tickNumber": 13189868,
+    "epoch": 102
+  },
+  "lastProcessedTicksPerEpoch": {
+    "99": 12941678,
+    "100": 13059142,
+    "101": 13101159,
+    "102": 13189868
+  },
+  "skippedTicks": [
+    {
+      "startTick": 12941679,
+      "endTick": 12949999
     },
-    "lastProcessedTicksPerEpoch": {
-        "99": 12941678,
-        "100": 13059142,
-        "101": 13101159,
-        "102": 13189868
+    {
+      "startTick": 13059143,
+      "endTick": 13059999
     },
-    "skippedTicks": [
+    {
+      "startTick": 13101160,
+      "endTick": 13109999
+    }
+  ],
+  "processedTickIntervalsPerEpoch": [
+    {
+      "epoch": 101,
+      "intervals": [
         {
-            "startTick": 12941679,
-            "endTick": 12949999
-        },
-        {
-            "startTick": 13059143,
-            "endTick": 13059999
-        },
-        {
-            "startTick": 13101160,
-            "endTick": 13109999
+          "initialProcessedTick": 13082191,
+          "lastProcessedTick": 13101159
         }
-    ],
-    "processedTickIntervalsPerEpoch": [
+      ]
+    },
+    {
+      "epoch": 102,
+      "intervals": [
         {
-            "epoch": 101,
-            "intervals": [
-                {
-                    "initialProcessedTick": 13082191,
-                    "lastProcessedTick": 13101159
-                }
-            ]
-        },
-        {
-            "epoch": 102,
-            "intervals": [
-                {
-                    "initialProcessedTick": 13110000,
-                    "lastProcessedTick": 13189868
-                }
-            ]
+          "initialProcessedTick": 13110000,
+          "lastProcessedTick": 13189868
         }
-    ]
+      ]
+    }
+  ]
 }
 ```
 
 > [!IMPORTANT]
 > The `lastProcessedTick` indicates up to which tick the RPC server has processed data.
 
-> In the array `processedTickIntervalsPerEpoch` you find the processed ticks. Due to updates, epochs might have multiple tick ranges.
+> In the array `processedTickIntervalsPerEpoch` you find the processed ticks. Due to updates, epochs might have multiple
+> tick ranges.
 
 ### Rule 3: Epoch change
+
 Every Wednesday, Qubic has its epoch change. The epoch transition is at ~12:00 UTC.
-If the network gets a breaking update, the epoch transition may take a few minutes. Expect between 11:59 to 13:00 UTC a delay for transactions.
+If the network gets a breaking update, the epoch transition may take a few minutes. Expect between 11:59 to 13:00 UTC a
+delay for transactions.
 
 ## General Examples
 
 > The Go examples use the [go-node-connector](https://github.com/qubic/go-node-connector) library.
 
 ### Generating a Seed
+
 A seed is the private key in Qubic. Based on the seed, you can create the public address (id).
 
-The seed is a 55-lower-case-char string. Please use a proper random generator in your environment. The code below is for demonstration purposes only.
+The seed is a 55-lower-case-char string. Please use a proper random generator in your environment. The code below is for
+demonstration purposes only.
 
 **Javascript**
+
 ```js
     // generates a random seed
-  seedGen() {
+seedGen()
+{
     const letters = "abcdefghijklmnopqrstuvwxyz";
     const letterSize = letters.length;
     let seed = "";
     for (let i = 0; i < 55; i++) {
-      seed += letters[Math.floor(Math.random() * letterSize)];
+        seed += letters[Math.floor(Math.random() * letterSize)];
     }
     return seed;
-  }
+}
 
-  // get a reference to the helper class
-  const helper = new QubicHelper();
+// get a reference to the helper class
+const helper = new QubicHelper();
 
-  // generate a seed
-  const seed = seedGen();
+// generate a seed
+const seed = seedGen();
 
-  // generate the id package
-  const {privateKey, publicKey, publicId} = await helper.createIdPackage(seed);
+// generate the id package
+const {privateKey, publicKey, publicId} = await helper.createIdPackage(seed);
 
-  // the resulting package contains:
-  // privateKey => your binary private Key; this can be used to sign packages (e.g. transactions)
-  // publicKey => the public key
-  // publicId => the public key in human readable format. this is the address qubic users use
+// the resulting package contains:
+// privateKey => your binary private Key; this can be used to sign packages (e.g. transactions)
+// publicKey => the public key
+// publicId => the public key in human readable format. this is the address qubic users use
 ```
 
 **Go**
+
 ```go
 package main
 
 import (
 	"encoding/hex"
 	"fmt"
-	"github.com/qubic/go-node-connector/types"
 	"log"
+
+	"github.com/qubic/go-node-connector/types"
 )
 
 func main() {
@@ -201,144 +253,160 @@ func main() {
 ```
 
 ### Signing a Package
-For signing a package, you can either use the qubic crypto library or e.g. for transactions the wrapper from the `ts-library`.
+
+For signing a package, you can either use the qubic crypto library or e.g. for transactions the wrapper from the
+`ts-library`.
 
 The pre-condition to be able to sign a package is to have the `seed` or `privateKey`.
 
 The following example assumes that we have already created our `idPackage` which includes our `privateKey`.
 
 **Javascript**
+
 ```js
   // to sign a package, you need the private key which is derived from the seed and its publicKey
-  const seed = 'wqbdupxgcaimwdsnchitjmsplzclkqokhadgehdxqogeeiovzvadstt';
-  const idPackage = await helper.createIdPackage(seed);
+const seed = 'wqbdupxgcaimwdsnchitjmsplzclkqokhadgehdxqogeeiovzvadstt';
+const idPackage = await helper.createIdPackage(seed);
 
-  // fake package!
-  const packet = new Uint8Array(32);
+// fake package!
+const packet = new Uint8Array(32);
 
-  // example without await, you can also use async/await
-  const signedPacket = await crypto.then(({ schnorrq, K12 }) => {
-            
-            // create the digest store; digest length is defined by 32 bytes
-            const digest = new Uint8Array(QubicDefinitions.DIGEST_LENGTH);
-            
-            // you may receive packet in a function
-            const toSignPacket = packet;
+// example without await, you can also use async/await
+const signedPacket = await crypto.then(({schnorrq, K12}) => {
 
-            // create K12 digest
-            K12(toSignPacket, digest, QubicDefinitions.DIGEST_LENGTH);
+    // create the digest store; digest length is defined by 32 bytes
+    const digest = new Uint8Array(QubicDefinitions.DIGEST_LENGTH);
 
-            // sign the packet and receive signature
-            // the signing needs the inputs:
-            // privateKey
-            // publicKey
-            // K12 digest of the packet to sign
-            const signature = schnorrq.sign(idPackage.privateKey, idPackage.publicKey, digest);
+    // you may receive packet in a function
+    const toSignPacket = packet;
 
-            // normally you would add the signature to the packet for transfer
-            var signedData = new Uint8Array(toSignPacket.length + signature.length);
-            signedData.set(toSignPacket);
-            signedData.set(signature, toSignPacket.length);
-            
-            // after combining packet + signature you would take another digest
-            // this new digest can be considered as the id of the complete package (e.g. transaction id)
-            K12(signedData, digest, QubicDefinitions.DIGEST_LENGTH)
-            
-            return {
-                signedData: signedData,
-                digest: digest,
-                signature: signature
-            };
-        });
+    // create K12 digest
+    K12(toSignPacket, digest, QubicDefinitions.DIGEST_LENGTH);
+
+    // sign the packet and receive signature
+    // the signing needs the inputs:
+    // privateKey
+    // publicKey
+    // K12 digest of the packet to sign
+    const signature = schnorrq.sign(idPackage.privateKey, idPackage.publicKey, digest);
+
+    // normally you would add the signature to the packet for transfer
+    var signedData = new Uint8Array(toSignPacket.length + signature.length);
+    signedData.set(toSignPacket);
+    signedData.set(signature, toSignPacket.length);
+
+    // after combining packet + signature you would take another digest
+    // this new digest can be considered as the id of the complete package (e.g. transaction id)
+    K12(signedData, digest, QubicDefinitions.DIGEST_LENGTH)
+
+    return {
+        signedData: signedData,
+        digest: digest,
+        signature: signature
+    };
+});
 ```
 
-
 **Go**
+
 ```go
 package main
 
 import (
-  "encoding/hex"
-  "fmt"
-  "github.com/qubic/go-schnorrq"
-  "github.com/qubic/go-node-connector/types"
-  "log"
+	"encoding/hex"
+	"fmt"
+	"log"
+
+	"github.com/qubic/go-node-connector/types"
+	"github.com/qubic/go-schnorrq"
 )
 
 const baseUrl = "https://rpc.qubic.org/v1"
 
 func main() {
-  tx, err := types.NewSimpleTransferTransaction(
-    "source-addr-here",
-    "dest-addr-here",
-    1,
-    13255850,
-  )
-  if err != nil {
-    log.Fatalf("got err: %s when creating simple transfer transaction", err.Error())
-  }
-  fmt.Printf("source pubkey: %s\n", hex.EncodeToString(tx.SourcePublicKey[:]))
+	tx, err := types.NewSimpleTransferTransaction(
+		"source-addr-here",
+		"dest-addr-here",
+		1,
+		13255850,
+	)
+	if err != nil {
+		log.Fatalf("got err: %s when creating simple transfer transaction", err.Error())
+	}
+	fmt.Printf("source pubkey: %s\n", hex.EncodeToString(tx.SourcePublicKey[:]))
 
-  unsignedDigest, err := tx.GetUnsignedDigest()
-  if err != nil {
-    log.Fatalf("got err: %s when getting unsigned digest local", err.Error())
-  }
+	unsignedDigest, err := tx.GetUnsignedDigest()
+	if err != nil {
+		log.Fatalf("got err: %s when getting unsigned digest local", err.Error())
+	}
 
-  subSeed, err :=types.GetSubSeed("seed-here")
-  if err != nil {
-    log.Fatalf("got err: %s when getting subSeed", err.Error())
-  }
-  
-  sig, err := schnorrq.Sign(subSeed, tx.SourcePublicKey, unsignedDigest)
-  if err != nil {
-    log.Fatalf("got err: %s when signing", err.Error())
-  }
-  fmt.Printf("sig: %s\n", hex.EncodeToString(sig[:]))
-  tx.Signature = sig
+	subSeed, err := types.GetSubSeed("seed-here")
+	if err != nil {
+		log.Fatalf("got err: %s when getting subSeed", err.Error())
+	}
 
-  encodedTx, err := tx.EncodeToBase64()
-  if err != nil {
-    log.Fatalf("got err: %s when encoding tx to base 64", err.Error())
-  }
-  fmt.Printf("encodedTx: %s\n", encodedTx)
+	sig, err := schnorrq.Sign(subSeed, tx.SourcePublicKey, unsignedDigest)
+	if err != nil {
+		log.Fatalf("got err: %s when signing", err.Error())
+	}
+	fmt.Printf("sig: %s\n", hex.EncodeToString(sig[:]))
+	tx.Signature = sig
 
-  id, err := tx.ID()
-  if err != nil {
-    log.Fatalf("got err: %s when getting tx id", err.Error())
-  }
+	encodedTx, err := tx.EncodeToBase64()
+	if err != nil {
+		log.Fatalf("got err: %s when encoding tx to base 64", err.Error())
+	}
+	fmt.Printf("encodedTx: %s\n", encodedTx)
 
-  fmt.Printf("tx id(hash): %s\n", id)
+	id, err := tx.ID()
+	if err != nil {
+		log.Fatalf("got err: %s when getting tx id", err.Error())
+	}
+
+	fmt.Printf("tx id(hash): %s\n", id)
 }
 ```
-Please find a complete example of transaction signing here: https://github.com/qubic/ts-library/blob/main/test/createTransactionTest.js. The complete source code can be found in the same repo.
+
+Please find a complete example of transaction signing
+here: https://github.com/qubic/ts-library/blob/main/test/createTransactionTest.js. The complete source code can be found
+in the same repo.
 
 ### Create, sign, send and verify a transaction
+
 #### Process overview
+
 The basic steps for this process are (including basic error handling):
+
 - request (current) tick from `/tick-info` endpoint
-  - pot. error: `5xx` --> retry until valid response
+    - pot. error: `5xx` --> retry until valid response
 - create and sign transaction
 - send transaction with `latestTick + 15` (= your `targetTick`), store tx hash
-  - you can adjust the target tick offset according to your needs. A good range is between `10` and `20` at the time of this writing.
-  - pot. error: `5xx` --> get new `latestTick` and try again with new `targetTick` until it works
-- to verify, poll `/status` for `lastProcessedTick` and as soon as `lastProcessedTick` > `targetTick`, check `/ticks/{targetTick}/approved-transactions`
-  - if the tx hash is available there, the tx was successful --> can continue with next tx
-  - if the tx hash is NOT available there, the tx was NOT successful and needs to be resent
-  - query of `/approved-transactions` may lead to `4xx` with error code `11`. In this case, TX will never be successful and needs to be resent with a `targetTick` > `nextTickNumber` from the response
+    - you can adjust the target tick offset according to your needs. A good range is between `10` and `20` at the time
+      of this writing.
+    - pot. error: `5xx` --> get new `latestTick` and try again with new `targetTick` until it works
+- to verify, poll `/status` for `lastProcessedTick` and as soon as `lastProcessedTick` > `targetTick`, check
+  `/ticks/{targetTick}/approved-transactions`
+    - if the tx hash is available there, the tx was successful --> can continue with next tx
+    - if the tx hash is NOT available there, the tx was NOT successful and needs to be resent
+    - query of `/approved-transactions` may lead to `4xx` with error code `11`. In this case, TX will never be
+      successful and needs to be resent with a `targetTick` > `nextTickNumber` from the response
 
 #### Please note:
-- **transactions in Qubic may fail by design**, therefore it is important to follow the steps above. 
-- **please don't create another transaction before the process above has been completed**, otherwise you may overwrite an existing transaction in the network as Qubic allows only one transaction simultaneously from the same sender ID.
+
+- **transactions in Qubic may fail by design**, therefore it is important to follow the steps above.
+- **please don't create another transaction before the process above has been completed**, otherwise you may overwrite
+  an existing transaction in the network as Qubic allows only one transaction simultaneously from the same sender ID.
 
 For the following examples of this flow, we assume you have already all needed data to create and send the transaction:
+
 - Sender (including seed)
 - Receiver
 - Amount
 
-
 #### JavaScript
 
 ##### Step 1: Request the latest tick height
+
 ```js
 const response = await fetch(`${baseUrl}/tick-info`);
 const tickResponse = await response.json();
@@ -349,47 +417,47 @@ const latestTick = tickResponse.tickInfo.tick;
 ```
 
 ##### Step 2: Create and sign transaction
+
 ```js
   // please find an extended example here: https://github.com/qubic/ts-library/blob/main/test/createTransactionTest.js
 
-  // create and sign transaction
-  const tx = new QubicTransaction().setSourcePublicKey(sourcePublicKey)
-      .setDestinationPublicKey(destinationPublicKey)
-      .setAmount(amount)
-      // it is important to set a target tick for the execution of this transaction
-      .setTick(latestTick + 15);
+// create and sign transaction
+const tx = new QubicTransaction().setSourcePublicKey(sourcePublicKey)
+    .setDestinationPublicKey(destinationPublicKey)
+    .setAmount(amount)
+    // it is important to set a target tick for the execution of this transaction
+    .setTick(latestTick + 15);
 
-  // will build the tx: bundle all values and sign it
-  // returns the raw bytes of signed transaction
-  const signedTransactionData = await tx.build(signSeed);
+// will build the tx: bundle all values and sign it
+// returns the raw bytes of signed transaction
+const signedTransactionData = await tx.build(signSeed);
 
-  // by requesting getId() you receive the txId of this transaction
-  // this id can presented to the client as reference
-  const transactionId = tx.getId();
+// by requesting getId() you receive the txId of this transaction
+// this id can presented to the client as reference
+const transactionId = tx.getId();
 ```
 
 ##### Step 3: Send transaction
 
 ```js
   // after creating and signing the tx it should be sent to the network
-  const response = fetch(`${baseUrl}/broadcast-transaction`,
-                    {
-                        headers: {
-                          'Accept': 'application/json',
-                          'Content-Type': 'application/json'
-                        },
-                        method: "POST",
-                        body: JSON.stringify({
-                          encodedTransaction: signedTransactionData
-                        })
-                    });
+const response = fetch(`${baseUrl}/broadcast-transaction`,
+    {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        method: "POST",
+        body: JSON.stringify({
+            encodedTransaction: signedTransactionData
+        })
+    });
 
-  if(reponse.status == 200)
-  {
+if (reponse.status == 200) {
     // yipiii! transaction has been broadcasted
-  }else {
+} else {
     // :( something went wrong, try again
-  }
+}
 ```
 
 #### Go
@@ -398,9 +466,10 @@ const latestTick = tickResponse.tickInfo.tick;
 package main
 
 import (
+	"log"
+
 	"github.com/pkg/errors"
 	"github.com/qubic/go-node-connector/types"
-	"log"
 )
 
 func SimpleTransactionExample() error {
@@ -432,7 +501,7 @@ func SimpleTransactionExample() error {
 	if err != nil {
 		return errors.Wrap(err, "creating signer")
 	}
-	
+
 	tx, err = signer.SignTx(tx)
 	if err != nil {
 		return errors.Wrap(err, "signing transaction")
@@ -452,160 +521,163 @@ func SimpleTransactionExample() error {
 
 #### Verifying transaction status
 
-
 **JavaScript**
+
 ```js
   // you can verify if a transaction was successful as soon the target tick has passed (true finality)
 
-   const response = await fetch(`${baseUrl}/ticks/${tx.tick}/approved-transactions`);
-      // only if status == 200 (ok) the tx can be marked as verified
-    if(response.status == 200) 
-    {
-      const tickTransactions = await response.json();
-      const txStatus = tickTransactions.transactionsStatus.find(f => f.txId === tx.getId());
-      if(txStatus){
+const response = await fetch(`${baseUrl}/ticks/${tx.tick}/approved-transactions`);
+// only if status == 200 (ok) the tx can be marked as verified
+if (response.status == 200) {
+    const tickTransactions = await response.json();
+    const txStatus = tickTransactions.transactionsStatus.find(f => f.txId === tx.getId());
+    if (txStatus) {
         // yipiii! transaction was successful
-      }else {
+    } else {
         // :( transaction was NOT successful
-      }
-    }else if(response.status === 400){
-      // bad request must be handled by the client. check code table below
-    }else if(response.status === 404){
-      const errorStatus = await response.json();
-      if(errorStatus.code === 123){
+    }
+} else if (response.status === 400) {
+    // bad request must be handled by the client. check code table below
+} else if (response.status === 404) {
+    const errorStatus = await response.json();
+    if (errorStatus.code === 123) {
         // your request was to early, please repeat it
         // the lastProcessedTick is lower than the one you have requested
-      }
     }
+}
 
 ```
 
 **Go**
+
 ```go
 package main
 
 import (
-  "encoding/json"
-  "fmt"
-  "log"
-  "net/http"
+	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
 )
 
 const baseUrl = "https://rpc.qubic.org/v1"
 
 func main() {
-  targetTick := 13201784
-  url := fmt.Sprintf("%s/ticks/%d/approved-transactions", baseUrl, targetTick)
+	targetTick := 13201784
+	url := fmt.Sprintf("%s/ticks/%d/approved-transactions", baseUrl, targetTick)
 
-  req, err := http.NewRequest(http.MethodGet, url, nil)
-  if err != nil {
-    log.Fatalf("got err: %s when creating request", err.Error())
-  }
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		log.Fatalf("got err: %s when creating request", err.Error())
+	}
 
-  res, err := http.DefaultClient.Do(req)
-  if err != nil {
-    log.Fatalf("got err: %s when performing request", err.Error())
-  }
-  defer res.Body.Close()
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Fatalf("got err: %s when performing request", err.Error())
+	}
+	defer res.Body.Close()
 
-  if res.StatusCode == http.StatusOK {
-    type response struct {
-      ApprovedTransactions []struct {
-        SourceId     string `json:"sourceId"`
-        DestId       string `json:"destId"`
-        Amount       string `json:"amount"`
-        TickNumber   uint32 `json:"tickNumber"`
-        InputType    int    `json:"inputType"`
-        InputSize    int    `json:"inputSize"`
-        InputHex     string `json:"inputHex"`
-        SignatureHex string `json:"signatureHex"`
-        TxId         string `json:"txId"`
-      } `json:"approvedTransactions"`
-    }
-    var body response
+	if res.StatusCode == http.StatusOK {
+		type response struct {
+			ApprovedTransactions []struct {
+				SourceId     string `json:"sourceId"`
+				DestId       string `json:"destId"`
+				Amount       string `json:"amount"`
+				TickNumber   uint32 `json:"tickNumber"`
+				InputType    int    `json:"inputType"`
+				InputSize    int    `json:"inputSize"`
+				InputHex     string `json:"inputHex"`
+				SignatureHex string `json:"signatureHex"`
+				TxId         string `json:"txId"`
+			} `json:"approvedTransactions"`
+		}
+		var body response
 
-    err = json.NewDecoder(res.Body).Decode(&body)
-    if err != nil {
-      log.Fatalf("got err: %s when decoding body", err.Error())
-    }
+		err = json.NewDecoder(res.Body).Decode(&body)
+		if err != nil {
+			log.Fatalf("got err: %s when decoding body", err.Error())
+		}
 
-    fmt.Printf("%+v", body.ApprovedTransactions)
-  } else if res.StatusCode == http.StatusBadRequest {
-    type errResponse struct {
-      Code    int                      `json:"code"`
-      Message string                   `json:"message"`
-      Details []map[string]interface{} `json:"details"`
-    }
-    var body errResponse
+		fmt.Printf("%+v", body.ApprovedTransactions)
+	} else if res.StatusCode == http.StatusBadRequest {
+		type errResponse struct {
+			Code    int                      `json:"code"`
+			Message string                   `json:"message"`
+			Details []map[string]interface{} `json:"details"`
+		}
+		var body errResponse
 
-    err = json.NewDecoder(res.Body).Decode(&body)
-    if err != nil {
-      log.Fatalf("got err: %s when decoding error body", err.Error())
-    }
+		err = json.NewDecoder(res.Body).Decode(&body)
+		if err != nil {
+			log.Fatalf("got err: %s when decoding error body", err.Error())
+		}
 
-    switch body.Code {
-    case 9:
-      lastProcessedTick := body.Details[0]["lastProcessedTick"]
-      fmt.Println(uint32((lastProcessedTick).(float64)))
-    case 11:
-      nextTickNumber := body.Details[0]["nextTickNumber"]
-      fmt.Println(uint32((nextTickNumber).(float64)))
-    }
-  } else {
-    //handle error
-  }
+		switch body.Code {
+		case 9:
+			lastProcessedTick := body.Details[0]["lastProcessedTick"]
+			fmt.Println(uint32((lastProcessedTick).(float64)))
+		case 11:
+			nextTickNumber := body.Details[0]["nextTickNumber"]
+			fmt.Println(uint32((nextTickNumber).(float64)))
+		}
+	} else {
+		//handle error
+	}
 }
 ```
 
 When requesting the RPC server for `approved-transactions` you might receive a `400 Bad Request`.
 
 `Bad Request` example response:
+
 ```json
 {
-    "code": 11,
-    "message": "provided tick number 13055400 was skipped by the system, next available tick is 13082191",
-    "details": [
-        {
-            "@type": "type.googleapis.com/qubic.txstatus.pb.NextAvailableTick",
-            "nextTickNumber": 13082191
-        }
-    ]
+  "code": 11,
+  "message": "provided tick number 13055400 was skipped by the system, next available tick is 13082191",
+  "details": [
+    {
+      "@type": "type.googleapis.com/qubic.txstatus.pb.NextAvailableTick",
+      "nextTickNumber": 13082191
+    }
+  ]
 }
 ```
 
 ## Deposit Workflow
 
-We assume that you have in your business logic the accounts of your clients. We refer to these accounts as `clientAcccount`. 
+We assume that you have in your business logic the accounts of your clients. We refer to these accounts as
+`clientAcccount`.
 
-A client Account is a package containing `seed`, `privateKey`, `publicKey` and `publicId`. 
+A client Account is a package containing `seed`, `privateKey`, `publicKey` and `publicId`.
 
 The list of all `clientAccount` is called `clientAccountList`.
-
 
 ### Scan Ticks/Blocks sequentially
 
 To detect a deposit to a `clientAccount` we use the Qubic RPC and run a sequential tick/blockscan.
-You will need to define an initial tick from which on you will start your tick scans. In our example example below, we start with the tick `13032965`.
+You will need to define an initial tick from which on you will start your tick scans. In our example example below, we
+start with the tick `13032965`.
 
 The following code samples contain pseudo code which you have to replace by your own business logic.
 
 **Javascript**
+
 ```js
   // don't forget to do a proper error handling!
   // if you request a tick which is yet not processed, you will receive a 404 with a specific message
 
-  const currentTick = 13032965;
+const currentTick = 13032965;
 
-  // request transactions for the tick
-  const response = await fetch(`${baseUrl}/ticks/${currentTick}/approved-transactions`);
-  
-  // the result will contain all executed and approved transactions for the given tick
-  const tickTransactions = await response.json();
+// request transactions for the tick
+const response = await fetch(`${baseUrl}/ticks/${currentTick}/approved-transactions`);
 
-  // map the transactions to your `clientAccountList`
-  const clientDeposits = clientAccountList.filter(f => tickTransactions.find(t => t.destId == f.publicId))
+// the result will contain all executed and approved transactions for the given tick
+const tickTransactions = await response.json();
 
-  clientDeposits.forEach(clientAccount => {
+// map the transactions to your `clientAccountList`
+const clientDeposits = clientAccountList.filter(f => tickTransactions.find(t => t.destId == f.publicId))
+
+clientDeposits.forEach(clientAccount => {
     // add transaction to your accounting
     const internalTx = clientAccount.addIncomingTransactions(tickTransactions.filter(f => f.destId == clientAccount.publicId).map(m => createInternalTransaction(m)));
 
@@ -614,10 +686,11 @@ The following code samples contain pseudo code which you have to replace by your
 
     // start transferring the deposit to your hot wallet here
     transferToHotWallet(clientAccount, internalTx);
-  });
+});
 ```
 
 **Go**
+
 ```go
 package main
 
@@ -668,12 +741,12 @@ func main() {
 	if err != nil {
 		log.Fatalf("got err: %s when decoding body", err.Error())
 	}
-	
+
 	for _, approvedTx := range body.ApprovedTransactions {
 		if !isClientAddress(approvedTx.DestId) {
 			continue
 		}
-		
+
 		//insert business logic to credit client account and transfer to hot wallet
 	}
 
@@ -681,16 +754,16 @@ func main() {
 }
 
 func isClientAddress(addr string) bool {
-	clientAddresses := []string {
+	clientAddresses := []string{
 		"a", "b", "c",
 	}
-	
+
 	for _, clientAddr := range clientAddresses {
 		if clientAddr == addr {
 			return true
 		}
 	}
-	
+
 	return false
 }
 
@@ -699,17 +772,20 @@ func isClientAddress(addr string) bool {
 Repeat the code above as long you don't get a `400 Bad Request`.
 
 #### Special case Qutil(Send Many) Smart Contract
-In general, we suggest to not allow your clients to use their deposit accounts for smart contract usage (e.g. pool payouts, quottery or any future use case).
+
+In general, we suggest to not allow your clients to use their deposit accounts for smart contract usage (e.g. pool
+payouts, quottery or any future use case).
 
 However, there is a send many smart contract case you should support. Such a transaction can be identified as follows:
 
 **Javascript**
+
 ```js
   // we assume you have in hand a tx object (e.g. from the approved-transactions endpoint)
-  const tx = getTxFromApprovedTransactionsEndpoint();
+const tx = getTxFromApprovedTransactionsEndpoint();
 
-  
-  if(
+
+if (
     // address of Qutil(Send Many) SC
     tx.destId === 'EAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAVWRF'
     &&
@@ -718,22 +794,21 @@ However, there is a send many smart contract case you should support. Such a tra
     &&
     // size must be 1000
     tx.inputSize = 1000
-    &&
-    // input must be present
-    tx.inputHex
-    )
-    {
-      // if we are here, this tx was a send many sc invovation
-      // in the input we have potentially 25 inlay transactions
+        &&
+        // input must be present
+        tx.inputHex
+) {
+    // if we are here, this tx was a send many sc invovation
+    // in the input we have potentially 25 inlay transactions
 
-      // translate input to transfers
-      const txPayload = tx.getPayload().getPackageData();
-      const sendManyTransfers = await new QubicTransferSendManyPayload().parse(txPayload).getTransfers();
+    // translate input to transfers
+    const txPayload = tx.getPayload().getPackageData();
+    const sendManyTransfers = await new QubicTransferSendManyPayload().parse(txPayload).getTransfers();
 
-      // get all client accounts which have got a tx
-      const clientDeposits = clientAccountList.filter(f => sendManyTransfers.find(t => t.destId == f.publicId))
+    // get all client accounts which have got a tx
+    const clientDeposits = clientAccountList.filter(f => sendManyTransfers.find(t => t.destId == f.publicId))
 
-      clientDeposits.forEach(clientAccount => {
+    clientDeposits.forEach(clientAccount => {
 
         // add transaction to your accounting
         const internalTx = clientAccount.addIncomingTransactions(sendManyTransfers.filter(f => f.destId == clientAccount.publicId).map(m => createInternalTransaction(m)));
@@ -743,16 +818,18 @@ However, there is a send many smart contract case you should support. Such a tra
 
         // start transferring the deposit to your hot wallet here
         transferToHotWallet(clientAccount, internalTx);
-      });>
+    });
+>
 
-      
-    }
 
-    
+}
+
+
 
 ```
 
 **Go**
+
 ```go
 package main
 
@@ -760,9 +837,10 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"github.com/qubic/go-node-connector/types"
 	"log"
 	"net/http"
+
+	"github.com/qubic/go-node-connector/types"
 )
 
 const baseUrl = "https://rpc.qubic.org/v1"
@@ -853,15 +931,17 @@ func isClientAddress(addr string) bool {
 
 ```
 
-
 ## Withdraw Workflow
+
 To do withdraws you can either use a plain transaction or the send many smart contract.
 
 ### Plain Transaction
-This transaction is feeless and limited to one transaction per hot wallet. 
+
+This transaction is feeless and limited to one transaction per hot wallet.
 Follow the process from [Create, sign, send and verify a transaction](#create-sign-send-and-verify-a-transaction)
 
 ### Qutil(Send Many) Smart Contract
+
 The fee for using the Smart Contract is `10` Qubic and allows to withdraw to up to 25 clients in a single transaction.
 
 A send many smart contract invocation is a qubic transaction with some specific settings.
@@ -869,30 +949,31 @@ A send many smart contract invocation is a qubic transaction with some specific 
 The example below shows how to use it.
 
 **Javascript**
+
 ```js
 
-  // create the builder package
-  const sendManyPayload = new QubicTransferSendManyPayload();
+// create the builder package
+const sendManyPayload = new QubicTransferSendManyPayload();
 
-  // add a destination
-  sendManyPayload.addTransfer({
+// add a destination
+sendManyPayload.addTransfer({
     destId: new PublicKey("SUZFFQSCVPHYYBDCQODEMFAOKRJDDDIRJFFIWFLRDDJQRPKMJNOCSSKHXHGK"),
     amount: new Long(1)
-  });
+});
 
-  // add a destination
-  sendManyPayload.addTransfer({
+// add a destination
+sendManyPayload.addTransfer({
     destId: new PublicKey("SUZFFQSCVPHYYBDCQODEMFAOKRJDDDIRJFFIWFLRDDJQRPKMJNOCSSKHXHGK"),
     amount: new Long(2)
-  });
+});
 
-  // ...add up to 25 destination addresses
+// ...add up to 25 destination addresses
 
-  // add the fixed fee to the total amount
-  const totalAmount = sendManyPayload.getTotalAmount() + BigInt(QubicDefinitions.QUTIL_SENDMANY_FEE);
+// add the fixed fee to the total amount
+const totalAmount = sendManyPayload.getTotalAmount() + BigInt(QubicDefinitions.QUTIL_SENDMANY_FEE);
 
-  // build and sign tx
-  const tx = new QubicTransaction().setSourcePublicKey(sourcePublicKey)
+// build and sign tx
+const tx = new QubicTransaction().setSourcePublicKey(sourcePublicKey)
     .setDestinationPublicKey(QubicDefinitions.QUTIL_ADDRESS) // a send many transfer should go the Qutil SC
     .setAmount(totalAmount) // calculated from all transfers + fee
     .setTick(0) // set an appropriate target tick
@@ -900,23 +981,22 @@ The example below shows how to use it.
     .setInputSize(sendManyPayload.getPackageSize()) // the input size equals the size of the send many payload
     .setPayload(sendManyPayload); // add payload
 
-  const signedTransactionData = await tx.build(signSeed);
-  
-  // the tx can now be sent
- const response = fetch(`${baseUrl}/broadcast-transaction`,
-                    {
-                        headers: {
-                          'Accept': 'application/json',
-                          'Content-Type': 'application/json'
-                        },
-                        method: "POST",
-                        body: JSON.stringify({
-                          encodedTransaction: signedTransactionData
-                        })
-                    });
+const signedTransactionData = await tx.build(signSeed);
 
-  if(reponse.status == 200)
-  {
+// the tx can now be sent
+const response = fetch(`${baseUrl}/broadcast-transaction`,
+    {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        method: "POST",
+        body: JSON.stringify({
+            encodedTransaction: signedTransactionData
+        })
+    });
+
+if (reponse.status == 200) {
     // yipiii! transaction has been broadcasted
 
     // by requesting getId() you receive the txId of this transaction
@@ -925,21 +1005,24 @@ The example below shows how to use it.
 
     // after a tx has been send you can either check its status by tick scan or by dedicated call to /tx-status/<TDID>
 
-  }else {
+} else {
     // :( something went wrong, try again
-  }
+}
 
 
 ```
+
 **Go**
+
 ```go
 
 package main
 
 import (
-  "github.com/pkg/errors"
-  "github.com/qubic/go-node-connector/types"
-  "log"
+	"log"
+
+	"github.com/pkg/errors"
+	"github.com/qubic/go-node-connector/types"
 )
 
 func SendManyTransactionExample() error {
@@ -987,8 +1070,8 @@ func SendManyTransactionExample() error {
 	if err != nil {
 		return errors.Wrap(err, "creating signer")
 	}
-	
-    	tx, err = signer.SignTx(tx)
+
+	tx, err = signer.SignTx(tx)
 	if err != nil {
 		return errors.Wrap(err, "signing transaction")
 	}
@@ -1010,8 +1093,8 @@ func SendManyTransactionExample() error {
 > The JavaScript example requires that you add the fee manually.
 > In the case of the go example, this fee is added automatically when creating the transaction.
 
-
 ## Asset Transfers
+
 In order to transfer assets, you can refer to this example:
 
 **GO**
@@ -1020,10 +1103,12 @@ In order to transfer assets, you can refer to this example:
 package main
 
 import (
-  "github.com/pkg/errors"
-  "github.com/qubic/go-node-connector/types"
-  "log"
+	"log"
+
+	"github.com/pkg/errors"
+	"github.com/qubic/go-node-connector/types"
 )
+
 func AssetTransferTransactionExample() error {
 
 	senderAddress := ""
@@ -1034,7 +1119,7 @@ func AssetTransferTransactionExample() error {
 	assetName := ""
 	assetIssuer := ""
 	numberOfUnits := int64(1)
-	
+
 	// The transfer fee may be subject to change in the future.
 	transferFee := int64(100)
 
@@ -1085,7 +1170,7 @@ func AssetTransferTransactionExample() error {
 ```
 
 > Note that in order to transfer assets, a fee must be paid to the smart contract.  
-> For the time being, the fee may be queried at this address: 
+> For the time being, the fee may be queried at this address:
 
 ```bash
   curl -X 'GET' \
@@ -1094,19 +1179,26 @@ func AssetTransferTransactionExample() error {
 ```
 
 ## Error Handling
+
 In case you receive a http resonse `400` for the endpoints\
 `/ticks/{tickNumber}/approved-transactions`\
 `/ticks/{tickNumber}/transactions`\
 `/ticks/{tickNumber}/tick-data`\
 `/ticks/{tickNumber}/quorum-data`
 
-Make sure to implement error handling for the following cases (generally we are following the status codes from https://grpc.io/docs/guides/status-codes/):
-| code   	|  reason  	| action |
-|---	|---	|--- |
-| 9  	|  Requested tick number is greater than `lastProcessedTick`.	| Repeat your request until it works. You may track the the `lastProcessedTick` from the endpoint `/status` until `lastProcessedTick` > your `targetTick`.  |
-| 11  	|  Provided tick number was skipped by the system, next available tick is `<NEXTAVAILABLETICKNUMBER>`. 	| Take the `nextTickNumber` from `details` in response and proceed with this tick. In this case, pending transactions with `targetTick` < `nextTickNumber` won't be processed and need to be reissued.  |
-
+Make sure to implement error handling for the following cases (generally we are following the status codes
+from https://grpc.io/docs/guides/status-codes/):
+| code | reason | action |
+|--- |--- |--- |
+| 9 | Requested tick number is greater than `lastProcessedTick`. | Repeat your request until it works. You may track the
+the `lastProcessedTick` from the endpoint `/status` until `lastProcessedTick` > your `targetTick`. |
+| 11 | Provided tick number was skipped by the system, next available tick is `<NEXTAVAILABLETICKNUMBER>`. | Take the
+`nextTickNumber` from `details` in response and proceed with this tick. In this case, pending transactions with
+`targetTick` < `nextTickNumber` won't be processed and need to be reissued. |
 
 ## Logging
-It is important to log any transaction information also on the side of the integrator. The qubic network does not store transaction information over a period longer than seven days and transactions are pruned on every epoch change each Wednesday. The RPC infrastructure provides an archive which holds historical data.
+
+It is important to log any transaction information also on the side of the integrator. The qubic network does not store
+transaction information over a period longer than seven days and transactions are pruned on every epoch change each
+Wednesday. The RPC infrastructure provides an archive which holds historical data.
 
