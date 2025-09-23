@@ -1,8 +1,28 @@
 # TX based exchange integration
-
 The following documentation is relevant for the Qubic "2.0" RPC.
 
 ## Table of contents
+<!-- TOC -->
+* [TX based exchange integration](#tx-based-exchange-integration)
+  * [Table of contents](#table-of-contents)
+  * [Endpoint summary](#endpoint-summary)
+    * [Query service](#query-service)
+    * [Live service](#live-service)
+  * [Qubic workflow guidelines](#qubic-workflow-guidelines)
+    * [Only one concurrent transaction per source address](#only-one-concurrent-transaction-per-source-address)
+    * [Respect status information](#respect-status-information)
+    * [Epoch transition](#epoch-transition)
+  * [General code examples](#general-code-examples)
+    * [Generating a seed (wallet)](#generating-a-seed-wallet)
+    * [Creating, signing, sending and verifying a transaction](#creating-signing-sending-and-verifying-a-transaction)
+      * [Overview](#overview)
+      * [Example](#example)
+  * [Deposit workflow](#deposit-workflow)
+  * [Withdraw workflow](#withdraw-workflow)
+    * [Plain transactions](#plain-transactions)
+    * [Qutil (Send Many) smart contract](#qutil-send-many-smart-contract)
+  * [Asset transfers](#asset-transfers)
+<!-- TOC -->
 
 ## Endpoint summary
 
