@@ -25,9 +25,9 @@ transactions, etc.
 | POST   | /getTransactionByHash       | Query the data related to a certain transaction.                                                        |
 | POST   | /getTransactionsForIdentity | Query the transactions of a certain identity (address). Allows for different filters and range options. |
 | POST   | /getTransactionsForTick     | Query the transactions of a certain tick.                                                               |
+| POST   | /getComputorListsForEpoch   | Query the computor list of a certain epoch.                                                             |
 | GET    | /getLastProcessedTick       | Retrieve the number of the last archived tick.                                                          |
 | GET    | /getProcessedTickIntervals  | Retrieve the archived tick intervals in relation to their epoch.                                        |
-| GET    | /getComputorListForEpoch    | Retrieve the computor list of a certain epoch.                                                          |
 
 ### Live service
 
@@ -70,7 +70,7 @@ There are a couple of endpoints that can be used to get different types of statu
 - `/getLastProcessedTick` -> Query the number of the last archived tick. The archival process is slightly behind the
   network, so **this value does not represent the current state of the network**. You can only query information for
   ticks lower and equal to this value.
-- `getProcessedTickIntervals` -> Query the tick intervals of all the stored epochs. Note that due to different network
+- `/getProcessedTickIntervals` -> Query the tick intervals of all the stored epochs. Note that due to different network
   conditions, there may exist multiple intervals for certain epochs, as the network can restart and skip some ticks in
   certain scenarios.
 

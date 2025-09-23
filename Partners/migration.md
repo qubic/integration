@@ -161,7 +161,12 @@ Accept: application/json
 
 New
 ```HTTP
-GET /getComputorsListForEpoch?epoch=179 HTTP/1.1
+POST /getComputorListsForEpoch HTTP/1.1
 Host: api.qubic.org
+Content-Type: application/json
 Accept: application/json
+
+{
+  "epoch": 179
+}
 ```

@@ -20,8 +20,8 @@
     "application/json"
   ],
   "paths": {
-    "/getComputorsListForEpoch": {
-      "get": {
+    "/getComputorListsForEpoch": {
+      "post": {
         "operationId": "ArchiveQueryService_GetComputorsListsForEpoch",
         "responses": {
           "200": {
@@ -39,11 +39,12 @@
         },
         "parameters": [
           {
-            "name": "epoch",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int64"
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbGetComputorsListForEpochRequest"
+            }
           }
         ],
         "tags": [
@@ -252,6 +253,15 @@
         },
         "signature": {
           "type": "string"
+        }
+      }
+    },
+    "pbGetComputorsListForEpochRequest": {
+      "type": "object",
+      "properties": {
+        "epoch": {
+          "type": "integer",
+          "format": "int64"
         }
       }
     },
