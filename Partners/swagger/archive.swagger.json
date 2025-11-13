@@ -141,7 +141,7 @@
     },
     "/v1/status": {
       "get": {
-        "summary": "Deprecated. Use /getLastProcessedTick (query API) or /getProcessedTicksIntervals (query API) instead.",
+        "summary": "Deprecated. Use /getLastProcessedTick (query API) or /getProcessedTickIntervals (query API) instead.",
         "operationId": "ArchiveService_GetStatus",
         "responses": {
           "200": {
