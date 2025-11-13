@@ -145,7 +145,7 @@ Accept: application/json
 
 New
 ```HTTP
-GET /getProcessedTicksIntervals HTTP/1.1
+GET /getProcessedTickIntervals HTTP/1.1
 Host: api.qubic.org
 Accept: application/json
 ```

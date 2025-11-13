@@ -74,7 +74,7 @@
         ]
       }
     },
-    "/getProcessedTicksIntervals": {
+    "/getProcessedTickIntervals": {
       "get": {
         "operationId": "ArchiveQueryService_GetProcessedTickIntervals",
         "responses": {
@@ -283,13 +283,21 @@
         "tickNumber": {
           "type": "integer",
           "format": "int64"
+        },
+        "epoch": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "intervalInitialTick": {
+          "type": "integer",
+          "format": "int64"
         }
       }
     },
-    "pbGetProcessedTicksIntervalsResponse": {
+    "pbGetProcessedTickIntervalsResponse": {
       "type": "object",
       "properties": {
-        "processedTicksIntervals": {
+        "processedTickIntervals": {
           "type": "array",
           "items": {
             "type": "object",
