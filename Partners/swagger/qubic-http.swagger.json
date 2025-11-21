@@ -716,7 +716,7 @@
       "properties": {
         "encodedTransaction": {
           "type": "string",
-          "title": "encoding needs to be base64"
+          "title": "base64 encoded binary transaction data"
         }
       }
     },
@@ -936,7 +936,7 @@
         },
         "requestData": {
           "type": "string",
-          "title": "the input data. encoding needs to be base64"
+          "title": "base64 encoded input data"
         }
       }
     },
