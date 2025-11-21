@@ -54,12 +54,12 @@ transactions, etc.
 The live service acts as a proxy to the live network and allows for querying certain information directly from the
 network, sending transactions and querying smart contract data.
 
-| Method | Endpoint                  | Description                                                                             |
-|--------|---------------------------|-----------------------------------------------------------------------------------------|
-| POST   | /v1/broadcast-transaction | Broadcast a new transaction to the network.                                             |
-| POST   | /v1/querySmartContract    | Perform a query on a smart contract function.                                           |
-| GET    | /v1/tick-info             | Query the current tick of the network.                                                  |
-| GET    | /v1/balances/{identity}   | Query the balance of a certain identity, alongside with some transfer related metadata. |
+| Method | Endpoint                  | Description                                                                                      |
+|--------|---------------------------|--------------------------------------------------------------------------------------------------|
+| POST   | /v1/broadcast-transaction | Broadcast a new transaction to the network. The `encodedTransaction` needs to be base64 encoded. |
+| POST   | /v1/querySmartContract    | Perform a query on a smart contract function. The `requestData` needs to be base64 encoded.      |
+| GET    | /v1/tick-info             | Query the current tick of the network.                                                           |
+| GET    | /v1/balances/{identity}   | Query the balance of a certain identity, alongside with some transfer related metadata.          |
 
 ## Qubic workflow guidelines
 
