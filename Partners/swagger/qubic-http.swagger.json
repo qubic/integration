@@ -264,6 +264,7 @@
     },
     "/v1/assets/{identity}/issued": {
       "get": {
+        "summary": "Gets assets issued by the specified identity.",
         "operationId": "QubicLiveService_GetIssuedAssets",
         "responses": {
           "200": {
@@ -294,6 +295,7 @@
     },
     "/v1/assets/{identity}/owned": {
       "get": {
+        "summary": "Gets assets that are owned by the specified identity.",
         "operationId": "QubicLiveService_GetOwnedAssets",
         "responses": {
           "200": {
@@ -324,6 +326,7 @@
     },
     "/v1/assets/{identity}/possessed": {
       "get": {
+        "summary": "Gets assets that are possessed by the specified identity.",
         "operationId": "QubicLiveService_GetPossessedAssets",
         "responses": {
           "200": {
@@ -354,6 +357,7 @@
     },
     "/v1/balances/{id}": {
       "get": {
+        "summary": "Gets the balance of the specified identity",
         "operationId": "QubicLiveService_GetBalance",
         "responses": {
           "200": {
@@ -384,7 +388,7 @@
     },
     "/v1/block-height": {
       "get": {
-        "summary": "/block-height Deprecated in favor of /tick-info",
+        "summary": "Deprecated: use /tick-info instead",
         "operationId": "QubicLiveService_GetBlockHeight",
         "responses": {
           "200": {
@@ -407,6 +411,7 @@
     },
     "/v1/broadcast-transaction": {
       "post": {
+        "summary": "Broadcasts a transaction to the network",
         "operationId": "QubicLiveService_BroadcastTransaction",
         "responses": {
           "200": {
@@ -439,6 +444,7 @@
     },
     "/v1/querySmartContract": {
       "post": {
+        "summary": "Queries a smart contract function",
         "operationId": "QubicLiveService_QuerySmartContract",
         "responses": {
           "200": {
@@ -471,6 +477,7 @@
     },
     "/v1/tick-info": {
       "get": {
+        "summary": "Gets the current tick information",
         "operationId": "QubicLiveService_GetTickInfo",
         "responses": {
           "200": {
@@ -708,7 +715,8 @@
       "type": "object",
       "properties": {
         "encodedTransaction": {
-          "type": "string"
+          "type": "string",
+          "title": "encoding needs to be base64"
         }
       }
     },
@@ -786,8 +794,7 @@
             "format": "int32"
           }
         }
-      },
-      "title": "Issued"
+      }
     },
     "pbIssuedAssetsResponse": {
       "type": "object",
@@ -841,8 +848,7 @@
         "issuedAsset": {
           "$ref": "#/definitions/pbIssuedAssetData"
         }
-      },
-      "title": "Owned"
+      }
     },
     "pbOwnedAssetsResponse": {
       "type": "object",
@@ -896,8 +902,7 @@
         "ownedAsset": {
           "$ref": "#/definitions/pbOwnedAssetData"
         }
-      },
-      "title": "Possessed"
+      }
     },
     "pbPossessedAssetsResponse": {
       "type": "object",
@@ -916,18 +921,22 @@
       "properties": {
         "contractIndex": {
           "type": "integer",
-          "format": "int64"
+          "format": "int64",
+          "title": "identifies the smart contract"
         },
         "inputType": {
           "type": "integer",
-          "format": "int64"
+          "format": "int64",
+          "title": "identifies the function to be queried"
         },
         "inputSize": {
           "type": "integer",
-          "format": "int64"
+          "format": "int64",
+          "title": "the size of the input data (request data)"
         },
         "requestData": {
-          "type": "string"
+          "type": "string",
+          "title": "the input data. encoding needs to be base64"
         }
       }
     },
@@ -944,7 +953,8 @@
       "properties": {
         "tick": {
           "type": "integer",
-          "format": "int64"
+          "format": "int64",
+          "title": "current network tick"
         },
         "duration": {
           "type": "integer",
@@ -952,11 +962,13 @@
         },
         "epoch": {
           "type": "integer",
-          "format": "int64"
+          "format": "int64",
+          "title": "current epoch"
         },
         "initialTick": {
           "type": "integer",
-          "format": "int64"
+          "format": "int64",
+          "title": "initial tick of epoch"
         }
       }
     },
