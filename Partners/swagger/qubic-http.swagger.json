@@ -388,7 +388,7 @@
     },
     "/v1/block-height": {
       "get": {
-        "summary": "Deprecated: use /tick-info instead",
+        "summary": "Deprecated: use /tick-info instead.",
         "operationId": "QubicLiveService_GetBlockHeight",
         "responses": {
           "200": {
@@ -411,7 +411,7 @@
     },
     "/v1/broadcast-transaction": {
       "post": {
-        "summary": "Broadcasts a transaction to the network",
+        "summary": "Broadcasts a transaction to the network.",
         "operationId": "QubicLiveService_BroadcastTransaction",
         "responses": {
           "200": {
@@ -444,7 +444,7 @@
     },
     "/v1/querySmartContract": {
       "post": {
-        "summary": "Queries a smart contract function",
+        "summary": "Queries a smart contract function.",
         "operationId": "QubicLiveService_QuerySmartContract",
         "responses": {
           "200": {
@@ -477,7 +477,7 @@
     },
     "/v1/tick-info": {
       "get": {
-        "summary": "Gets the current tick information",
+        "summary": "Gets the current tick information.",
         "operationId": "QubicLiveService_GetTickInfo",
         "responses": {
           "200": {
