@@ -175,7 +175,7 @@ import (
 	"github.com/qubic/go-node-connector/types"
 )
 
-const baseUrl = `https://rpc.qubic.org/v1/query`
+const baseUrl = `https://rpc.qubic.org/query/v1`
 
 func main() {
 	err := run()
@@ -375,7 +375,7 @@ import (
 	"github.com/qubic/go-node-connector/types"
 )
 
-const baseUrl = `https://rpc.qubic.org/v1/query`
+const baseUrl = `https://rpc.qubic.org/query/v1`
 
 func main() {
 
@@ -584,7 +584,7 @@ func SendManyTransactionExample() error {
 	}
 
 	// Create live service client and get current tick / block number
-	lsc := types.NewLiveServiceClient("https://rpc.qubic.org/v1/query")
+	lsc := types.NewLiveServiceClient("https://rpc.qubic.org/query/v1")
 	currentTickInfo, err := lsc.GetTickInfo()
 	if err != nil {
 		return errors.Wrap(err, "getting current tick info")
@@ -658,7 +658,7 @@ func AssetTransferTransactionExample() error {
 	}
 
 	// Create live service client and get current tick / block number
-	lsc := types.NewLiveServiceClient("https://rpc.qubic.org/v1/query")
+	lsc := types.NewLiveServiceClient("https://rpc.qubic.org/query/v1")
 	currentTickInfo, err := lsc.GetTickInfo()
 	if err != nil {
 		return errors.Wrap(err, "getting current tick info")
