@@ -11,10 +11,10 @@ The Qubic RPC is your gateway to the Qubic Network. For testing purposes, you ca
 
 ### Public available RPC/API's
 
-| Base Url | Use Case |
-| -------- | ---- |
-| rpc-staging.qubic.org | Public RPC/API for staging (production testing) purposes. Normally only for internal Testing. Ask us if you want to test the latest features that will be in production soon.   |
-| rpc.qubic.org    | Public RPC/API for general purposes. Use this in your productive applications. |
+| Base Url              | Use Case                                                                                                                                                                      |
+|-----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| rpc-staging.qubic.org | Public RPC/API for staging (production testing) purposes. Normally only for internal Testing. Ask us if you want to test the latest features that will be in production soon. |
+| rpc.qubic.org         | Public RPC/API for general purposes. Use this in your productive applications.                                                                                                |
 
 ## Exchange integration
 To partner up with Qubic from a perspective of an exchange, there are two main approaches how you can integrate Qubic into your business logic:

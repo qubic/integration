@@ -39,6 +39,8 @@ This section briefly describes these services and their endpoints.
 The purpose of the query service is to serve archived data such as tick (block) information, transactions, identity
 transactions, etc.
 
+Base path: `/query/v1`
+
 | Method | Endpoint                    | Description                                                                                             |
 |--------|-----------------------------|---------------------------------------------------------------------------------------------------------|
 | POST   | /getTickData                | Query the data related to a certain tick.                                                               |
@@ -54,12 +56,14 @@ transactions, etc.
 The live service acts as a proxy to the live network and allows for querying certain information directly from the
 network, sending transactions and querying smart contract data.
 
-| Method | Endpoint                  | Description                                                                                      |
-|--------|---------------------------|--------------------------------------------------------------------------------------------------|
-| POST   | /v1/broadcast-transaction | Broadcast a new transaction to the network. The `encodedTransaction` needs to be base64 encoded. |
-| POST   | /v1/querySmartContract    | Perform a query on a smart contract function. The `requestData` needs to be base64 encoded.      |
-| GET    | /v1/tick-info             | Query the current tick of the network.                                                           |
-| GET    | /v1/balances/{identity}   | Query the balance of a certain identity, alongside with some transfer related metadata.          |
+Base path: `/live/v1`
+
+| Method | Endpoint               | Description                                                                                      |
+|--------|------------------------|--------------------------------------------------------------------------------------------------|
+| POST   | /broadcast-transaction | Broadcast a new transaction to the network. The `encodedTransaction` needs to be base64 encoded. |
+| POST   | /querySmartContract    | Perform a query on a smart contract function. The `requestData` needs to be base64 encoded.      |
+| GET    | /tick-info             | Query the current tick of the network.                                                           |
+| GET    | /balances/{identity}   | Query the balance of a certain identity, alongside with some transfer related metadata.          |
 
 ## Qubic workflow guidelines
 
@@ -84,7 +88,7 @@ Sample workflow:
 
 There are a couple of endpoints that can be used to get different types of status information:
 
-- `/v1/tick-info` -> Query the current tick of the network. New transactions must have a target tick larger than this
+- `/tick-info` -> Query the current tick of the network. New transactions must have a target tick larger than this
   value. Note that the network keeps on ticking, thus we recommend setting the target tick of new transaction to 15 - 20
   ticks more than the current network tick.
 - `/getLastProcessedTick` -> Query the number of the last archived tick. The archival process is slightly behind the
@@ -141,7 +145,7 @@ return nil
 
 The basic steps for this process are:
 
-1. Request current network tick from `/v1/tick-info`.
+1. Request current network tick from `/tick-info`.
 2. Create transaction, define its target tick as a tick in the future and sign it.
 3. Send transaction and store its hash.
 4. Verify transaction by querying `/getTransactionByHash` after the tick returned by `/getLastProcessedTick` surpasses
@@ -171,7 +175,7 @@ import (
 	"github.com/qubic/go-node-connector/types"
 )
 
-const baseUrl = `https://api.qubic.org`
+const baseUrl = `https://rpc.qubic.org/v1/query`
 
 func main() {
 	err := run()
@@ -371,7 +375,7 @@ import (
 	"github.com/qubic/go-node-connector/types"
 )
 
-const baseUrl = `https://api.qubic.org`
+const baseUrl = `https://rpc.qubic.org/v1/query`
 
 func main() {
 
@@ -580,7 +584,7 @@ func SendManyTransactionExample() error {
 	}
 
 	// Create live service client and get current tick / block number
-	lsc := types.NewLiveServiceClient("https://api.qubic.org")
+	lsc := types.NewLiveServiceClient("https://rpc.qubic.org/v1/query")
 	currentTickInfo, err := lsc.GetTickInfo()
 	if err != nil {
 		return errors.Wrap(err, "getting current tick info")
@@ -654,7 +658,7 @@ func AssetTransferTransactionExample() error {
 	}
 
 	// Create live service client and get current tick / block number
-	lsc := types.NewLiveServiceClient("https://api.qubic.org")
+	lsc := types.NewLiveServiceClient("https://rpc.qubic.org/v1/query")
 	currentTickInfo, err := lsc.GetTickInfo()
 	if err != nil {
 		return errors.Wrap(err, "getting current tick info")
