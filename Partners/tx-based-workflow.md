@@ -151,9 +151,6 @@ The basic steps for this process are:
 4. Verify transaction by querying `/getTransactionByHash` after the tick returned by `/getLastProcessedTick` surpasses
    the target tick of the transaction.
 
-> Note: Please do not create another transaction for the same sender address before the previous one has been completed.
-**Your transaction may be overwritten.**
-
 #### Example
 
 For this example, it is assumed that you already have the information required to create a simple transaction:
