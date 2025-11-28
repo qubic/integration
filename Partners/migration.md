@@ -54,7 +54,7 @@ Important changes compared to the old API:
 - More filter and range options for requests.
 - Output structures have been overhauled.
 
-> Please also refer to the swagger documentation found [here](swagger/qubic-query-doc.html) and to the project documentation found [here](https://github.com/qubic/archive-query-service/tree/main/v2).
+> Please also refer to the openapi documentation [here](swagger/qubic-query-doc.html) and [here](swagger/qubic-rpc-doc.html) and to the project documentation [here](https://github.com/qubic/archive-query-service/tree/main/v2).
 
 
 ### Query transaction
