@@ -2,6 +2,8 @@
 
 Migration is only necessary for the old archiver endpoints. The live endpoints will stay available (but prefixed with the base path `/live`).
 
+If you are unsure how to replace certain endpoint calls, please contact us so we can help you.
+
 ## Deprecated archiver endpoints
 
 The following endpoints will be removed completely as soon as possible (ETA end of 2025):
@@ -19,7 +21,7 @@ GET /v2/ticks/{tickNumber}/store-hash
 GET /v2/transactions/{txId}/sendmany
 ```
 
-For these endpoints users need to migrate ASAP.
+Users need to stop using these endpoints as soon as possible.
 
 The following endpoints will be available for a longer migration period:
 
@@ -43,7 +45,7 @@ For these endpoints immediate migration is not necessary but should be done in 2
 
 ## Migrating to the new Query API
 
-All the old archiver endpoints can be replaced with the new query endpoints (if there is a gap for you please let us know).
+To replace endpoints you can move to the new query API. This section shows how to migrate.
 
 > Base URL: `https://rpc.qubic.org/query/v1`
 

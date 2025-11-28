@@ -6,7 +6,8 @@ This documentation describes the best practices to integrate and interact with Q
 
 The Qubic RPC API is the main way to interact with Qubic.
 
-[Swagger / OpenAPI Documentation](swagger/qubic-query-doc.html)
+For API specifications, see the 
+[Swagger / OpenAPI Documentation](swagger/qubic-query-doc.html).
 
 ### API
 
@@ -24,7 +25,7 @@ integrations the archive API was relevant.
 * `Archiver API` ... deprecated/legacy API for querying archived data directly from the old archiver.
 * `Stats API` ... not relevant for partner integration. Integration layer for the explorer.
 
-You should only use the query and live API. The stats api can be changed without further notice.
+You should only use the query and live API.
 
 ## Exchange integration
 
