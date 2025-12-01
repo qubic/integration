@@ -49,8 +49,10 @@ To replace endpoints you can move to the new query API. This section shows how t
 
 > Base URL: `https://rpc.qubic.org/query/v1`
 
-Important changes compared to the old API:  
-- Input data is now passed in the request body.
+Important changes compared to the old API:
+
+- Most requests are now POST rather than GET. 
+- Input must be included in the request body, not in the URL.
 - More filter and range options for requests.
 - Output structures have been overhauled.
 
