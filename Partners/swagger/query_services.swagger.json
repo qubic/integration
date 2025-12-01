@@ -425,13 +425,16 @@
       "properties": {
         "offset": {
           "type": "integer",
-          "format": "int64"
+          "format": "int64",
+          "description": "The offset specifies the starting point of the returned data. It needs to be a multiple of the page size."
         },
         "size": {
           "type": "integer",
-          "format": "int64"
+          "format": "int64",
+          "description": "The size specifies how many results should be returned. It needs to be a multiple of 10."
         }
-      }
+      },
+      "description": "Allows to specify what part of the data should be returned.\nPagination size and offset input is restricted and needs to follow certain rules.\nThe number of maximum results (offset + size) is limited to 10000."
     },
     "pbProcessedTickInterval": {
       "type": "object",
