@@ -41,7 +41,8 @@ GET /v2/epochs/{epoch}/empty-ticks
 GET /v2/epochs/{epoch}/ticks
 ```
 
-For these endpoints immediate migration is not necessary but should be done in 2026.
+For these endpoints immediate migration is not necessary but should be done in 2026. Replacement endpoints are referenced 
+in the [openapi documentation](swagger/qubic-rpc-doc.html) under the respective deprecated entries.
 
 ## Migrating to the new Query API
 
@@ -56,7 +57,8 @@ Important changes compared to the old API:
 - More filter and range options for requests.
 - Output structures have been overhauled.
 
-> Please also refer to the openapi documentation [here](swagger/qubic-query-doc.html) and [here](swagger/qubic-rpc-doc.html) and to the project documentation [here](https://github.com/qubic/archive-query-service/tree/main/v2).
+> Please also refer to the openapi documentation [here](swagger/qubic-query-doc.html) and [here](swagger/qubic-rpc-doc.html) 
+> and to the project documentation [here](https://github.com/qubic/archive-query-service/tree/main/v2).
 
 
 ### Query transaction
