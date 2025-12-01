@@ -88,13 +88,13 @@ Sample workflow:
 
 There are a couple of endpoints that can be used to get different types of status information:
 
-- `/tick-info` -> Query the current tick of the network. New transactions must have a target tick larger than this
+- `/live/v1/tick-info` -> Query the current tick of the network. New transactions must have a target tick larger than this
   value. Note that the network keeps on ticking, thus we recommend setting the target tick of new transaction to 15 - 20
   ticks more than the current network tick.
-- `/getLastProcessedTick` -> Query the number of the last archived tick. The archival process is slightly behind the
+- `/query/v1/getLastProcessedTick` -> Query the number of the last archived tick. The archival process is slightly behind the
   network, so **this value does not represent the current state of the network**. You can only query information for
   ticks lower and equal to this value.
-- `/getProcessedTickIntervals` -> Query the tick intervals of all the stored epochs. Note that due to different network
+- `/query/v1/getProcessedTickIntervals` -> Query the tick intervals of all the stored epochs. Note that due to different network
   conditions, there may exist multiple intervals for certain epochs, as the network can restart and skip some ticks in
   certain scenarios.
 
@@ -145,10 +145,10 @@ return nil
 
 The basic steps for this process are:
 
-1. Request current network tick from `/tick-info`.
+1. Request current network tick from `/live/v1/tick-info`.
 2. Create transaction, define its target tick as a tick in the future and sign it.
 3. Send transaction and store its hash.
-4. Verify transaction by querying `/getTransactionByHash` after the tick returned by `/getLastProcessedTick` surpasses
+4. Verify transaction by querying `/query/v1/getTransactionByHash` after the tick returned by `/query/v1/getLastProcessedTick` surpasses
    the target tick of the transaction.
 
 #### Example
