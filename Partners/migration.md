@@ -1,13 +1,24 @@
 # Migration
 
-Migration is only necessary for the old archiver endpoints. The live endpoints will stay available (but prefixed with the base path `/live`).
+## Summary
+
+This document provides guidance for partners migrating to Qubic's updated RPC infrastructure.
+
+**Live API**: No functional changes. All services, inputs, and outputs remain the same. Only the base path has changed—endpoints are now prefixed with `/live/v1`.
+
+**Archiver API**: Will not be available long-term. Due to scalability and architectural improvements, the Archiver API is being phased out. All endpoints are deprecated:
+- **End of 2025**: First group of endpoints will be removed. Stop using immediately.
+- **During 2026**: Remaining endpoints will be removed. Start migrating now to the new **Query API**.
+
+For technical details on the architecture changes, see: [RPC 2.0 Qubic Integration Layer Functionality Upgrade](https://qubic.org/blog-detail/rpc-2-0-qubic-integration-layer-functionality-upgrade)
 
 If you are unsure how to replace certain endpoint calls, please contact us so we can help you.
 
-## Deprecated archiver endpoints
+## Deprecated Archiver Endpoints
 
-The following endpoints will be removed completely as soon as possible (ETA end of 2025):
+### Removed by End of 2025
 
+The following endpoints will be removed completely by the end of 2025. Stop using these immediately:
 ```
 GET /v1/healthcheck
 GET /v1/identities/{identity}/transfer-transactions
@@ -21,10 +32,9 @@ GET /v2/ticks/{tickNumber}/store-hash
 GET /v2/transactions/{txId}/sendmany
 ```
 
-Users need to stop using these endpoints as soon as possible.
+### Removed During 2026
 
-The following endpoints will be available for a longer migration period:
-
+The following endpoints will be removed during 2026. Start migrating now to the Query API:
 ```
 GET /v1/status (status service archiver status)
 GET /v1/ticks/{tickNumber}/approved-transactions
@@ -41,8 +51,7 @@ GET /v2/epochs/{epoch}/empty-ticks
 GET /v2/epochs/{epoch}/ticks
 ```
 
-For these endpoints immediate migration is not necessary but should be done in 2026. Replacement endpoints are referenced 
-in the [openapi documentation](swagger/qubic-rpc-doc.html) under the respective deprecated entries.
+Replacement endpoints are referenced in the [OpenAPI documentation](swagger/qubic-rpc-doc.html) under the respective deprecated entries.
 
 ## Migrating to the new Query API
 
