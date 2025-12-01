@@ -6,26 +6,26 @@ This documentation describes the best practices to integrate and interact with Q
 
 The Qubic RPC API is the main way to interact with Qubic.
 
-For API specifications, see the 
-[Swagger / OpenAPI Documentation](swagger/qubic-query-doc.html).
+| Host                   | Use case                                          |
+|------------------------|---------------------------------------------------|
+| https://rpc.qubic.org  | Public API. Use this to build your applications.  |
 
-### API
+### Available APIs
 
-| Host                   | Use case                                         |
-|------------------------|--------------------------------------------------|
-| https://rpc.qubic.org/ | Public API. Use this to build your applications. |
-
-There are APIs with different purpose. For the partner integration the query and live API are relevant. For legacy
-integrations the archive API was relevant.
+For partner integration, use the **Query API** and **Live API** only. The Archiver API is deprecated and will be removed.
 
 ![integration-apis](integration-apis.png)
 
-* `Query API` ... API for querying archived data. Base path: `/query/v1`
-* `Live API` ... API that queries live data from the qubic nodes. Base path: `/live/v1`
-* `Archiver API` ... deprecated/legacy API for querying archived data directly from the old archiver.
-* `Stats API` ... not relevant for partner integration. Integration layer for the explorer.
+| API           | Purpose                                 | Base Path    | Status               |
+|---------------|-----------------------------------------|--------------|----------------------|
+| **Query API** | Querying archived data                  | `/query/v1`  | ✅ Active             |
+| **Live API**  | Querying live data from Qubic nodes     | `/live/v1`   | ✅ Active             |
+| Archiver API  | Legacy API for archived data            | `/v1`, `/v2` | ⚠️ Deprecated        |
+| Stats API     | Market data, rich lists, and statistics | —            | 🔄 Subject to change |
 
-You should only use the query and live API.
+> **Note:** The Stats API is not intended for partner integration. It is currently under evaluation and may change without notice.
+
+For API specifications, see the [Openapi Documentation](https://qubic.github.io/integration/Partners/swagger/qubic-rpc-doc.html).
 
 ## Exchange integration
 
