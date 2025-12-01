@@ -35,13 +35,17 @@ and sending transactions via an API call to the RPC infrastructure.
 
 > [Read more about the TX based workflow](tx-based-workflow.md)
 
-## Migration and legacy documentation
 
-The current API is different from the original one. Mainly a new query API for accessing the archive was created and the
-old archiver API is deprecated. Some paths of the old archiver API are still available for backwards compatibility. Some
-old archiver endpoints are removed.
+## Migration and Legacy Documentation
 
-If migrating from the deprecated API, please refer to [this](migration.md) page for the endpoints that got replaced and 
-their new counterparts.
+The old Archiver API has been replaced by the new Query API. The Archiver API is still available for a while for backwards compatibility, but all endpoints are deprecated and will be removed.
 
-If you want to access the old documentation you can find it [here](old/README.md).
+⚠️ **The Archiver API will not be available long-term.** All endpoints are deprecated:
+- **End of 2025**: First group of endpoints will be removed.
+- **During 2026**: Remaining endpoints will be removed.
+
+If you are migrating from the deprecated API, please refer to the [Migration Guide](migration.md) for the endpoints that got replaced and their new counterparts.
+
+For technical details on the architecture changes, see: [RPC 2.0 Qubic Integration Layer Functionality Upgrade](https://qubic.org/blog-detail/rpc-2-0-qubic-integration-layer-functionality-upgrade)
+
+For legacy documentation, see [here](old/README.md).
