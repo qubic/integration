@@ -172,8 +172,6 @@ import (
 	"github.com/qubic/go-node-connector/types"
 )
 
-const baseUrl = `https://rpc.qubic.org/query/v1`
-
 func main() {
 	err := run()
 	if err != nil {
@@ -190,7 +188,7 @@ func run() error {
 	amount := int64(10)
 
 	// Create live service client utility object
-	lsc := types.NewLiveServiceClient(baseUrl)
+	lsc := types.NewLiveServiceClient("https://rpc.qubic.org/live/v1")
 
 	// Get current network tick
 	tickInfoResponse, err := lsc.GetTickInfo()
@@ -254,7 +252,7 @@ func run() error {
 }
 
 func fetchLastProcessedTick() (uint32, error) {
-	request, err := http.NewRequest(http.MethodGet, baseUrl+"/getLastProcessedTick", nil)
+	request, err := http.NewRequest(http.MethodGet, "https://rpc.qubic.org/query/v1/getLastProcessedTick", nil)
 	if err != nil {
 		return 0, fmt.Errorf("creating last processed tick request: %w", err)
 	}
@@ -291,7 +289,7 @@ func fetchAndPrintTransactionData(txId string) error {
 		return fmt.Errorf("marshalling transaction by hash payload: %w", err)
 	}
 
-	request, err := http.NewRequest(http.MethodPost, baseUrl+"/getTransactionByHash", bytes.NewReader(marshalledPayload))
+	request, err := http.NewRequest(http.MethodPost, "https://rpc.qubic.org/query/v1/getTransactionByHash", bytes.NewReader(marshalledPayload))
 	if err != nil {
 		return fmt.Errorf("creating transaction by hash request: %w", err)
 	}
@@ -372,8 +370,6 @@ import (
 	"github.com/qubic/go-node-connector/types"
 )
 
-const baseUrl = `https://rpc.qubic.org/query/v1`
-
 func main() {
 
 	err := run()
@@ -425,7 +421,7 @@ func queryTickTransactions(tickNumber uint32) ([]Transaction, error) {
 	if err != nil {
 		return nil, fmt.Errorf("marshalling tick transactions payload: %w", err)
 	}
-	request, err := http.NewRequest(http.MethodPost, baseUrl+"/getTransactionsForTick", bytes.NewReader(marshalledPayload))
+	request, err := http.NewRequest(http.MethodPost, "https://rpc.qubic.org/query/v1/getTransactionsForTick", bytes.NewReader(marshalledPayload))
 	if err != nil {
 		return nil, fmt.Errorf("creating tick transactions request: %w", err)
 	}
@@ -581,7 +577,7 @@ func SendManyTransactionExample() error {
 	}
 
 	// Create live service client and get current tick / block number
-	lsc := types.NewLiveServiceClient("https://rpc.qubic.org/query/v1")
+	lsc := types.NewLiveServiceClient("https://rpc.qubic.org/live/v1")
 	currentTickInfo, err := lsc.GetTickInfo()
 	if err != nil {
 		return errors.Wrap(err, "getting current tick info")
@@ -655,7 +651,7 @@ func AssetTransferTransactionExample() error {
 	}
 
 	// Create live service client and get current tick / block number
-	lsc := types.NewLiveServiceClient("https://rpc.qubic.org/query/v1")
+	lsc := types.NewLiveServiceClient("https://rpc.qubic.org/live/v1")
 	currentTickInfo, err := lsc.GetTickInfo()
 	if err != nil {
 		return errors.Wrap(err, "getting current tick info")
