@@ -16,7 +16,7 @@
     "application/json"
   ],
   "paths": {
-    "/v1/assets/issuances": {
+    "/assets/issuances": {
       "get": {
         "summary": "Returns a list of issued assets.",
         "operationId": "QubicLiveService_GetIssuedAssetsByFilter",
@@ -53,7 +53,7 @@
         ]
       }
     },
-    "/v1/assets/issuances/{index}": {
+    "/assets/issuances/{index}": {
       "get": {
         "summary": "Returns an asset issuance by universe index.",
         "operationId": "QubicLiveService_GetIssuedAssetByUniverseIndex",
@@ -85,7 +85,7 @@
         ]
       }
     },
-    "/v1/assets/ownerships": {
+    "/assets/ownerships": {
       "get": {
         "summary": "Returns a list of asset owners. Asset name and issuer are required. Issuer defaults to zero address.",
         "operationId": "QubicLiveService_GetOwnedAssetsByFilter",
@@ -135,7 +135,7 @@
         ]
       }
     },
-    "/v1/assets/ownerships/{index}": {
+    "/assets/ownerships/{index}": {
       "get": {
         "summary": "Returns an asset ownership by universe index.",
         "operationId": "QubicLiveService_GetOwnedAssetByUniverseIndex",
@@ -167,7 +167,7 @@
         ]
       }
     },
-    "/v1/assets/possessions": {
+    "/assets/possessions": {
       "get": {
         "summary": "Returns a list of asset possessors. Asset name and issuer are required. Issuer defaults to zero address.",
         "operationId": "QubicLiveService_GetPossessedAssetsByFilter",
@@ -230,7 +230,7 @@
         ]
       }
     },
-    "/v1/assets/possessions/{index}": {
+    "/assets/possessions/{index}": {
       "get": {
         "summary": "Returns an asset possession by universe index.",
         "operationId": "QubicLiveService_GetPossessedAssetByUniverseIndex",
@@ -262,7 +262,7 @@
         ]
       }
     },
-    "/v1/assets/{identity}/issued": {
+    "/assets/{identity}/issued": {
       "get": {
         "summary": "Gets assets issued by the specified identity.",
         "operationId": "QubicLiveService_GetIssuedAssets",
@@ -293,7 +293,7 @@
         ]
       }
     },
-    "/v1/assets/{identity}/owned": {
+    "/assets/{identity}/owned": {
       "get": {
         "summary": "Gets assets that are owned by the specified identity.",
         "operationId": "QubicLiveService_GetOwnedAssets",
@@ -324,7 +324,7 @@
         ]
       }
     },
-    "/v1/assets/{identity}/possessed": {
+    "/assets/{identity}/possessed": {
       "get": {
         "summary": "Gets assets that are possessed by the specified identity.",
         "operationId": "QubicLiveService_GetPossessedAssets",
@@ -355,7 +355,7 @@
         ]
       }
     },
-    "/v1/balances/{id}": {
+    "/balances/{id}": {
       "get": {
         "summary": "Gets the balance of the specified identity",
         "operationId": "QubicLiveService_GetBalance",
@@ -386,7 +386,7 @@
         ]
       }
     },
-    "/v1/block-height": {
+    "/block-height": {
       "get": {
         "summary": "Deprecated: use /tick-info instead.",
         "operationId": "QubicLiveService_GetBlockHeight",
@@ -409,7 +409,7 @@
         ]
       }
     },
-    "/v1/broadcast-transaction": {
+    "/broadcast-transaction": {
       "post": {
         "summary": "Broadcasts a transaction to the network.",
         "operationId": "QubicLiveService_BroadcastTransaction",
@@ -442,7 +442,7 @@
         ]
       }
     },
-    "/v1/querySmartContract": {
+    "/querySmartContract": {
       "post": {
         "summary": "Queries a smart contract function.",
         "operationId": "QubicLiveService_QuerySmartContract",
@@ -475,7 +475,7 @@
         ]
       }
     },
-    "/v1/tick-info": {
+    "/tick-info": {
       "get": {
         "summary": "Gets the current tick information.",
         "operationId": "QubicLiveService_GetTickInfo",
@@ -1002,6 +1002,7 @@
     }
   },
   "host": "rpc.qubic.org",
+  "basePath": "/live/v1",
   "schemes": [
     "https"
   ]
