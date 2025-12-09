@@ -87,7 +87,7 @@
     },
     "/assets/ownerships": {
       "get": {
-        "summary": "Returns a list of asset owners. Asset name and issuer are required. Issuer defaults to zero address.",
+        "summary": "Returns a list of asset ownerships.",
         "operationId": "QubicLiveService_GetOwnedAssetsByFilter",
         "responses": {
           "200": {
@@ -106,24 +106,28 @@
         "parameters": [
           {
             "name": "issuerIdentity",
+            "description": "Identity of the issuer (required). Defaults to the zero address (smart contract shares).",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
             "name": "assetName",
+            "description": "Name of the asset (required).",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
             "name": "ownerIdentity",
+            "description": "Identity of the owner of the asset (optional).",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
             "name": "ownershipManagingContract",
+            "description": "Index of the contract that manages the ownership (optional).",
             "in": "query",
             "required": false,
             "type": "integer",
@@ -169,7 +173,7 @@
     },
     "/assets/possessions": {
       "get": {
-        "summary": "Returns a list of asset possessors. Asset name and issuer are required. Issuer defaults to zero address.",
+        "summary": "Returns a list of assets possessions.",
         "operationId": "QubicLiveService_GetPossessedAssetsByFilter",
         "responses": {
           "200": {
@@ -188,30 +192,35 @@
         "parameters": [
           {
             "name": "issuerIdentity",
+            "description": "Identity of the issuer (required). Defaults to the zero address (smart contract shares).",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
             "name": "assetName",
+            "description": "Name of the asset (required).",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
             "name": "ownerIdentity",
+            "description": "Identity of the owner of the asset (optional).",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
             "name": "possessorIdentity",
+            "description": "Identity of the possessor of the asset (optional).",
             "in": "query",
             "required": false,
             "type": "string"
           },
           {
             "name": "ownershipManagingContract",
+            "description": "Index of the contract that manages the ownership (optional).",
             "in": "query",
             "required": false,
             "type": "integer",
@@ -219,6 +228,7 @@
           },
           {
             "name": "possessionManagingContract",
+            "description": "Index of the contract that manages the possession (optional).",
             "in": "query",
             "required": false,
             "type": "integer",
@@ -357,7 +367,7 @@
     },
     "/balances/{id}": {
       "get": {
-        "summary": "Gets the balance of the specified identity",
+        "summary": "Gets the balance of the specified identity.",
         "operationId": "QubicLiveService_GetBalance",
         "responses": {
           "200": {
@@ -442,6 +452,29 @@
         ]
       }
     },
+    "/ipos/active": {
+      "get": {
+        "summary": "Returns a list of IPOs that are active in the current epoch.",
+        "operationId": "QubicLiveService_GetActiveIpos",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetActiveIposResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "QubicLiveService"
+        ]
+      }
+    },
     "/querySmartContract": {
       "post": {
         "summary": "Queries a smart contract function.",
@@ -511,7 +544,8 @@
           "type": "integer",
           "format": "int64"
         }
-      }
+      },
+      "title": "AssetInfo"
     },
     "pbAssetIssuance": {
       "type": "object",
@@ -527,7 +561,8 @@
           "type": "integer",
           "format": "int64"
         }
-      }
+      },
+      "title": "AssetIssuance"
     },
     "pbAssetIssuanceData": {
       "type": "object",
@@ -553,7 +588,8 @@
             "format": "int32"
           }
         }
-      }
+      },
+      "title": "AssetIssuanceData"
     },
     "pbAssetIssuances": {
       "type": "object",
@@ -565,7 +601,8 @@
             "$ref": "#/definitions/pbAssetIssuance"
           }
         }
-      }
+      },
+      "title": "AssetIssuances"
     },
     "pbAssetOwnership": {
       "type": "object",
@@ -581,7 +618,8 @@
           "type": "integer",
           "format": "int64"
         }
-      }
+      },
+      "title": "AssetOwnership"
     },
     "pbAssetOwnershipData": {
       "type": "object",
@@ -605,7 +643,8 @@
           "type": "string",
           "format": "int64"
         }
-      }
+      },
+      "title": "AssetOwnershipData"
     },
     "pbAssetOwnerships": {
       "type": "object",
@@ -617,7 +656,8 @@
             "$ref": "#/definitions/pbAssetOwnership"
           }
         }
-      }
+      },
+      "title": "AssetOwnerships"
     },
     "pbAssetPossession": {
       "type": "object",
@@ -633,7 +673,8 @@
           "type": "integer",
           "format": "int64"
         }
-      }
+      },
+      "title": "AssetPossession"
     },
     "pbAssetPossessionData": {
       "type": "object",
@@ -657,7 +698,8 @@
           "type": "string",
           "format": "int64"
         }
-      }
+      },
+      "title": "AssetPossessionData"
     },
     "pbAssetPossessions": {
       "type": "object",
@@ -669,7 +711,8 @@
             "$ref": "#/definitions/pbAssetPossession"
           }
         }
-      }
+      },
+      "title": "AssetPossessions"
     },
     "pbBalance": {
       "type": "object",
@@ -709,7 +752,8 @@
           "type": "integer",
           "format": "int64"
         }
-      }
+      },
+      "title": "Balance"
     },
     "pbBroadcastTransactionRequest": {
       "type": "object",
@@ -718,7 +762,8 @@
           "type": "string",
           "title": "base64 encoded binary transaction data"
         }
-      }
+      },
+      "title": "BroadcastTransactionRequest"
     },
     "pbBroadcastTransactionResponse": {
       "type": "object",
@@ -733,7 +778,21 @@
         "transactionId": {
           "type": "string"
         }
-      }
+      },
+      "title": "BroadcastTransactionResponse"
+    },
+    "pbGetActiveIposResponse": {
+      "type": "object",
+      "properties": {
+        "ipos": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbIpo"
+          }
+        }
+      },
+      "title": "GetActiveIposResponse"
     },
     "pbGetBalanceResponse": {
       "type": "object",
@@ -741,7 +800,8 @@
         "balance": {
           "$ref": "#/definitions/pbBalance"
         }
-      }
+      },
+      "title": "GetBalanceResponse"
     },
     "pbGetBlockHeightResponse": {
       "type": "object",
@@ -749,7 +809,8 @@
         "blockHeight": {
           "$ref": "#/definitions/pbTickInfo"
         }
-      }
+      },
+      "title": "GetBlockHeightResponse"
     },
     "pbGetTickInfoResponse": {
       "type": "object",
@@ -757,7 +818,23 @@
         "tickInfo": {
           "$ref": "#/definitions/pbTickInfo"
         }
-      }
+      },
+      "title": "GetTickInfoResponse"
+    },
+    "pbIpo": {
+      "type": "object",
+      "properties": {
+        "contractIndex": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The index of the related contract (contract address)."
+        },
+        "assetName": {
+          "type": "string",
+          "description": "The name of the related asset."
+        }
+      },
+      "title": "IPO"
     },
     "pbIssuedAsset": {
       "type": "object",
@@ -768,7 +845,8 @@
         "info": {
           "$ref": "#/definitions/pbAssetInfo"
         }
-      }
+      },
+      "title": "IssuedAsset"
     },
     "pbIssuedAssetData": {
       "type": "object",
@@ -794,7 +872,8 @@
             "format": "int32"
           }
         }
-      }
+      },
+      "title": "IssuedAssetData"
     },
     "pbIssuedAssetsResponse": {
       "type": "object",
@@ -806,7 +885,8 @@
             "$ref": "#/definitions/pbIssuedAsset"
           }
         }
-      }
+      },
+      "title": "IssuedAssetsResponse"
     },
     "pbOwnedAsset": {
       "type": "object",
@@ -817,7 +897,8 @@
         "info": {
           "$ref": "#/definitions/pbAssetInfo"
         }
-      }
+      },
+      "title": "OwnedAsset"
     },
     "pbOwnedAssetData": {
       "type": "object",
@@ -848,7 +929,8 @@
         "issuedAsset": {
           "$ref": "#/definitions/pbIssuedAssetData"
         }
-      }
+      },
+      "title": "OwnedAssetData"
     },
     "pbOwnedAssetsResponse": {
       "type": "object",
@@ -860,7 +942,8 @@
             "$ref": "#/definitions/pbOwnedAsset"
           }
         }
-      }
+      },
+      "title": "OwnedAssetsResponse"
     },
     "pbPossessedAsset": {
       "type": "object",
@@ -871,7 +954,8 @@
         "info": {
           "$ref": "#/definitions/pbAssetInfo"
         }
-      }
+      },
+      "title": "PossessedAsset"
     },
     "pbPossessedAssetData": {
       "type": "object",
@@ -902,7 +986,8 @@
         "ownedAsset": {
           "$ref": "#/definitions/pbOwnedAssetData"
         }
-      }
+      },
+      "title": "PossessedAssetData"
     },
     "pbPossessedAssetsResponse": {
       "type": "object",
@@ -914,7 +999,8 @@
             "$ref": "#/definitions/pbPossessedAsset"
           }
         }
-      }
+      },
+      "title": "PossessedAssetsResponse"
     },
     "pbQuerySmartContractRequest": {
       "type": "object",
@@ -938,7 +1024,8 @@
           "type": "string",
           "title": "base64 encoded input data"
         }
-      }
+      },
+      "title": "QuerySmartContractRequest"
     },
     "pbQuerySmartContractResponse": {
       "type": "object",
@@ -946,7 +1033,8 @@
         "responseData": {
           "type": "string"
         }
-      }
+      },
+      "title": "QuerySmartContractResponse"
     },
     "pbTickInfo": {
       "type": "object",
@@ -970,7 +1058,8 @@
           "format": "int64",
           "title": "initial tick of epoch"
         }
-      }
+      },
+      "title": "TickInfo"
     },
     "protobufAny": {
       "type": "object",
