@@ -625,7 +625,8 @@
           "type": "boolean",
           "description": "Money flew is an additional information provided by some nodes with the tx status addon patch."
         }
-      }
+      },
+      "title": "Transaction"
     },
     "protobufAny": {
       "type": "object",
