@@ -381,7 +381,7 @@
     },
     "pbGetTransactionsForIdentityRequest": {
       "type": "object",
-      "example": "{\"identity\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB\",\"filters\": { \"source\": \"IIJHZSNPDRYYXCQBWNGKBSWYYDCARTYPOBXGOXZEVEZMMWYHPBVXZLJARRCB\",\"inputType\": \"0\"}, \"ranges\": { \"amount\": { \"gt\": \"1000000\" }, \"tickNumber\": { \"gte\": \"25563000\", \"lte\": \"28300000\" } }, \"pagination\": { \"offset\": 0, \"size\": 10 } } ",
+      "example": "{\"identity\": \"AFZPUAIYVPNUYGJRQVLUKOPPVLHAZQTGLYAAUUNBXFTVTAMSBKQBLEIEPCVJ\",\"filters\": { \"destination\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB\",\"inputType\": \"0\"}, \"ranges\": { \"amount\": { \"gte\": \"1000000000\" } }, \"pagination\": { \"offset\": 0, \"size\": 10 } } ",
       "properties": {
         "identity": {
           "type": "string",
