@@ -1,787 +1,1764 @@
 {
-  "openapi": "3.0.3",
-  "info": {
-    "title": "qubic.proto",
-    "version": "version not set"
-  },
-  "externalDocs": {
-    "description": "Github",
-    "url": "https://github.com/qubic/archive-query-service"
-  },
-  "tags": [
-    {
-      "name": "QubicLiveService"
+    "swagger": "2.0",
+    "info": {
+        "title": "Qubic RPC API",
+        "description": "API for querying all qubic related data.",
+        "version": "1.0.0"
     },
-    {
-      "name": "ArchiveQueryService"
-    }
-  ],
-  "paths": {
-    "/live/assets/issuances": {
-      "get": {
-        "summary": "Returns a list of issued assets.",
-        "operationId": "QubicLiveService_GetIssuedAssetsByFilter",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbAssetIssuances"
+    "tags": [
+        {
+            "name": "QubicLiveService"
+        }
+    ],
+    "host": "rpc.qubic.org",
+    "schemes": [
+        "https"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/live/v1/assets/issuances": {
+            "get": {
+                "summary": "Returns a list of issued assets.",
+                "operationId": "QubicLiveService_GetIssuedAssetsByFilter",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicHTTP_pbAssetIssuances"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicHTTP_rpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "issuerIdentity",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "assetName",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "QubicLiveService"
+                ]
             }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
         },
-        "parameters": [
-          {
-            "name": "issuerIdentity",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "assetName",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "QubicLiveService"
-        ]
-      }
+        "/live/v1/assets/issuances/{index}": {
+            "get": {
+                "summary": "Returns an asset issuance by universe index.",
+                "operationId": "QubicLiveService_GetIssuedAssetByUniverseIndex",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicHTTP_pbAssetIssuance"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicHTTP_rpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "index",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "tags": [
+                    "QubicLiveService"
+                ]
+            }
+        },
+        "/live/v1/assets/ownerships": {
+            "get": {
+                "summary": "Returns a list of asset ownerships.",
+                "operationId": "QubicLiveService_GetOwnedAssetsByFilter",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicHTTP_pbAssetOwnerships"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicHTTP_rpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "issuerIdentity",
+                        "description": "Identity of the issuer (required). Defaults to the zero address (smart contract shares).",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "assetName",
+                        "description": "Name of the asset (required).",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "ownerIdentity",
+                        "description": "Identity of the owner of the asset (optional).",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "ownershipManagingContract",
+                        "description": "Index of the contract that manages the ownership (optional).",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "tags": [
+                    "QubicLiveService"
+                ]
+            }
+        },
+        "/live/v1/assets/ownerships/{index}": {
+            "get": {
+                "summary": "Returns an asset ownership by universe index.",
+                "operationId": "QubicLiveService_GetOwnedAssetByUniverseIndex",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicHTTP_pbAssetOwnership"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicHTTP_rpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "index",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "tags": [
+                    "QubicLiveService"
+                ]
+            }
+        },
+        "/live/v1/assets/possessions": {
+            "get": {
+                "summary": "Returns a list of assets possessions.",
+                "operationId": "QubicLiveService_GetPossessedAssetsByFilter",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicHTTP_pbAssetPossessions"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicHTTP_rpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "issuerIdentity",
+                        "description": "Identity of the issuer (required). Defaults to the zero address (smart contract shares).",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "assetName",
+                        "description": "Name of the asset (required).",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "ownerIdentity",
+                        "description": "Identity of the owner of the asset (optional).",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "possessorIdentity",
+                        "description": "Identity of the possessor of the asset (optional).",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "ownershipManagingContract",
+                        "description": "Index of the contract that manages the ownership (optional).",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "name": "possessionManagingContract",
+                        "description": "Index of the contract that manages the possession (optional).",
+                        "in": "query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "tags": [
+                    "QubicLiveService"
+                ]
+            }
+        },
+        "/live/v1/assets/possessions/{index}": {
+            "get": {
+                "summary": "Returns an asset possession by universe index.",
+                "operationId": "QubicLiveService_GetPossessedAssetByUniverseIndex",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicHTTP_pbAssetPossession"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicHTTP_rpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "index",
+                        "in": "path",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "tags": [
+                    "QubicLiveService"
+                ]
+            }
+        },
+        "/live/v1/assets/{identity}/issued": {
+            "get": {
+                "summary": "Gets assets issued by the specified identity.",
+                "operationId": "QubicLiveService_GetIssuedAssets",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicHTTP_pbIssuedAssetsResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicHTTP_rpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "identity",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "QubicLiveService"
+                ]
+            }
+        },
+        "/live/v1/assets/{identity}/owned": {
+            "get": {
+                "summary": "Gets assets that are owned by the specified identity.",
+                "operationId": "QubicLiveService_GetOwnedAssets",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicHTTP_pbOwnedAssetsResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicHTTP_rpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "identity",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "QubicLiveService"
+                ]
+            }
+        },
+        "/live/v1/assets/{identity}/possessed": {
+            "get": {
+                "summary": "Gets assets that are possessed by the specified identity.",
+                "operationId": "QubicLiveService_GetPossessedAssets",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicHTTP_pbPossessedAssetsResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicHTTP_rpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "identity",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "QubicLiveService"
+                ]
+            }
+        },
+        "/live/v1/balances/{id}": {
+            "get": {
+                "summary": "Gets the balance of the specified identity.",
+                "operationId": "QubicLiveService_GetBalance",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicHTTP_pbGetBalanceResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicHTTP_rpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "QubicLiveService"
+                ]
+            }
+        },
+        "/live/v1/block-height": {
+            "get": {
+                "summary": "Deprecated: use /tick-info instead.",
+                "operationId": "QubicLiveService_GetBlockHeight",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicHTTP_pbGetBlockHeightResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicHTTP_rpcStatus"
+                        }
+                    }
+                },
+                "tags": [
+                    "QubicLiveService"
+                ]
+            }
+        },
+        "/live/v1/broadcast-transaction": {
+            "post": {
+                "summary": "Broadcasts a transaction to the network.",
+                "operationId": "QubicLiveService_BroadcastTransaction",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicHTTP_pbBroadcastTransactionResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicHTTP_rpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/QubicHTTP_pbBroadcastTransactionRequest"
+                        }
+                    }
+                ],
+                "tags": [
+                    "QubicLiveService"
+                ]
+            }
+        },
+        "/live/v1/ipos/active": {
+            "get": {
+                "summary": "Returns a list of IPOs that are active in the current epoch.",
+                "operationId": "QubicLiveService_GetActiveIpos",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicHTTP_pbGetActiveIposResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicHTTP_rpcStatus"
+                        }
+                    }
+                },
+                "tags": [
+                    "QubicLiveService"
+                ]
+            }
+        },
+        "/live/v1/querySmartContract": {
+            "post": {
+                "summary": "Queries a smart contract function.",
+                "operationId": "QubicLiveService_QuerySmartContract",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicHTTP_pbQuerySmartContractResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicHTTP_rpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/QubicHTTP_pbQuerySmartContractRequest"
+                        }
+                    }
+                ],
+                "tags": [
+                    "QubicLiveService"
+                ]
+            }
+        },
+        "/live/v1/tick-info": {
+            "get": {
+                "summary": "Gets the current tick information.",
+                "operationId": "QubicLiveService_GetTickInfo",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicHTTP_pbGetTickInfoResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicHTTP_rpcStatus"
+                        }
+                    }
+                },
+                "tags": [
+                    "QubicLiveService"
+                ]
+            }
+        },
+        "/query/v1/getComputorListsForEpoch": {
+            "post": {
+                "summary": "Get computor lists",
+                "description": "Get the list(s) of computors for one epoch. These are the computors (IDs signed by the arbitrator) that\nare allowed to make quorum decisions. It is possible that this list changes within the epoch in case of\narbitrator intervention.",
+                "operationId": "ArchiveQueryService_GetComputorsListsForEpoch",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicQuery_pbGetComputorListsForEpochResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicQuery_rpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/QubicQuery_pbGetComputorListsForEpochRequest"
+                        }
+                    }
+                ],
+                "tags": [
+                    "ArchiveQueryService"
+                ]
+            }
+        },
+        "/query/v1/getLastProcessedTick": {
+            "get": {
+                "summary": "Get last processed tick",
+                "description": "Get the last processed tick and other processing information from the archive.\nAll data queried from the archive is only fully processed up to this tick.\nBefore calling the service you should check the last processed tick to be sure to get\nvalid data and do not request data for future ticks that are not processed yet. You can use\nthe epoch and initial tick information in the response to switch to a new interval.",
+                "operationId": "ArchiveQueryService_GetLastProcessedTick",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicQuery_pbGetLastProcessedTickResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicQuery_rpcStatus"
+                        }
+                    }
+                },
+                "tags": [
+                    "ArchiveQueryService"
+                ]
+            }
+        },
+        "/query/v1/getProcessedTickIntervals": {
+            "get": {
+                "summary": "Get processed tick intervals",
+                "description": "Get the tick intervals that are available in the archive. A new tick interval is typically\ncreated on epoch change or network restart within the epoch. Use this endpoint to skip the\ntick numbers that are not part of the intervals. This endpoint is only necessary for users\nthat need to process all available ticks. For most users it is enough to switch to a new\ninterval by using the `get last processed tick` endpoint.",
+                "operationId": "ArchiveQueryService_GetProcessedTickIntervals",
+                "responses": {
+                    "200": {
+                        "description": "a list of tick intervals that were processed.",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "$ref": "#/definitions/QubicQuery_pbProcessedTickInterval"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicQuery_rpcStatus"
+                        }
+                    }
+                },
+                "tags": [
+                    "ArchiveQueryService"
+                ]
+            }
+        },
+        "/query/v1/getTickData": {
+            "post": {
+                "summary": "Get tick data",
+                "description": "Get the tick data for one tick.",
+                "operationId": "ArchiveQueryService_GetTickData",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicQuery_pbGetTickDataResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicQuery_rpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/QubicQuery_pbGetTickDataRequest"
+                        }
+                    }
+                ],
+                "tags": [
+                    "ArchiveQueryService"
+                ]
+            }
+        },
+        "/query/v1/getTransactionByHash": {
+            "post": {
+                "summary": "Get transaction by hash",
+                "description": "Get a single transaction by its hash.",
+                "operationId": "ArchiveQueryService_GetTransactionByHash",
+                "responses": {
+                    "200": {
+                        "description": "the transaction for the requested hash.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicQuery_pbTransaction"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicQuery_rpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/QubicQuery_pbGetTransactionByHashRequest"
+                        }
+                    }
+                ],
+                "tags": [
+                    "ArchiveQueryService"
+                ]
+            }
+        },
+        "/query/v1/getTransactionsForIdentity": {
+            "post": {
+                "summary": "Get transactions for identity",
+                "description": "Get the transactions for one identity sorted by tick number descending.",
+                "operationId": "ArchiveQueryService_GetTransactionsForIdentity",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicQuery_pbGetTransactionsForIdentityResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicQuery_rpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "body",
+                        "description": "###  Request structure\n\n   | Name       | Type               | Necessity | Description                                                                                                       |\n   |------------|--------------------|-----------|-------------------------------------------------------------------------------------------------------------------|\n   | identity   | string             | required  | 60 characters uppercase identity.                                                                                 |\n   | filters    | map<string,string> | optional  | Filters that restrict results to single value.<br/> Allowed fields are: source, destination, amount, inputType    |\n   | ranges     | map<string,Range>  | optional  | Filters that restrict results to a value range.<br/> Allowed fields are: amount, tickNumber, inputType, timestamp |\n   | pagination | Pagination         | optional  | Allows to specify the first record and the number of records to be retrieved.                                     |\n\n   Without filters and ranges all transactions from and to that identity ordered by tick number descending are returned.\n   Data type for all values is string.\n\n   ### Filters\n\n   Filters restrict the results by single values.\n\n   #### Allowed properties\n\n   | Name        |  Type   | Format                 | Description                                                        |\n   |-------------|---------|------------------------|--------------------------------------------------------------------|\n   | source      |  string | 60 character identity  | Only find transactions that were sent from the specified identity. |\n   | destination |  string | 60 character identity  | Only find transactions that were sent to the specified identity.   |\n   | amount      |  string | Numeric                | Only find transactions with the specified amount.                  |\n   | inputType   |  string | Numeric                | Only find transactions with the specified input type.              |\n\n   #### Examples\n\n   ```\n   \"source\": \"IIJHZSNPDRYYXCQBWNGKBSWYYDCARTYPOBXGOXZEVEZMMWYHPBVXZLJARRCB\",\n   \"destination\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB\"\n   \"amount\": \"1000000\"\n   \"inputType\": \"0\"\n   ```\n\n   ### Ranges\n\n   Ranges restrict the results by a range of values. On range per property is supported.\n\n   #### Allowed properties\n\n   | Name       | Type   | Format                                   | Description                                 |\n   |------------|--------|------------------------------------------|---------------------------------------------|\n   | amount     | string | Numeric                                  | Only find transactions in amount range.     |\n   | tickNumber | string | Numeric                                  | Only find transactions in tick range.       |\n   | inputType  | string | Numeric                                  | Only find transactions in input type range. |\n   | timestamp  | string | Numeric (Unix Timestamp in milliseconds) | Only find transactions in time range.       |\n\n   #### Range definition\n\n   A range with size of 0 or 1 is not allowed.\n\n   | Name      | Type   | Necessity | Description                               |\n   |-----------|--------|-----------|-------------------------------------------|\n   | field | string | required  | Name of the field you wish to search for. |\n   | gt        | string | optional  | Greater than.                             |\n   | gte       | string | optional  | Greater than or equal to.                 |\n   | lt        | string | optional  | Less than.                                |\n   | lte       | string | optional  | Less than or equal to.                    |\n\n   Only one lower bound and one upper bound can be specified.\n\n   #### Examples\n\n   ```\n   \"amount\": { \"gt\": \"1000000\" }\n   \"tickNumber\": { \"gte\": \"25563000\", \"lte\": \"28300000\" }\n   \"inputType\": { \"gt\": \"0\" }\n   \"timestamp\": { \"lt\": \"1757376000000\" }\n   ```\n\n   ### Pagination\n\n   | Name   | Type   | Necessity | Description                                                                                         |\n   |--------|--------|-----------|-----------------------------------------------------------------------------------------------------|\n   | offset | uint32 | optional  | The offset of the first record to return. Defaults to zero (first record). Maximum offset is 10000. |\n   | size   | uint32 | optional  | Defaults to 10. Maximum size is 1000. Zero value is ignored (uses default).                         |",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/QubicQuery_pbGetTransactionsForIdentityRequest"
+                        }
+                    }
+                ],
+                "tags": [
+                    "ArchiveQueryService"
+                ]
+            }
+        },
+        "/query/v1/getTransactionsForTick": {
+            "post": {
+                "summary": "Get transactions for tick",
+                "description": "Get the transactions that are in included in one tick.",
+                "operationId": "ArchiveQueryService_GetTransactionsForTick",
+                "responses": {
+                    "200": {
+                        "description": "the transactions for the requested tick number.",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "$ref": "#/definitions/QubicQuery_pbTransaction"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicQuery_rpcStatus"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/QubicQuery_pbGetTransactionsForTickRequest"
+                        }
+                    }
+                ],
+                "tags": [
+                    "ArchiveQueryService"
+                ]
+            }
+        },
+        "/query/v1/health": {
+            "get": {
+                "summary": "Get health",
+                "description": "Health check. This is for internal use only and can change any time. Do not rely on this endpoint.",
+                "operationId": "ArchiveQueryService_GetHealth",
+                "responses": {
+                    "200": {
+                        "description": "A successful response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicQuery_pbHealthResponse"
+                        }
+                    },
+                    "default": {
+                        "description": "An unexpected error response.",
+                        "schema": {
+                            "$ref": "#/definitions/QubicQuery_rpcStatus"
+                        }
+                    }
+                },
+                "tags": [
+                    "ArchiveQueryService"
+                ]
+            }
+        }
     },
-    "/live/assets/issuances/{index}": {
-      "get": {
-        "summary": "Returns an asset issuance by universe index.",
-        "operationId": "QubicLiveService_GetIssuedAssetByUniverseIndex",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbAssetIssuance"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
+    "definitions": {
+        "QubicHTTP_pbAssetInfo": {
+            "type": "object",
+            "properties": {
+                "tick": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "universeIndex": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            },
+            "title": "AssetInfo"
         },
-        "parameters": [
-          {
-            "name": "index",
-            "in": "path",
-            "required": true,
-            "type": "integer",
-            "format": "int64"
-          }
-        ],
-        "tags": [
-          "QubicLiveService"
-        ]
-      }
-    },
-    "/live/assets/ownerships": {
-      "get": {
-        "summary": "Returns a list of asset ownerships.",
-        "operationId": "QubicLiveService_GetOwnedAssetsByFilter",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbAssetOwnerships"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
+        "QubicHTTP_pbAssetIssuance": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/QubicHTTP_pbAssetIssuanceData"
+                },
+                "tick": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "universeIndex": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            },
+            "title": "AssetIssuance"
         },
-        "parameters": [
-          {
-            "name": "issuerIdentity",
-            "description": "Identity of the issuer (required). Defaults to the zero address (smart contract shares).",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "assetName",
-            "description": "Name of the asset (required).",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "ownerIdentity",
-            "description": "Identity of the owner of the asset (optional).",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "ownershipManagingContract",
-            "description": "Index of the contract that manages the ownership (optional).",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int64"
-          }
-        ],
-        "tags": [
-          "QubicLiveService"
-        ]
-      }
-    },
-    "/live/assets/ownerships/{index}": {
-      "get": {
-        "summary": "Returns an asset ownership by universe index.",
-        "operationId": "QubicLiveService_GetOwnedAssetByUniverseIndex",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbAssetOwnership"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
+        "QubicHTTP_pbAssetIssuanceData": {
+            "type": "object",
+            "properties": {
+                "issuerIdentity": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "numberOfDecimalPlaces": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "unitOfMeasurement": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                }
+            },
+            "title": "AssetIssuanceData"
         },
-        "parameters": [
-          {
-            "name": "index",
-            "in": "path",
-            "required": true,
-            "type": "integer",
-            "format": "int64"
-          }
-        ],
-        "tags": [
-          "QubicLiveService"
-        ]
-      }
-    },
-    "/live/assets/possessions": {
-      "get": {
-        "summary": "Returns a list of assets possessions.",
-        "operationId": "QubicLiveService_GetPossessedAssetsByFilter",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbAssetPossessions"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
+        "QubicHTTP_pbAssetIssuances": {
+            "type": "object",
+            "properties": {
+                "assets": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "$ref": "#/definitions/QubicHTTP_pbAssetIssuance"
+                    }
+                }
+            },
+            "title": "AssetIssuances"
         },
-        "parameters": [
-          {
-            "name": "issuerIdentity",
-            "description": "Identity of the issuer (required). Defaults to the zero address (smart contract shares).",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "assetName",
-            "description": "Name of the asset (required).",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "ownerIdentity",
-            "description": "Identity of the owner of the asset (optional).",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "possessorIdentity",
-            "description": "Identity of the possessor of the asset (optional).",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "ownershipManagingContract",
-            "description": "Index of the contract that manages the ownership (optional).",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int64"
-          },
-          {
-            "name": "possessionManagingContract",
-            "description": "Index of the contract that manages the possession (optional).",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int64"
-          }
-        ],
-        "tags": [
-          "QubicLiveService"
-        ]
-      }
-    },
-    "/live/assets/possessions/{index}": {
-      "get": {
-        "summary": "Returns an asset possession by universe index.",
-        "operationId": "QubicLiveService_GetPossessedAssetByUniverseIndex",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbAssetPossession"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
+        "QubicHTTP_pbAssetOwnership": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/QubicHTTP_pbAssetOwnershipData"
+                },
+                "tick": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "universeIndex": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            },
+            "title": "AssetOwnership"
         },
-        "parameters": [
-          {
-            "name": "index",
-            "in": "path",
-            "required": true,
-            "type": "integer",
-            "format": "int64"
-          }
-        ],
-        "tags": [
-          "QubicLiveService"
-        ]
-      }
-    },
-    "/live/assets/{identity}/issued": {
-      "get": {
-        "summary": "Gets assets issued by the specified identity.",
-        "operationId": "QubicLiveService_GetIssuedAssets",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbIssuedAssetsResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
+        "QubicHTTP_pbAssetOwnershipData": {
+            "type": "object",
+            "properties": {
+                "ownerIdentity": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "managingContractIndex": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "issuanceIndex": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "numberOfUnits": {
+                    "type": "string",
+                    "format": "int64"
+                }
+            },
+            "title": "AssetOwnershipData"
         },
-        "parameters": [
-          {
-            "name": "identity",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "QubicLiveService"
-        ]
-      }
-    },
-    "/live/assets/{identity}/owned": {
-      "get": {
-        "summary": "Gets assets that are owned by the specified identity.",
-        "operationId": "QubicLiveService_GetOwnedAssets",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbOwnedAssetsResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
+        "QubicHTTP_pbAssetOwnerships": {
+            "type": "object",
+            "properties": {
+                "assets": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "$ref": "#/definitions/QubicHTTP_pbAssetOwnership"
+                    }
+                }
+            },
+            "title": "AssetOwnerships"
         },
-        "parameters": [
-          {
-            "name": "identity",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "QubicLiveService"
-        ]
-      }
-    },
-    "/live/assets/{identity}/possessed": {
-      "get": {
-        "summary": "Gets assets that are possessed by the specified identity.",
-        "operationId": "QubicLiveService_GetPossessedAssets",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbPossessedAssetsResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
+        "QubicHTTP_pbAssetPossession": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/QubicHTTP_pbAssetPossessionData"
+                },
+                "tick": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "universeIndex": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            },
+            "title": "AssetPossession"
         },
-        "parameters": [
-          {
-            "name": "identity",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "QubicLiveService"
-        ]
-      }
-    },
-    "/live/balances/{id}": {
-      "get": {
-        "summary": "Gets the balance of the specified identity.",
-        "operationId": "QubicLiveService_GetBalance",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbGetBalanceResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
+        "QubicHTTP_pbAssetPossessionData": {
+            "type": "object",
+            "properties": {
+                "possessorIdentity": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "managingContractIndex": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "ownershipIndex": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "numberOfUnits": {
+                    "type": "string",
+                    "format": "int64"
+                }
+            },
+            "title": "AssetPossessionData"
         },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "QubicLiveService"
-        ]
-      }
-    },
-    "/live/block-height": {
-      "get": {
-        "summary": "Deprecated: use /tick-info instead.",
-        "operationId": "QubicLiveService_GetBlockHeight",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbGetBlockHeightResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
+        "QubicHTTP_pbAssetPossessions": {
+            "type": "object",
+            "properties": {
+                "assets": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "$ref": "#/definitions/QubicHTTP_pbAssetPossession"
+                    }
+                }
+            },
+            "title": "AssetPossessions"
         },
-        "tags": [
-          "QubicLiveService"
-        ]
-      }
-    },
-    "/live/broadcast-transaction": {
-      "post": {
-        "summary": "Broadcasts a transaction to the network.",
-        "operationId": "QubicLiveService_BroadcastTransaction",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbBroadcastTransactionResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
+        "QubicHTTP_pbBalance": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "balance": {
+                    "type": "string",
+                    "format": "int64"
+                },
+                "validForTick": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "latestIncomingTransferTick": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "latestOutgoingTransferTick": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "incomingAmount": {
+                    "type": "string",
+                    "format": "int64"
+                },
+                "outgoingAmount": {
+                    "type": "string",
+                    "format": "int64"
+                },
+                "numberOfIncomingTransfers": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "numberOfOutgoingTransfers": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            },
+            "title": "Balance"
         },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/pbBroadcastTransactionRequest"
-            }
-          }
-        ],
-        "tags": [
-          "QubicLiveService"
-        ]
-      }
-    },
-    "/live/ipos/active": {
-      "get": {
-        "summary": "Returns a list of IPOs that are active in the current epoch.",
-        "operationId": "QubicLiveService_GetActiveIpos",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbGetActiveIposResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
+        "QubicHTTP_pbBroadcastTransactionRequest": {
+            "type": "object",
+            "properties": {
+                "encodedTransaction": {
+                    "type": "string",
+                    "title": "base64 encoded binary transaction data"
+                }
+            },
+            "title": "BroadcastTransactionRequest"
         },
-        "tags": [
-          "QubicLiveService"
-        ]
-      }
-    },
-    "/live/querySmartContract": {
-      "post": {
-        "summary": "Queries a smart contract function.",
-        "operationId": "QubicLiveService_QuerySmartContract",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbQuerySmartContractResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
+        "QubicHTTP_pbBroadcastTransactionResponse": {
+            "type": "object",
+            "properties": {
+                "peersBroadcasted": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "encodedTransaction": {
+                    "type": "string"
+                },
+                "transactionId": {
+                    "type": "string"
+                }
+            },
+            "title": "BroadcastTransactionResponse"
         },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/pbQuerySmartContractRequest"
-            }
-          }
-        ],
-        "tags": [
-          "QubicLiveService"
-        ]
-      }
-    },
-    "/live/tick-info": {
-      "get": {
-        "summary": "Gets the current tick information.",
-        "operationId": "QubicLiveService_GetTickInfo",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbGetTickInfoResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
+        "QubicHTTP_pbGetActiveIposResponse": {
+            "type": "object",
+            "properties": {
+                "ipos": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "$ref": "#/definitions/QubicHTTP_pbIpo"
+                    }
+                }
+            },
+            "title": "GetActiveIposResponse"
         },
-        "tags": [
-          "QubicLiveService"
-        ]
-      }
-    },
-    "/query/getComputorListsForEpoch": {
-      "post": {
-        "summary": "Get computor lists",
-        "description": "Get the list(s) of computors for one epoch. These are the computors (IDs signed by the arbitrator) that\nare allowed to make quorum decisions. It is possible that this list changes within the epoch in case of\narbitrator intervention.",
-        "operationId": "ArchiveQueryService_GetComputorsListsForEpoch",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbGetComputorListsForEpochResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
+        "QubicHTTP_pbGetBalanceResponse": {
+            "type": "object",
+            "properties": {
+                "balance": {
+                    "$ref": "#/definitions/QubicHTTP_pbBalance"
+                }
+            },
+            "title": "GetBalanceResponse"
         },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/pbGetComputorListsForEpochRequest"
-            }
-          }
-        ],
-        "tags": [
-          "ArchiveQueryService"
-        ]
-      }
-    },
-    "/query/getLastProcessedTick": {
-      "get": {
-        "summary": "Get last processed tick",
-        "description": "Get the last processed tick and other processing information from the archive.\nAll data queried from the archive is only fully processed up to this tick.\nBefore calling the service you should check the last processed tick to be sure to get\nvalid data and do not request data for future ticks that are not processed yet. You can use\nthe epoch and initial tick information in the response to switch to a new interval.",
-        "operationId": "ArchiveQueryService_GetLastProcessedTick",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbGetLastProcessedTickResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
+        "QubicHTTP_pbGetBlockHeightResponse": {
+            "type": "object",
+            "properties": {
+                "blockHeight": {
+                    "$ref": "#/definitions/QubicHTTP_pbTickInfo"
+                }
+            },
+            "title": "GetBlockHeightResponse"
         },
-        "tags": [
-          "ArchiveQueryService"
-        ]
-      }
-    },
-    "/query/getProcessedTickIntervals": {
-      "get": {
-        "summary": "Get processed tick intervals",
-        "description": "Get the tick intervals that are available in the archive. A new tick interval is typically\ncreated on epoch change or network restart within the epoch. Use this endpoint to skip the\ntick numbers that are not part of the intervals. This endpoint is only necessary for users\nthat need to process all available ticks. For most users it is enough to switch to a new\ninterval by using the `get last processed tick` endpoint.",
-        "operationId": "ArchiveQueryService_GetProcessedTickIntervals",
-        "responses": {
-          "200": {
-            "description": "a list of tick intervals that were processed.",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "$ref": "#/definitions/pbProcessedTickInterval"
-              }
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
+        "QubicHTTP_pbGetTickInfoResponse": {
+            "type": "object",
+            "properties": {
+                "tickInfo": {
+                    "$ref": "#/definitions/QubicHTTP_pbTickInfo"
+                }
+            },
+            "title": "GetTickInfoResponse"
         },
-        "tags": [
-          "ArchiveQueryService"
-        ]
-      }
-    },
-    "/query/getTickData": {
-      "post": {
-        "summary": "Get tick data",
-        "description": "Get the tick data for one tick.",
-        "operationId": "ArchiveQueryService_GetTickData",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbGetTickDataResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
+        "QubicHTTP_pbIpo": {
+            "type": "object",
+            "properties": {
+                "contractIndex": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "The index of the related contract (contract address)."
+                },
+                "assetName": {
+                    "type": "string",
+                    "description": "The name of the related asset."
+                }
+            },
+            "title": "IPO"
         },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/pbGetTickDataRequest"
-            }
-          }
-        ],
-        "tags": [
-          "ArchiveQueryService"
-        ]
-      }
-    },
-    "/query/getTransactionByHash": {
-      "post": {
-        "summary": "Get transaction by hash",
-        "description": "Get a single transaction by its hash.",
-        "operationId": "ArchiveQueryService_GetTransactionByHash",
-        "responses": {
-          "200": {
-            "description": "the transaction for the requested hash.",
-            "schema": {
-              "$ref": "#/definitions/pbTransaction"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
+        "QubicHTTP_pbIssuedAsset": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/QubicHTTP_pbIssuedAssetData"
+                },
+                "info": {
+                    "$ref": "#/definitions/QubicHTTP_pbAssetInfo"
+                }
+            },
+            "title": "IssuedAsset"
         },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/pbGetTransactionByHashRequest"
-            }
-          }
-        ],
-        "tags": [
-          "ArchiveQueryService"
-        ]
-      }
-    },
-    "/query/getTransactionsForIdentity": {
-      "post": {
-        "summary": "Get transactions for identity",
-        "description": "Get the transactions for one identity sorted by tick number descending.",
-        "operationId": "ArchiveQueryService_GetTransactionsForIdentity",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbGetTransactionsForIdentityResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
+        "QubicHTTP_pbIssuedAssetData": {
+            "type": "object",
+            "properties": {
+                "issuerIdentity": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "numberOfDecimalPlaces": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "unitOfMeasurement": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "format": "int32"
+                    }
+                }
+            },
+            "title": "IssuedAssetData"
         },
-        "parameters": [
-          {
-            "name": "body",
+        "QubicHTTP_pbIssuedAssetsResponse": {
+            "type": "object",
+            "properties": {
+                "issuedAssets": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "$ref": "#/definitions/QubicHTTP_pbIssuedAsset"
+                    }
+                }
+            },
+            "title": "IssuedAssetsResponse"
+        },
+        "QubicHTTP_pbOwnedAsset": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/QubicHTTP_pbOwnedAssetData"
+                },
+                "info": {
+                    "$ref": "#/definitions/QubicHTTP_pbAssetInfo"
+                }
+            },
+            "title": "OwnedAsset"
+        },
+        "QubicHTTP_pbOwnedAssetData": {
+            "type": "object",
+            "properties": {
+                "ownerIdentity": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "padding": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "managingContractIndex": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "issuanceIndex": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "numberOfUnits": {
+                    "type": "string",
+                    "format": "int64"
+                },
+                "issuedAsset": {
+                    "$ref": "#/definitions/QubicHTTP_pbIssuedAssetData"
+                }
+            },
+            "title": "OwnedAssetData"
+        },
+        "QubicHTTP_pbOwnedAssetsResponse": {
+            "type": "object",
+            "properties": {
+                "ownedAssets": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "$ref": "#/definitions/QubicHTTP_pbOwnedAsset"
+                    }
+                }
+            },
+            "title": "OwnedAssetsResponse"
+        },
+        "QubicHTTP_pbPossessedAsset": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/QubicHTTP_pbPossessedAssetData"
+                },
+                "info": {
+                    "$ref": "#/definitions/QubicHTTP_pbAssetInfo"
+                }
+            },
+            "title": "PossessedAsset"
+        },
+        "QubicHTTP_pbPossessedAssetData": {
+            "type": "object",
+            "properties": {
+                "possessorIdentity": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "padding": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "managingContractIndex": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "issuanceIndex": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "numberOfUnits": {
+                    "type": "string",
+                    "format": "int64"
+                },
+                "ownedAsset": {
+                    "$ref": "#/definitions/QubicHTTP_pbOwnedAssetData"
+                }
+            },
+            "title": "PossessedAssetData"
+        },
+        "QubicHTTP_pbPossessedAssetsResponse": {
+            "type": "object",
+            "properties": {
+                "possessedAssets": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "$ref": "#/definitions/QubicHTTP_pbPossessedAsset"
+                    }
+                }
+            },
+            "title": "PossessedAssetsResponse"
+        },
+        "QubicHTTP_pbQuerySmartContractRequest": {
+            "type": "object",
+            "properties": {
+                "contractIndex": {
+                    "type": "integer",
+                    "format": "int64",
+                    "title": "identifies the smart contract"
+                },
+                "inputType": {
+                    "type": "integer",
+                    "format": "int64",
+                    "title": "identifies the function to be queried"
+                },
+                "inputSize": {
+                    "type": "integer",
+                    "format": "int64",
+                    "title": "the size of the input data (request data)"
+                },
+                "requestData": {
+                    "type": "string",
+                    "title": "base64 encoded input data"
+                }
+            },
+            "title": "QuerySmartContractRequest"
+        },
+        "QubicHTTP_pbQuerySmartContractResponse": {
+            "type": "object",
+            "properties": {
+                "responseData": {
+                    "type": "string"
+                }
+            },
+            "title": "QuerySmartContractResponse"
+        },
+        "QubicHTTP_pbTickInfo": {
+            "type": "object",
+            "properties": {
+                "tick": {
+                    "type": "integer",
+                    "format": "int64",
+                    "title": "current network tick"
+                },
+                "duration": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "epoch": {
+                    "type": "integer",
+                    "format": "int64",
+                    "title": "current epoch"
+                },
+                "initialTick": {
+                    "type": "integer",
+                    "format": "int64",
+                    "title": "initial tick of epoch"
+                }
+            },
+            "title": "TickInfo"
+        },
+        "QubicHTTP_protobufAny": {
+            "type": "object",
+            "properties": {
+                "@type": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": {}
+        },
+        "QubicHTTP_rpcStatus": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "details": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "$ref": "#/definitions/QubicHTTP_protobufAny"
+                    }
+                }
+            }
+        },
+        "QubicQuery_pbComputorList": {
+            "type": "object",
+            "properties": {
+                "epoch": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "epoch number."
+                },
+                "tickNumber": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "tick number when the list was received by the archive after it was published."
+                },
+                "identities": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "list of computor identities (signed by arbitrator)."
+                },
+                "signature": {
+                    "type": "string",
+                    "description": "signature of the arbitrator."
+                }
+            },
+            "title": "ComputorList"
+        },
+        "QubicQuery_pbGetComputorListsForEpochRequest": {
+            "type": "object",
+            "properties": {
+                "epoch": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "the epoch number to get the computor lists for."
+                }
+            },
+            "title": "GetComputorListsForEpochRequest"
+        },
+        "QubicQuery_pbGetComputorListsForEpochResponse": {
+            "type": "object",
+            "properties": {
+                "computorsLists": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "$ref": "#/definitions/QubicQuery_pbComputorList"
+                    },
+                    "description": "the lists of computors that voted in this epoch."
+                }
+            },
+            "title": "GetComputorListsForEpochResponse"
+        },
+        "QubicQuery_pbGetLastProcessedTickResponse": {
+            "type": "object",
+            "properties": {
+                "tickNumber": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "the last processed tick that is available in the archive."
+                },
+                "epoch": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "the epoch the last processed tick is in."
+                },
+                "intervalInitialTick": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "the initial tick of the current tick interval."
+                }
+            },
+            "title": "GetLastProcessedTickResponse"
+        },
+        "QubicQuery_pbGetProcessedTickIntervalsResponse": {
+            "type": "object",
+            "properties": {
+                "processedTickIntervals": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "$ref": "#/definitions/QubicQuery_pbProcessedTickInterval"
+                    },
+                    "description": "a list of tick intervals that were processed."
+                }
+            },
+            "title": "GetProcessedTickIntervalsResponse"
+        },
+        "QubicQuery_pbGetTickDataRequest": {
+            "type": "object",
+            "properties": {
+                "tickNumber": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "the number of tick the tick data is requested for."
+                }
+            },
+            "title": "GetTickDataRequest"
+        },
+        "QubicQuery_pbGetTickDataResponse": {
+            "type": "object",
+            "properties": {
+                "tickData": {
+                    "$ref": "#/definitions/QubicQuery_pbTickData",
+                    "description": "the tick data of the requested tick."
+                }
+            },
+            "title": "GetTickDataResponse"
+        },
+        "QubicQuery_pbGetTransactionByHashRequest": {
+            "type": "object",
+            "properties": {
+                "hash": {
+                    "type": "string",
+                    "description": "Hash of the transaction."
+                }
+            },
+            "title": "GetTransactionByHashRequest"
+        },
+        "QubicQuery_pbGetTransactionByHashResponse": {
+            "type": "object",
+            "properties": {
+                "transaction": {
+                    "$ref": "#/definitions/QubicQuery_pbTransaction",
+                    "description": "the transaction for the requested hash."
+                }
+            },
+            "title": "GetTransactionByHashResponse"
+        },
+        "QubicQuery_pbGetTransactionsForIdentityRequest": {
+            "type": "object",
+            "example": "{\"identity\": \"AFZPUAIYVPNUYGJRQVLUKOPPVLHAZQTGLYAAUUNBXFTVTAMSBKQBLEIEPCVJ\",\"filters\": { \"destination\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB\",\"inputType\": \"0\"}, \"ranges\": { \"amount\": { \"gte\": \"1000000000\" } }, \"pagination\": { \"offset\": 0, \"size\": 10 } } ",
+            "properties": {
+                "identity": {
+                    "type": "string",
+                    "description": "The identity to get the transactions for. Incoming and outgoing transactions are queried by default."
+                },
+                "filters": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    },
+                    "description": "Filters restrict the results by single values."
+                },
+                "ranges": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/QubicQuery_pbRange"
+                    },
+                    "description": "Ranges restrict the results by a maximum and minimum value."
+                },
+                "pagination": {
+                    "$ref": "#/definitions/QubicQuery_pbPagination",
+                    "description": "Optional paging information."
+                }
+            },
             "description": "###  Request structure\n\n   | Name       | Type               | Necessity | Description                                                                                                       |\n   |------------|--------------------|-----------|-------------------------------------------------------------------------------------------------------------------|\n   | identity   | string             | required  | 60 characters uppercase identity.                                                                                 |\n   | filters    | map<string,string> | optional  | Filters that restrict results to single value.<br/> Allowed fields are: source, destination, amount, inputType    |\n   | ranges     | map<string,Range>  | optional  | Filters that restrict results to a value range.<br/> Allowed fields are: amount, tickNumber, inputType, timestamp |\n   | pagination | Pagination         | optional  | Allows to specify the first record and the number of records to be retrieved.                                     |\n\n   Without filters and ranges all transactions from and to that identity ordered by tick number descending are returned.\n   Data type for all values is string.\n\n   ### Filters\n\n   Filters restrict the results by single values.\n\n   #### Allowed properties\n\n   | Name        |  Type   | Format                 | Description                                                        |\n   |-------------|---------|------------------------|--------------------------------------------------------------------|\n   | source      |  string | 60 character identity  | Only find transactions that were sent from the specified identity. |\n   | destination |  string | 60 character identity  | Only find transactions that were sent to the specified identity.   |\n   | amount      |  string | Numeric                | Only find transactions with the specified amount.                  |\n   | inputType   |  string | Numeric                | Only find transactions with the specified input type.              |\n\n   #### Examples\n\n   ```\n   \"source\": \"IIJHZSNPDRYYXCQBWNGKBSWYYDCARTYPOBXGOXZEVEZMMWYHPBVXZLJARRCB\",\n   \"destination\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB\"\n   \"amount\": \"1000000\"\n   \"inputType\": \"0\"\n   ```\n\n   ### Ranges\n\n   Ranges restrict the results by a range of values. On range per property is supported.\n\n   #### Allowed properties\n\n   | Name       | Type   | Format                                   | Description                                 |\n   |------------|--------|------------------------------------------|---------------------------------------------|\n   | amount     | string | Numeric                                  | Only find transactions in amount range.     |\n   | tickNumber | string | Numeric                                  | Only find transactions in tick range.       |\n   | inputType  | string | Numeric                                  | Only find transactions in input type range. |\n   | timestamp  | string | Numeric (Unix Timestamp in milliseconds) | Only find transactions in time range.       |\n\n   #### Range definition\n\n   A range with size of 0 or 1 is not allowed.\n\n   | Name      | Type   | Necessity | Description                               |\n   |-----------|--------|-----------|-------------------------------------------|\n   | field | string | required  | Name of the field you wish to search for. |\n   | gt        | string | optional  | Greater than.                             |\n   | gte       | string | optional  | Greater than or equal to.                 |\n   | lt        | string | optional  | Less than.                                |\n   | lte       | string | optional  | Less than or equal to.                    |\n\n   Only one lower bound and one upper bound can be specified.\n\n   #### Examples\n\n   ```\n   \"amount\": { \"gt\": \"1000000\" }\n   \"tickNumber\": { \"gte\": \"25563000\", \"lte\": \"28300000\" }\n   \"inputType\": { \"gt\": \"0\" }\n   \"timestamp\": { \"lt\": \"1757376000000\" }\n   ```\n\n   ### Pagination\n\n   | Name   | Type   | Necessity | Description                                                                                         |\n   |--------|--------|-----------|-----------------------------------------------------------------------------------------------------|\n   | offset | uint32 | optional  | The offset of the first record to return. Defaults to zero (first record). Maximum offset is 10000. |\n   | size   | uint32 | optional  | Defaults to 10. Maximum size is 1000. Zero value is ignored (uses default).                         |",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/pbGetTransactionsForIdentityRequest"
-            }
-          }
-        ],
-        "tags": [
-          "ArchiveQueryService"
-        ]
-      }
-    },
-    "/query/getTransactionsForTick": {
-      "post": {
-        "summary": "Get transactions for tick",
-        "description": "Get the transactions that are in included in one tick.",
-        "operationId": "ArchiveQueryService_GetTransactionsForTick",
-        "responses": {
-          "200": {
-            "description": "the transactions for the requested tick number.",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "$ref": "#/definitions/pbTransaction"
-              }
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
+            "title": "GetTransactionsForIdentityRequest"
         },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/pbGetTransactionsForTickRequest"
-            }
-          }
-        ],
-        "tags": [
-          "ArchiveQueryService"
-        ]
-      }
-    },
-    "/query/health": {
-      "get": {
-        "summary": "Get health",
-        "description": "Health check. This is for internal use only and can change any time. Do not rely on this endpoint.",
-        "operationId": "ArchiveQueryService_GetHealth",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/pbHealthResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
+        "QubicQuery_pbGetTransactionsForIdentityResponse": {
+            "type": "object",
+            "properties": {
+                "validForTick": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "the response is valid for this tick number."
+                },
+                "hits": {
+                    "$ref": "#/definitions/QubicQuery_pbHits",
+                    "description": "information about the returned results."
+                },
+                "transactions": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "$ref": "#/definitions/QubicQuery_pbTransaction"
+                    },
+                    "description": "list of transactions that matched the search criteria."
+                }
+            },
+            "title": "GetTransactionsForIdentityResponse"
         },
-        "tags": [
-          "ArchiveQueryService"
-        ]
-      }
+        "QubicQuery_pbGetTransactionsForTickRequest": {
+            "type": "object",
+            "properties": {
+                "tickNumber": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "the tick number to get the transactions for."
+                }
+            },
+            "title": "GetTransactionsForTickRequest"
+        },
+        "QubicQuery_pbGetTransactionsForTickResponse": {
+            "type": "object",
+            "properties": {
+                "transactions": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "$ref": "#/definitions/QubicQuery_pbTransaction"
+                    },
+                    "description": "the transactions for the requested tick number."
+                }
+            },
+            "title": "GetTransactionsForTickResponse"
+        },
+        "QubicQuery_pbHealthResponse": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string",
+                    "description": "health status information."
+                }
+            },
+            "title": "HealthResponse"
+        },
+        "QubicQuery_pbHits": {
+            "type": "object",
+            "properties": {
+                "total": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "the total number of hits available in the archive. Capped at 10000."
+                },
+                "from": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "starting offset of the hits that were returned."
+                },
+                "size": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "number of returned hits."
+                }
+            },
+            "description": "Provides information about the number of results.",
+            "title": "Hits"
+        },
+        "QubicQuery_pbPagination": {
+            "type": "object",
+            "properties": {
+                "offset": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "The offset specifies the starting point of the returned data. It needs to be a multiple of the page size. Defaults to zero."
+                },
+                "size": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "The size specifies how many results should be returned. It needs to be a multiple of 10. Defaults to 10."
+                }
+            },
+            "description": "Pagination size and offset input is restricted and needs to follow certain rules.\nThe number of maximum results (offset + size) is limited to 10000.",
+            "title": "Pagination"
+        },
+        "QubicQuery_pbProcessedTickInterval": {
+            "type": "object",
+            "properties": {
+                "epoch": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "the epoch the interval is in."
+                },
+                "firstTick": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "the initial processed tick of the interval."
+                },
+                "lastTick": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "the last processed tick of the interval."
+                }
+            },
+            "title": "ProcessedTickInterval"
+        },
+        "QubicQuery_pbRange": {
+            "type": "object",
+            "properties": {
+                "gt": {
+                    "type": "string",
+                    "description": "greater than."
+                },
+                "gte": {
+                    "type": "string",
+                    "description": "greater than or equal."
+                },
+                "lt": {
+                    "type": "string",
+                    "description": "less than."
+                },
+                "lte": {
+                    "type": "string",
+                    "description": "less than or equal."
+                }
+            },
+            "title": "Range"
+        },
+        "QubicQuery_pbTickData": {
+            "type": "object",
+            "properties": {
+                "tickNumber": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "epoch": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "computorIndex": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "timestamp": {
+                    "type": "string",
+                    "format": "uint64"
+                },
+                "varStruct": {
+                    "type": "string"
+                },
+                "timeLock": {
+                    "type": "string"
+                },
+                "transactionHashes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "contractFees": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "int64"
+                    }
+                },
+                "signature": {
+                    "type": "string"
+                }
+            },
+            "title": "TickData"
+        },
+        "QubicQuery_pbTransaction": {
+            "type": "object",
+            "properties": {
+                "hash": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "string",
+                    "format": "uint64"
+                },
+                "source": {
+                    "type": "string"
+                },
+                "destination": {
+                    "type": "string"
+                },
+                "tickNumber": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "timestamp": {
+                    "type": "string",
+                    "format": "uint64"
+                },
+                "inputType": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "inputSize": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "inputData": {
+                    "type": "string"
+                },
+                "signature": {
+                    "type": "string"
+                },
+                "moneyFlew": {
+                    "type": "boolean",
+                    "description": "Money flew is an additional information provided by some nodes with the tx status addon patch."
+                }
+            },
+            "title": "Transaction"
+        },
+        "QubicQuery_protobufAny": {
+            "type": "object",
+            "properties": {
+                "@type": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": {}
+        },
+        "QubicQuery_rpcStatus": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "details": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "$ref": "#/definitions/QubicQuery_protobufAny"
+                    }
+                }
+            }
+        }
     }
-  }
 }
