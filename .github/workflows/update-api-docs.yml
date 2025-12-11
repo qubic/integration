@@ -27,9 +27,9 @@ jobs:
         uses: actions/checkout@v6
         with:
           repository: qubic/archive-query-service
-          path: archiver-query-service
+          path: archive-query-service
           sparse-checkout: |
-            v2/api/archive-query-service/query_services.swagger.json
+            v2/api/archive-query-service/v2/query_services.swagger.json
 
       - name: Setup Node
         uses: actions/setup-node@v6

@@ -8,7 +8,7 @@
       }
     },
     {
-      "inputFile": "./archive-query-service/v2/api/archive-query-service/query_services.swagger.json",
+      "inputFile": "./archive-query-service/v2/api/archive-query-service/v2/query_services.swagger.json",
       "disputePrefix": "QubicQueryService",
       "pathModification": {
         "prepend": "/query"
