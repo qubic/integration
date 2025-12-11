@@ -1,0 +1,63 @@
+name: Update API Docs
+
+on:
+  workflow_dispatch: # Manual trigger
+  repository_dispatch: # Trigger from other repos
+    types: [api-docs-update]
+  push:
+    branches:
+      - centralized-api-docs
+
+jobs:
+  merge-swaggers:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./ApiDocs
+    steps:
+      - name: Checkout this repo
+        uses: actions/checkout@v6
+
+      - name: Checkout qubic-http
+        uses: actions/checkout@v6
+        with:
+          repository: qubic/qubic-http
+          path: ApiDocs/qubic-http
+          sparse-checkout: |
+            protobuff/qubic.swagger.json
+
+      - name: Checkout archive-query-service
+        uses: actions/checkout@v6
+        with:
+          repository: qubic/archive-query-service
+          path: ApiDocs/archive-query-service
+          sparse-checkout: |
+            v2/api/archive-query-service/v2/query_services.swagger.json
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: List files (Tree)
+        run: tree
+
+      - name: Merge Swagger Files
+        run: python3 merge.py
+
+      - name: Validate OpenAPI Document
+        run: npx @scalar/cli document validate qubic-combined.swagger.json
+
+      - name: Log in to Scalar Registry
+        run: npx @scalar/cli auth login --token ${{ secrets.SCALAR_API_KEY }}
+
+      - name: Push to Scalar Registry
+        run: npx @scalar/cli registry publish --namespace qubic --slug qubic qubic-combined.swagger.json
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add qubic-combined.swagger.json
+          # Only commit if there are changes
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update API Docs" && git push)
