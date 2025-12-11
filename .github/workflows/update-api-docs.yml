@@ -4,9 +4,6 @@ on:
   workflow_dispatch: # Manual trigger
   repository_dispatch: # Trigger from other repos
     types: [api-docs-update]
-  push:
-    branches:
-      - centralized-api-docs
 
 jobs:
   merge-swaggers:
@@ -52,7 +49,7 @@ jobs:
         run: npx @scalar/cli auth login --token ${{ secrets.SCALAR_API_KEY }}
 
       - name: Push to Scalar Registry
-        run: npx @scalar/cli registry publish --namespace qubic --slug qubic qubic-combined.swagger.json
+        run: npx @scalar/cli registry publish --namespace qubic --slug qubic --force qubic-combined.swagger.json
 
       - name: Commit and Push
         run: |
