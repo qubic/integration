@@ -1,0 +1,53 @@
+name: Update API Docs
+
+on:
+  workflow_dispatch: # Manual trigger
+  repository_dispatch: # Trigger from other repos
+    types: [api-docs-update]
+  push:
+    branches:
+      - centralized-api-docs
+
+jobs:
+  merge-swaggers:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout this repo
+        uses: actions/checkout@v4
+
+      - name: Checkout qubic-http
+        uses: actions/checkout@v6
+        with:
+          repository: qubic/qubic-http
+          path: qubic-http
+          sparse-checkout: |
+            protobuff/qubic.swagger.json
+
+      - name: Checkout archive-query-service
+        uses: actions/checkout@v6
+        with:
+          repository: qubic/archive-query-service
+          path: archiver-query-service
+          sparse-checkout: |
+            v2/api/archive-query-service/query_services.swagger.json
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Install Merge Tool
+        run: npm install -g openapi-merge-cli
+
+      - name: Merge Swagger Files
+        working-directory: ApiDocs
+        run: openapi-merge-cli
+        # This looks for openapi-merge.json by default
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add qubic-combined.swagger.json
+          # Only commit if there are changes
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update API Docs" && git push)
