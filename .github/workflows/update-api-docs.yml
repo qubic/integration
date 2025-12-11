@@ -39,14 +39,20 @@ jobs:
         with:
           node-version: '24'
 
-      - name: Install Merge Tool
-        run: npm install -g openapi-merge-cli
-
       - name: List files (Tree)
         run: tree
 
       - name: Merge Swagger Files
         run: python3 merge.py
+
+      - name: Validate OpenAPI Document
+        run: npx @scalar/cli document validate qubic-combined.swagger.json
+
+      - name: Log in to Scalar Registry
+        run: npx @scalar/cli auth login --token ${{ secrets.SCALAR_API_KEY }}
+
+      - name: Push to Scalar Registry
+        run: npx @scalar/cli registry publish --namespace qubic --slug qubic qubic-combined.swagger.json
 
       - name: Commit and Push
         run: |
