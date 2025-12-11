@@ -11,6 +11,9 @@ on:
 jobs:
   merge-swaggers:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./ApiDocs
     steps:
       - name: Checkout this repo
         uses: actions/checkout@v4
@@ -40,7 +43,6 @@ jobs:
         run: npm install -g openapi-merge-cli
 
       - name: Merge Swagger Files
-        working-directory: ApiDocs
         run: openapi-merge-cli
         # This looks for openapi-merge.json by default
 
