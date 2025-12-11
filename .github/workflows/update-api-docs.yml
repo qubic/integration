@@ -16,13 +16,13 @@ jobs:
         working-directory: ./ApiDocs
     steps:
       - name: Checkout this repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Checkout qubic-http
         uses: actions/checkout@v6
         with:
           repository: qubic/qubic-http
-          path: qubic-http
+          path: ApiDocs/qubic-http
           sparse-checkout: |
             protobuff/qubic.swagger.json
 
@@ -30,7 +30,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           repository: qubic/archive-query-service
-          path: archive-query-service
+          path: ApiDocs/archive-query-service
           sparse-checkout: |
             v2/api/archive-query-service/v2/query_services.swagger.json
 
@@ -41,6 +41,9 @@ jobs:
 
       - name: Install Merge Tool
         run: npm install -g openapi-merge-cli
+
+      - name: List files (Tree)
+        run: tree
 
       - name: Merge Swagger Files
         run: openapi-merge-cli
