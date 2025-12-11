@@ -46,8 +46,7 @@ jobs:
         run: tree
 
       - name: Merge Swagger Files
-        run: openapi-merge-cli
-        # This looks for openapi-merge.json by default
+        run: python3 merge.py
 
       - name: Commit and Push
         run: |
