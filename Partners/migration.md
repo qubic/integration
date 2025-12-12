@@ -23,7 +23,7 @@ Here's what changed for each API:
 
 **Query API**: New API replacing the Archiver API for accessing archived blockchain data. See [Query API Migration](#query-api-migration).
 
-If you are unsure how to replace certain endpoint calls, please contact us so we can help you.
+If you are unsure how to replace certain endpoint calls, please [contact us on Discord](https://discord.com/channels/768887649540243497/1087017597133922474) so we can help you.
 
 ## Live API Updates
 
