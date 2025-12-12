@@ -10,6 +10,7 @@
 - [Query API Migration](#query-api-migration)
   - [Endpoint Migration Summary](#endpoint-migration-summary)
   - [Migration Examples](#migration-examples)
+- [Contact](#contact)
 
 ## Summary
 
@@ -22,8 +23,6 @@ Here's what changed for each API:
 **Archiver API**: Being phased out. See [Archiver API Deprecation](#archiver-api-deprecation) for details and timelines.
 
 **Query API**: New API replacing the Archiver API for accessing archived blockchain data. See [Query API Migration](#query-api-migration).
-
-If you are unsure how to replace certain endpoint calls, please [contact us on Discord](https://discord.com/channels/768887649540243497/1087017597133922474) so we can help you.
 
 ## Live API Updates
 
@@ -273,3 +272,7 @@ Accept: application/json
   "epoch": 179
 }
 ```
+
+## Contact
+
+Have questions about the migration? Reach out to us on [Discord](https://discord.com/channels/768887649540243497/1087017597133922474).
