@@ -60,14 +60,14 @@ GET /v2/ticks/{tickNumber}/store-hash
 GET /v2/transactions/{txId}/sendmany
 ```
 
-> **Note:** As a temporary workaround, some v1 endpoints have v2 equivalents (available until Arhiver API deprecation):
+> **Note:** As a temporary workaround, some v1 endpoints have v2 equivalents (available until Archiver API deprecation):
 > - `GET /v1/identities/{identity}/transfer-transactions` → `GET /v2/identities/{identity}/transfers`
 > - `GET /v1/ticks/{tickNumber}/transfer-transactions` → `GET /v2/ticks/{tickNumber}/transactions?transfers=true`
 
 ### Endpoints with Query API Replacements
 
 > [!WARNING]
-> These endpoints have replacements in the Query API. Migrate during 2026 before the Archiver API is phased out.
+> These endpoints have replacements in the Query API. Migrate during 2026 before the Archiver API is phased out. See [Query API Migration](#query-api-migration) for details.
 
 ```
 GET /v1/epochs/{epoch}/computors
