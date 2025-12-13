@@ -86,7 +86,7 @@ GET /v2/transactions/{txId}
 
 ## Query API Migration
 
-This section shows how to migrate from the deprecated Archiver API to the new Query API. For implementation details, see the [Archive Query Service repository](https://github.com/qubic/archive-query-service/tree/main/v2).
+This section shows how to migrate from the deprecated Archiver API to the new Query API.
 
 > Base URL: `https://rpc.qubic.org/query/v1`
 
@@ -274,6 +274,8 @@ Accept: application/json
   "epoch": 179
 }
 ```
+
+For implementation details, see the [Archive Query Service repository](https://github.com/qubic/archive-query-service/tree/main/v2).
 
 ## Contact
 
