@@ -1,24 +1,51 @@
-# Migration
+# RPC APIs Migration Guide
+
+## Table of Contents
+
+- [Summary](#summary)
+- [Live API Updates](#live-api-updates)
+- [Archiver API Deprecation](#archiver-api-deprecation)
+  - [Endpoints Available Until January 2026](#endpoints-available-until-january-2026)
+  - [Endpoints with Query API Replacements](#endpoints-with-query-api-replacements)
+- [Query API Migration](#query-api-migration)
+  - [Endpoint Migration Summary](#endpoint-migration-summary)
+  - [Migration Examples](#migration-examples)
+- [Contact](#contact)
 
 ## Summary
 
-This document provides guidance for partners migrating to Qubic's updated RPC infrastructure.
+This document provides guidance for partners migrating to Qubic's updated RPC infrastructure, redesigned for improved scalability and more flexible APIs. For technical details, see: [RPC 2.0 Qubic Integration Layer Functionality Upgrade](https://qubic.org/blog-detail/rpc-2-0-qubic-integration-layer-functionality-upgrade).
 
-**Live API**: No functional changes. All services, inputs, and outputs remain the same. Only the base path has changed—endpoints are now prefixed with `/live/v1`.
+Here's what changed for each API:
 
-**Archiver API**: Will not be available long-term. Due to scalability and architectural improvements, the Archiver API is being phased out. All endpoints are deprecated:
-- **End of 2025**: First group of endpoints will be removed. Stop using immediately.
-- **During 2026**: Remaining endpoints will be removed. Start migrating now to the new **Query API**.
+**Live API**: No functional changes—only the base path has changed. See [Live API Updates](#live-api-updates).
 
-For technical details on the architecture changes, see: [RPC 2.0 Qubic Integration Layer Functionality Upgrade](https://qubic.org/blog-detail/rpc-2-0-qubic-integration-layer-functionality-upgrade)
+**Archiver API**: Being phased out. See [Archiver API Deprecation](#archiver-api-deprecation) for details and timelines.
 
-If you are unsure how to replace certain endpoint calls, please contact us so we can help you.
+**Query API**: New API replacing the Archiver API for accessing archived tickchain data. See [Query API Migration](#query-api-migration).
 
-## Deprecated Archiver Endpoints
+## Live API Updates
 
-### Removed by End of 2025
+No functional changes. All services, inputs, and outputs remain the same. The only change is that `/live` has been added to the path before `/v1`.
 
-The following endpoints will be removed completely by the end of 2025. Stop using these immediately:
+> Base URL: `https://rpc.qubic.org/live/v1`
+
+> [!NOTE]
+> The old paths (without `/live`) will remain supported until the end of 2026. However, we advise updating your systems as soon as possible.
+
+For example, `/v1/tick-info` becomes `/live/v1/tick-info`.
+
+For full API specifications, see the [Live API OpenAPI documentation](https://qubic.github.io/integration/Partners/swagger/qubic-rpc-doc.html?urls.primaryName=Qubic%20RPC%20Live%20Tree).
+
+## Archiver API Deprecation
+
+The Archiver API is being phased out and will be **available until the end of 2026**. Below are the affected endpoints grouped by timeline and action required.
+
+### Endpoints Available Until January 2026
+
+> [!CAUTION]
+> **Action required:** These endpoints will be removed from the Archiver API by the end of January 2026. Stop using them immediately.
+
 ```
 GET /v1/healthcheck
 GET /v1/identities/{identity}/transfer-transactions
@@ -32,45 +59,69 @@ GET /v2/ticks/{tickNumber}/store-hash
 GET /v2/transactions/{txId}/sendmany
 ```
 
-### Removed During 2026
+> **Note:** As a temporary workaround, some v1 endpoints have v2 equivalents (available until Archiver API deprecation):
+> - `GET /v1/identities/{identity}/transfer-transactions` → `GET /v2/identities/{identity}/transfers`
+> - `GET /v1/ticks/{tickNumber}/transfer-transactions` → `GET /v2/ticks/{tickNumber}/transactions?transfers=true`
 
-The following endpoints will be removed during 2026. Start migrating now to the Query API:
+### Endpoints with Query API Replacements
+
+> [!WARNING]
+> These endpoints have replacements in the Query API. Migrate during 2026 before the Archiver API is phased out. See [Query API Migration](#query-api-migration) for details.
+
 ```
+GET /v1/epochs/{epoch}/computors
+GET /v1/latestTick
 GET /v1/status (status service archiver status)
 GET /v1/ticks/{tickNumber}/approved-transactions
 GET /v1/ticks/{tickNumber}/tick-data
 GET /v1/ticks/{tickNumber}/transactions
 GET /v1/transactions/{txId}
 GET /v1/tx-status/{txId}
+GET /v2/epochs/{epoch}/empty-ticks
+GET /v2/epochs/{epoch}/ticks
 GET /v2/identities/{identity}/transfers
 GET /v2/ticks/{tickNumber}/transactions
 GET /v2/transactions/{txId}
-GET /v1/epochs/{epoch}/computors
-GET /v1/latestTick
-GET /v2/epochs/{epoch}/empty-ticks
-GET /v2/epochs/{epoch}/ticks
 ```
 
-Replacement endpoints are referenced in the [OpenAPI documentation](swagger/qubic-rpc-doc.html) under the respective deprecated entries.
+## Query API Migration
 
-## Migrating to the new Query API
-
-To replace endpoints you can move to the new query API. This section shows how to migrate.
+This section shows how to migrate from the deprecated Archiver API to the new Query API.
 
 > Base URL: `https://rpc.qubic.org/query/v1`
 
 Important changes compared to the old API:
 
-- Most requests are now POST rather than GET. 
+- Most requests are now POST rather than GET.
 - Input must be included in the request body, not in the URL.
 - More filter and range options for requests.
 - Output structures have been overhauled.
 
-> Please also refer to the openapi documentation [here](swagger/qubic-query-doc.html) and [here](swagger/qubic-rpc-doc.html) 
-> and to the project documentation [here](https://github.com/qubic/archive-query-service/tree/main/v2).
+### Endpoint Migration Summary
 
+| Old Archiver API                                      | New Query API                                                                                               |
+| ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `GET /v1/transactions/{txId}`                         | `POST /query/v1/getTransactionByHash`                                                                       |
+| `GET /v1/tx-status/{txId}`                            | `POST /query/v1/getTransactionByHash`                                                                       |
+| `GET /v2/transactions/{txId}`                         | `POST /query/v1/getTransactionByHash`                                                                       |
+| `GET /v1/ticks/{tickNumber}/transactions`             | `POST /query/v1/getTransactionsForTick`                                                                     |
+| `GET /v1/ticks/{tickNumber}/approved-transactions`    | `POST /query/v1/getTransactionsForTick`                                                                     |
+| `GET /v1/ticks/{tickNumber}/transfer-transactions`    | `POST /query/v1/getTransactionsForTick`                                                                     |
+| `GET /v2/ticks/{tickNumber}/transactions`             | `POST /query/v1/getTransactionsForTick`                                                                     |
+| `GET /v1/identities/{identity}/transfer-transactions` | `POST /query/v1/getTransactionsForIdentity`                                                                 |
+| `GET /v2/identities/{identity}/transfers`             | `POST /query/v1/getTransactionsForIdentity`                                                                 |
+| `GET /v1/ticks/{tickNumber}/tick-data`                | `POST /query/v1/getTickData`                                                                                |
+| `GET /v1/status`                                      | `GET /query/v1/getLastProcessedTick`                                                                        |
+| `GET /v1/status`                                      | `GET /query/v1/getProcessedTickIntervals`                                                                   |
+| `GET /v1/latestTick`                                  | `GET /live/v1/tick-info` (latest network tick) or `GET /query/v1/getLastProcessedTick` (last archived tick) |
+| `GET /v1/epochs/{epoch}/computors`                    | `POST /query/v1/getComputorListsForEpoch`                                                                   |
 
-### Query transaction
+> [!NOTE]
+> For full API specifications, see the [Query OpenAPI documentation](swagger/qubic-query-doc.html).
+
+### Migration Examples
+
+#### Query transaction
 
 Old  
 ```HTTP
@@ -91,7 +142,7 @@ Accept: application/json
 }
 ```
 
-### Query tick transactions
+#### Query tick transactions
 
 Old
 ```HTTP
@@ -112,7 +163,7 @@ Accept: application/json
 }
 ```
 
-### Query identity transactions
+#### Query identity transactions
 
 Old
 ```HTTP
@@ -150,7 +201,7 @@ Accept: application/json
 
 > See https://github.com/qubic/archive-query-service/tree/main/v2 for more details about filters and ranges.
 
-### Query tick data
+#### Query tick data
 
 Old
 ```HTTP
@@ -171,7 +222,7 @@ Accept: application/json
 }
 ```
 
-### Query last processed tick
+#### Query last processed tick
 
 Old
 ```HTTP
@@ -187,7 +238,7 @@ Host: rpc.qubic.org
 Accept: application/json
 ```
 
-### Query processed tick intervals
+#### Query processed tick intervals
 
 Old
 ```HTTP
@@ -203,7 +254,7 @@ Host: rpc.qubic.org
 Accept: application/json
 ```
 
-### Query computors for one epoch
+#### Query computors for one epoch
 
 Old
 ```HTTP
@@ -223,3 +274,9 @@ Accept: application/json
   "epoch": 179
 }
 ```
+
+For implementation details, see the [Archive Query Service repository](https://github.com/qubic/archive-query-service/tree/main/v2).
+
+## Contact
+
+Have questions about the migration? Reach out to us on [Discord](https://discord.com/channels/768887649540243497/1087017597133922474).

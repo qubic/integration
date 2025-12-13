@@ -1,33 +1,41 @@
-# Qubic partner integration
+# Qubic Partner Integration
 
 This documentation describes the best practices to integrate and interact with Qubic.
 
+## Table of Contents
+
+- [Qubic RPC](#qubic-rpc)
+- [Exchange Integration](#exchange-integration)
+- [RPC APIs Migration](#rpc-apis-migration)
+- [Legacy Documentation](#legacy-documentation)
+
 ## Qubic RPC
 
-The Qubic RPC API is the main way to interact with Qubic.
+The Qubic RPC API is the main way to interact with Qubic. It offers endpoints for querying blockchain data, submitting transactions, and interacting with smart contracts.
 
-| Host                   | Use case                                          |
-|------------------------|---------------------------------------------------|
-| https://rpc.qubic.org  | Public API. Use this to build your applications.  |
+> Public API host: `https://rpc.qubic.org`
 
-### Available APIs
+> [!TIP]
+> We offer our public API for easy onboarding. However, partners can also run their own nodes and RPC infrastructure, if preferred.
 
-For partner integration, use the **Query API** and **Live API** only. The Archiver API is deprecated and will be removed.
+The simplified architecture diagram below shows the available APIs and their relationship to the Qubic network:
 
 ![integration-apis](integration-apis.png)
 
-| API           | Purpose                                 | Base Path    | Status               |
-|---------------|-----------------------------------------|--------------|----------------------|
-| **Query API** | Querying archived data                  | `/query/v1`  | ✅ Active             |
-| **Live API**  | Querying live data from Qubic nodes     | `/live/v1`   | ✅ Active             |
-| Archiver API  | Legacy API for archived data            | `/v1`, `/v2` | ⚠️ Deprecated        |
-| Stats API     | Market data, rich lists, and statistics | —            | 🔄 Subject to change |
+| API          | Purpose                                 | Base Path    | Status              |
+| ------------ | --------------------------------------- | ------------ | ------------------- |
+| Query API    | Querying archived data                  | `/query/v1`  | ✅ Active            |
+| Live API     | Querying live data from Qubic nodes     | `/live/v1`   | ✅ Active            |
+| Archiver API | Legacy API for archived data            | `/v1`, `/v2` | ⚠️ Deprecated        |
+| Stats API    | Market data, rich lists, and statistics | —            | 🔄 Subject to change |
 
-> **Note:** The Stats API is not intended for partner integration. It is currently under evaluation and may change without notice.
+> [!NOTE]
+> - For partner integration, use the **Query API** and **Live API** only.
+> - The Stats API is available but may introduce breaking changes without notice.
 
 For API specifications, see the [Openapi Documentation](https://qubic.github.io/integration/Partners/swagger/qubic-rpc-doc.html).
 
-## Exchange integration
+## Exchange Integration
 
 When integrating Qubic into your business logic, we recommend you use a TX based workflow.  
 You may already be familiar with this approach from other blockchains. It mainly consists of performing block scans for deposits 
@@ -36,16 +44,13 @@ and sending transactions via an API call to the RPC infrastructure.
 > [Read more about the TX based workflow](tx-based-workflow.md)
 
 
-## Migration and Legacy Documentation
+## RPC APIs Migration
 
-The old Archiver API has been replaced by the new Query API. The Archiver API is still available for a while for backwards compatibility, but all endpoints are deprecated and will be removed.
+> [!CAUTION]
+> The Archiver API is deprecated and will be fully removed by 2026. If you are using it, migrate to the new Query API now.
 
-⚠️ **The Archiver API will not be available long-term.** All endpoints are deprecated:
-- **End of 2025**: First group of endpoints will be removed.
-- **During 2026**: Remaining endpoints will be removed.
+See the [Migration Guide](migration.md) for deprecation timelines and replacement endpoints.
 
-If you are migrating from the deprecated API, please refer to the [Migration Guide](migration.md) for the endpoints that got replaced and their new counterparts.
+## Legacy Documentation
 
-For technical details on the architecture changes, see: [RPC 2.0 Qubic Integration Layer Functionality Upgrade](https://qubic.org/blog-detail/rpc-2-0-qubic-integration-layer-functionality-upgrade)
-
-For legacy documentation, see [here](old/README.md).
+For previous integration guides (partners, exchanges, integrators), see [here](old/README.md).
