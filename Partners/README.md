@@ -16,18 +16,18 @@ The Qubic RPC API is the main way to interact with Qubic. It offers endpoints fo
 > Public API host: `https://rpc.qubic.org`
 
 > [!TIP]
-> There is no need to run your own node. We offer our public API for easy onboarding. However, partners can also run their own nodes and RPC infrastructure if preferred.
+> We offer our public API for easy onboarding. However, partners can also run their own nodes and RPC infrastructure, if preferred.
 
 The simplified architecture diagram below shows the available APIs and their relationship to the Qubic network:
 
 ![integration-apis](integration-apis.png)
 
-| API           | Purpose                                 | Base Path    | Status              |
-| ------------- | --------------------------------------- | ------------ | ------------------- |
-| **Query API** | Querying archived data                  | `/query/v1`  | ✅ Active            |
-| **Live API**  | Querying live data from Qubic nodes     | `/live/v1`   | ✅ Active            |
-| Archiver API  | Legacy API for archived data            | `/v1`, `/v2` | ⚠️ Deprecated        |
-| Stats API     | Market data, rich lists, and statistics | —            | 🔄 Subject to change |
+| API          | Purpose                                 | Base Path    | Status              |
+| ------------ | --------------------------------------- | ------------ | ------------------- |
+| Query API    | Querying archived data                  | `/query/v1`  | ✅ Active            |
+| Live API     | Querying live data from Qubic nodes     | `/live/v1`   | ✅ Active            |
+| Archiver API | Legacy API for archived data            | `/v1`, `/v2` | ⚠️ Deprecated        |
+| Stats API    | Market data, rich lists, and statistics | —            | 🔄 Subject to change |
 
 > [!NOTE]
 > - For partner integration, use the **Query API** and **Live API** only.

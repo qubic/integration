@@ -5,8 +5,8 @@
 - [Summary](#summary)
 - [Live API Updates](#live-api-updates)
 - [Archiver API Deprecation](#archiver-api-deprecation)
-  - [Removed Without Replacement](#removed-without-replacement)
-  - [Migrate to Query API](#migrate-to-query-api)
+  - [Endpoints Available Until January 2026](#endpoints-available-until-january-2026)
+  - [Endpoints with Query API Replacements](#endpoints-with-query-api-replacements)
 - [Query API Migration](#query-api-migration)
   - [Endpoint Migration Summary](#endpoint-migration-summary)
   - [Migration Examples](#migration-examples)
@@ -22,7 +22,7 @@ Here's what changed for each API:
 
 **Archiver API**: Being phased out. See [Archiver API Deprecation](#archiver-api-deprecation) for details and timelines.
 
-**Query API**: New API replacing the Archiver API for accessing archived blockchain data. See [Query API Migration](#query-api-migration).
+**Query API**: New API replacing the Archiver API for accessing archived tickchain data. See [Query API Migration](#query-api-migration).
 
 ## Live API Updates
 
@@ -39,12 +39,13 @@ For full API specifications, see the [Live API OpenAPI documentation](https://qu
 
 ## Archiver API Deprecation
 
-The Archiver API is being phased out. Below are the affected endpoints grouped by timeline and action required.
+The Archiver API is being phased out and will be **available until end of 2026**. Below are the affected endpoints grouped by timeline and action required.
 
-### Removed Without Replacement
+### Endpoints Available Until January 2026
 
 > [!CAUTION]
-> **Action required:** These endpoints will be removed by end of January 2026. Stop using them immediately—there are no replacements available.
+> **Action required:** These endpoints will be removed from the Archiver API by end of January 2026. Stop using them immediately.
+
 
 ```
 GET /v1/healthcheck
@@ -59,28 +60,30 @@ GET /v2/ticks/{tickNumber}/store-hash
 GET /v2/transactions/{txId}/sendmany
 ```
 
-### Migrate to Query API
+> **Note:** As a temporary workaround, some v1 endpoints have v2 equivalents (available until Arhiver API deprecation):
+> - `GET /v1/identities/{identity}/transfer-transactions` → `GET /v2/identities/{identity}/transfers`
+> - `GET /v1/ticks/{tickNumber}/transfer-transactions` → `GET /v2/ticks/{tickNumber}/transactions?transfers=true`
+
+### Endpoints with Query API Replacements
 
 > [!WARNING]
-> These endpoints will be removed during 2026. Start migrating now to the new Query API.
+> These endpoints have replacements in the Query API. Migrate during 2026 before the Archiver API is phased out.
 
 ```
+GET /v1/epochs/{epoch}/computors
+GET /v1/latestTick
 GET /v1/status (status service archiver status)
 GET /v1/ticks/{tickNumber}/approved-transactions
 GET /v1/ticks/{tickNumber}/tick-data
 GET /v1/ticks/{tickNumber}/transactions
 GET /v1/transactions/{txId}
 GET /v1/tx-status/{txId}
+GET /v2/epochs/{epoch}/empty-ticks
+GET /v2/epochs/{epoch}/ticks
 GET /v2/identities/{identity}/transfers
 GET /v2/ticks/{tickNumber}/transactions
 GET /v2/transactions/{txId}
-GET /v1/epochs/{epoch}/computors
-GET /v1/latestTick
-GET /v2/epochs/{epoch}/empty-ticks
-GET /v2/epochs/{epoch}/ticks
 ```
-
-Replacement endpoints are referenced in the [Archiver OpenAPI documentation](swagger/qubic-rpc-doc.html) under the respective deprecated entries.
 
 ## Query API Migration
 
