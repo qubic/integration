@@ -31,7 +31,7 @@ No functional changes. All services, inputs, and outputs remain the same. The on
 > Base URL: `https://rpc.qubic.org/live/v1`
 
 > [!NOTE]
-> The old paths (without `/live`) will remain supported until end of 2026. However, we advise updating your systems as soon as possible.
+> The old paths (without `/live`) will remain supported until the end of 2026. However, we advise updating your systems as soon as possible.
 
 For example, `/v1/tick-info` becomes `/live/v1/tick-info`.
 
@@ -39,13 +39,12 @@ For full API specifications, see the [Live API OpenAPI documentation](https://qu
 
 ## Archiver API Deprecation
 
-The Archiver API is being phased out and will be **available until end of 2026**. Below are the affected endpoints grouped by timeline and action required.
+The Archiver API is being phased out and will be **available until the end of 2026**. Below are the affected endpoints grouped by timeline and action required.
 
 ### Endpoints Available Until January 2026
 
 > [!CAUTION]
-> **Action required:** These endpoints will be removed from the Archiver API by end of January 2026. Stop using them immediately.
-
+> **Action required:** These endpoints will be removed from the Archiver API by the end of January 2026. Stop using them immediately.
 
 ```
 GET /v1/healthcheck
