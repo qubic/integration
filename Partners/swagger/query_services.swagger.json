@@ -59,7 +59,7 @@
     "/getLastProcessedTick": {
       "get": {
         "summary": "Get last processed tick",
-        "description": "Get the last processed tick and other processing information from the archive.\nAll data queried from the archive is only fully processed up to this tick.\nBefore calling the service you should check the last processed tick to be sure to get\nvalid data and do not request data for future ticks that are not processed yet. You  can use\nthe epoch and initial tick information in the response to switch to a new interval.",
+        "description": "Get the last processed tick and other processing information from the archive.\nAll data queried from the archive is only fully processed up to this tick.\nBefore calling the service you should check the last processed tick to be sure to get\nvalid data and do not request data for future ticks that are not processed yet. You can use\nthe epoch and initial tick information in the response to switch to a new interval.",
         "operationId": "ArchiveQueryService_GetLastProcessedTick",
         "responses": {
           "200": {
