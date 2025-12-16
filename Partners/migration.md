@@ -5,7 +5,7 @@
 - [Summary](#summary)
 - [Live API Updates](#live-api-updates)
 - [Archiver API Deprecation](#archiver-api-deprecation)
-  - [Endpoints Available Until January 2026](#endpoints-available-until-january-2026)
+  - [Endpoints No Longer Available](#endpoints-no-longer-available)
   - [Endpoints with Query API Replacements](#endpoints-with-query-api-replacements)
 - [Query API Migration](#query-api-migration)
   - [Endpoint Migration Summary](#endpoint-migration-summary)
@@ -41,10 +41,10 @@ For full API specifications, see the [Live API OpenAPI documentation](https://qu
 
 The Archiver API is being phased out and will be **available until the end of 2026**. Below are the affected endpoints grouped by timeline and action required.
 
-### Endpoints Available Until January 2026
+### Endpoints No Longer Available
 
-> [!CAUTION]
-> **Action required:** These endpoints will be removed from the Archiver API by the end of January 2026. Stop using them immediately.
+> [!IMPORTANT]
+> Due to technical constraints, we had to remove these endpoints earlier than originally planned. Based on our usage analysis, most of these endpoints had no or minimal activity, and we reached out to the partners we identified as still using them. However, if we missed you and you are affected by this change, please [contact us](#contact) so we can help you find a solution.
 
 ```
 GET /v1/healthcheck
@@ -59,7 +59,7 @@ GET /v2/ticks/{tickNumber}/store-hash
 GET /v2/transactions/{txId}/sendmany
 ```
 
-> **Note:** As a temporary workaround, some v1 endpoints have v2 equivalents (available until Archiver API deprecation):
+> **Note:** Some v1 endpoints have v2 equivalents (available until Archiver API deprecation):
 > - `GET /v1/identities/{identity}/transfer-transactions` → `GET /v2/identities/{identity}/transfers`
 > - `GET /v1/ticks/{tickNumber}/transfer-transactions` → `GET /v2/ticks/{tickNumber}/transactions?transfers=true`
 
