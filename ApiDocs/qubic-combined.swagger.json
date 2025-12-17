@@ -23,7 +23,8 @@
     "paths": {
         "/live/v1/assets/issuances": {
             "get": {
-                "summary": "Returns a list of issued assets.",
+                "summary": "Search Asset Issuances",
+                "description": "Returns a list of issued assets filtered by issuer identity and asset name.",
                 "operationId": "QubicLiveService_GetIssuedAssetsByFilter",
                 "responses": {
                     "200": {
@@ -60,7 +61,8 @@
         },
         "/live/v1/assets/issuances/{index}": {
             "get": {
-                "summary": "Returns an asset issuance by universe index.",
+                "summary": "Get Asset Issuance By Index",
+                "description": "Returns an asset issuance by universe index.",
                 "operationId": "QubicLiveService_GetIssuedAssetByUniverseIndex",
                 "responses": {
                     "200": {
@@ -92,7 +94,8 @@
         },
         "/live/v1/assets/ownerships": {
             "get": {
-                "summary": "Returns a list of asset ownerships.",
+                "summary": "Search Asset Ownerships",
+                "description": "Returns a list of asset ownerships filtered by issuer, asset name, owner and managing contract.",
                 "operationId": "QubicLiveService_GetOwnedAssetsByFilter",
                 "responses": {
                     "200": {
@@ -146,7 +149,8 @@
         },
         "/live/v1/assets/ownerships/{index}": {
             "get": {
-                "summary": "Returns an asset ownership by universe index.",
+                "summary": "Get Asset Ownership By Index",
+                "description": "Returns an asset ownership by universe index.",
                 "operationId": "QubicLiveService_GetOwnedAssetByUniverseIndex",
                 "responses": {
                     "200": {
@@ -178,7 +182,8 @@
         },
         "/live/v1/assets/possessions": {
             "get": {
-                "summary": "Returns a list of assets possessions.",
+                "summary": "Search Asset Possessions",
+                "description": "Returns a list of asset possessions filtered by issuer, asset name, owner, possessor and managing contracts.",
                 "operationId": "QubicLiveService_GetPossessedAssetsByFilter",
                 "responses": {
                     "200": {
@@ -247,7 +252,8 @@
         },
         "/live/v1/assets/possessions/{index}": {
             "get": {
-                "summary": "Returns an asset possession by universe index.",
+                "summary": "Get Asset Possession By Index",
+                "description": "Returns an asset possession by universe index.",
                 "operationId": "QubicLiveService_GetPossessedAssetByUniverseIndex",
                 "responses": {
                     "200": {
@@ -279,7 +285,8 @@
         },
         "/live/v1/assets/{identity}/issued": {
             "get": {
-                "summary": "Gets assets issued by the specified identity.",
+                "summary": "List Issued Assets",
+                "description": "Gets assets issued by the specified identity.",
                 "operationId": "QubicLiveService_GetIssuedAssets",
                 "responses": {
                     "200": {
@@ -310,7 +317,8 @@
         },
         "/live/v1/assets/{identity}/owned": {
             "get": {
-                "summary": "Gets assets that are owned by the specified identity.",
+                "summary": "List Owned Assets",
+                "description": "Gets assets that are owned by the specified identity.",
                 "operationId": "QubicLiveService_GetOwnedAssets",
                 "responses": {
                     "200": {
@@ -341,7 +349,8 @@
         },
         "/live/v1/assets/{identity}/possessed": {
             "get": {
-                "summary": "Gets assets that are possessed by the specified identity.",
+                "summary": "List Possessed Assets",
+                "description": "Gets assets that are possessed by the specified identity.",
                 "operationId": "QubicLiveService_GetPossessedAssets",
                 "responses": {
                     "200": {
@@ -372,7 +381,8 @@
         },
         "/live/v1/balances/{id}": {
             "get": {
-                "summary": "Gets the balance of the specified identity.",
+                "summary": "Get Balance",
+                "description": "Gets the balance of the specified identity.",
                 "operationId": "QubicLiveService_GetBalance",
                 "responses": {
                     "200": {
@@ -403,7 +413,8 @@
         },
         "/live/v1/block-height": {
             "get": {
-                "summary": "Deprecated: use /tick-info instead.",
+                "summary": "Get Block Height",
+                "description": "Deprecated: use /tick-info instead.",
                 "operationId": "QubicLiveService_GetBlockHeight",
                 "responses": {
                     "200": {
@@ -421,12 +432,14 @@
                 },
                 "tags": [
                     "QubicLiveService"
-                ]
+                ],
+                "deprecated": true
             }
         },
         "/live/v1/broadcast-transaction": {
             "post": {
-                "summary": "Broadcasts a transaction to the network.",
+                "summary": "Broadcast Transaction",
+                "description": "Broadcasts a transaction to the network.",
                 "operationId": "QubicLiveService_BroadcastTransaction",
                 "responses": {
                     "200": {
@@ -459,7 +472,8 @@
         },
         "/live/v1/ipos/active": {
             "get": {
-                "summary": "Returns a list of IPOs that are active in the current epoch.",
+                "summary": "Get Active IPOs",
+                "description": "Returns a list of IPOs that are active in the current epoch.",
                 "operationId": "QubicLiveService_GetActiveIpos",
                 "responses": {
                     "200": {
@@ -482,7 +496,8 @@
         },
         "/live/v1/querySmartContract": {
             "post": {
-                "summary": "Queries a smart contract function.",
+                "summary": "Query Smart Contract",
+                "description": "Queries a smart contract function.",
                 "operationId": "QubicLiveService_QuerySmartContract",
                 "responses": {
                     "200": {
@@ -515,7 +530,8 @@
         },
         "/live/v1/tick-info": {
             "get": {
-                "summary": "Gets the current tick information.",
+                "summary": "Get Tick Info",
+                "description": "Gets the current tick information.",
                 "operationId": "QubicLiveService_GetTickInfo",
                 "responses": {
                     "200": {
