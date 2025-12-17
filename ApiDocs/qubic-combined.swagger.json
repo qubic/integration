@@ -554,7 +554,7 @@
         },
         "/query/v1/getComputorListsForEpoch": {
             "post": {
-                "summary": "Get computor lists",
+                "summary": "Get Epoch Computors",
                 "description": "Get the list(s) of computors for one epoch. These are the computors (IDs signed by the arbitrator) that\nare allowed to make quorum decisions. It is possible that this list changes within the epoch in case of\narbitrator intervention.",
                 "operationId": "ArchiveQueryService_GetComputorsListsForEpoch",
                 "responses": {
@@ -588,7 +588,7 @@
         },
         "/query/v1/getLastProcessedTick": {
             "get": {
-                "summary": "Get last processed tick",
+                "summary": "Get Last Processed Tick",
                 "description": "Get the last processed tick and other processing information from the archive.\nAll data queried from the archive is only fully processed up to this tick.\nBefore calling the service you should check the last processed tick to be sure to get\nvalid data and do not request data for future ticks that are not processed yet. You can use\nthe epoch and initial tick information in the response to switch to a new interval.",
                 "operationId": "ArchiveQueryService_GetLastProcessedTick",
                 "responses": {
@@ -612,7 +612,7 @@
         },
         "/query/v1/getProcessedTickIntervals": {
             "get": {
-                "summary": "Get processed tick intervals",
+                "summary": "Get Processed Tick Intervals",
                 "description": "Get the tick intervals that are available in the archive. A new tick interval is typically\ncreated on epoch change or network restart within the epoch. Use this endpoint to skip the\ntick numbers that are not part of the intervals. This endpoint is only necessary for users\nthat need to process all available ticks. For most users it is enough to switch to a new\ninterval by using the `get last processed tick` endpoint.",
                 "operationId": "ArchiveQueryService_GetProcessedTickIntervals",
                 "responses": {
@@ -640,7 +640,7 @@
         },
         "/query/v1/getTickData": {
             "post": {
-                "summary": "Get tick data",
+                "summary": "Get Tick Data",
                 "description": "Get the tick data for one tick.",
                 "operationId": "ArchiveQueryService_GetTickData",
                 "responses": {
@@ -674,7 +674,7 @@
         },
         "/query/v1/getTransactionByHash": {
             "post": {
-                "summary": "Get transaction by hash",
+                "summary": "Get Transaction By Hash",
                 "description": "Get a single transaction by its hash.",
                 "operationId": "ArchiveQueryService_GetTransactionByHash",
                 "responses": {
@@ -708,7 +708,7 @@
         },
         "/query/v1/getTransactionsForIdentity": {
             "post": {
-                "summary": "Get transactions for identity",
+                "summary": "Get Transactions For Identity",
                 "description": "Get the transactions for one identity sorted by tick number descending.\n\n   ###  Request structure\n\n   | Name       | Type               | Necessity | Description                                                                                                       |\n   |------------|--------------------|-----------|-------------------------------------------------------------------------------------------------------------------|\n   | identity   | string             | required  | 60 characters uppercase identity.                                                                                 |\n   | filters    | map<string,string> | optional  | Filters that restrict results to single value.<br/> Allowed fields are: source, destination, amount, inputType    |\n   | ranges     | map<string,Range>  | optional  | Filters that restrict results to a value range.<br/> Allowed fields are: amount, tickNumber, inputType, timestamp |\n   | pagination | Pagination         | optional  | Allows to specify the first record and the number of records to be retrieved.                                     |\n\n   Without filters and ranges all transactions from and to that identity ordered by tick number descending are returned.\n   Data type for all values is string.\n\n   ### Filters\n\n   Filters restrict the results by single values.\n\n   #### Allowed properties\n\n   | Name        |  Type   | Format                 | Description                                                        |\n   |-------------|---------|------------------------|--------------------------------------------------------------------|\n   | source      |  string | 60 character identity  | Only find transactions that were sent from the specified identity. |\n   | destination |  string | 60 character identity  | Only find transactions that were sent to the specified identity.   |\n   | amount      |  string | Numeric                | Only find transactions with the specified amount.                  |\n   | inputType   |  string | Numeric                | Only find transactions with the specified input type.              |\n\n   #### Examples\n\n   ```\n   \"source\": \"IIJHZSNPDRYYXCQBWNGKBSWYYDCARTYPOBXGOXZEVEZMMWYHPBVXZLJARRCB\",\n   \"destination\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB\"\n   \"amount\": \"1000000\"\n   \"inputType\": \"0\"\n   ```\n\n   ### Ranges\n\n   Ranges restrict the results by a range of values. On range per property is supported.\n\n   #### Allowed properties\n\n   | Name       | Type   | Format                                   | Description                                 |\n   |------------|--------|------------------------------------------|---------------------------------------------|\n   | amount     | string | Numeric                                  | Only find transactions in amount range.     |\n   | tickNumber | string | Numeric                                  | Only find transactions in tick range.       |\n   | inputType  | string | Numeric                                  | Only find transactions in input type range. |\n   | timestamp  | string | Numeric (Unix Timestamp in milliseconds) | Only find transactions in time range.       |\n\n   #### Range definition\n\n   A range with size of 0 or 1 is not allowed.\n\n   | Name      | Type   | Necessity | Description                               |\n   |-----------|--------|-----------|-------------------------------------------|\n   | field | string | required  | Name of the field you wish to search for. |\n   | gt        | string | optional  | Greater than.                             |\n   | gte       | string | optional  | Greater than or equal to.                 |\n   | lt        | string | optional  | Less than.                                |\n   | lte       | string | optional  | Less than or equal to.                    |\n\n   Only one lower bound and one upper bound can be specified.\n\n   #### Examples\n\n   ```\n   \"amount\": { \"gt\": \"1000000\" }\n   \"tickNumber\": { \"gte\": \"25563000\", \"lte\": \"28300000\" }\n   \"inputType\": { \"gt\": \"0\" }\n   \"timestamp\": { \"lt\": \"1757376000000\" }\n   ```\n\n   ### Pagination\n\n   | Name   | Type   | Necessity | Description                                                                                         |\n   |--------|--------|-----------|-----------------------------------------------------------------------------------------------------|\n   | offset | uint32 | optional  | The offset of the first record to return. Defaults to zero (first record). Maximum offset is 10000. |\n   | size   | uint32 | optional  | Defaults to 10. Maximum size is 1000. Zero value is ignored (uses default). |",
                 "operationId": "ArchiveQueryService_GetTransactionsForIdentity",
                 "responses": {
@@ -742,7 +742,7 @@
         },
         "/query/v1/getTransactionsForTick": {
             "post": {
-                "summary": "Get transactions for tick",
+                "summary": "Get Transactions For Tick",
                 "description": "Get the transactions that are in included in one tick.",
                 "operationId": "ArchiveQueryService_GetTransactionsForTick",
                 "responses": {
@@ -780,7 +780,7 @@
         },
         "/query/v1/health": {
             "get": {
-                "summary": "Get health",
+                "summary": "Get Health",
                 "description": "Health check. This is for internal use only and can change any time. Do not rely on this endpoint.",
                 "operationId": "ArchiveQueryService_GetHealth",
                 "responses": {
