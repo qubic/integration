@@ -7,7 +7,13 @@
     },
     "tags": [
         {
-            "name": "QubicLiveService"
+            "name": "QubicLiveService",
+            "description": "Query live data from the Qubic network",
+            "externalDocs": {
+                "description": "GitHub repository",
+                "url": "https://github.com/qubic/qubic-http/"
+            },
+            "x-displayName": "Live API"
         }
     ],
     "host": "rpc.qubic.org",
