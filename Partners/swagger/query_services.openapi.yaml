@@ -118,82 +118,87 @@ paths:
             description: |-
                 Get the transactions for one identity sorted by tick number descending.
 
-                  ###  Request structure
+                 ###  Request structure
 
-                  | Name       | Type               | Necessity | Description                                                                                                       |
-                  |------------|--------------------|-----------|-------------------------------------------------------------------------------------------------------------------|
-                  | identity   | string             | required  | 60 characters uppercase identity.                                                                                 |
-                  | filters    | map<string,string> | optional  | Filters that restrict results to single value.<br/> Allowed fields are: source, destination, amount, inputType    |
-                  | ranges     | map<string,Range>  | optional  | Filters that restrict results to a value range.<br/> Allowed fields are: amount, tickNumber, inputType, timestamp |
-                  | pagination | Pagination         | optional  | Allows to specify the first record and the number of records to be retrieved.                                     |
+                 | Name       | Type               | Necessity | Description                                                                    |
+                 |------------|--------------------|-----------|--------------------------------------------------------------------------------|
+                 | identity   | string             | required  | 60 characters uppercase identity.                                              |
+                 | filters    | map<string,string> | optional  | Filters that restrict results to single value.                                 |
+                 | ranges     | map<string,Range>  | optional  | Filters that restrict results to a value range.                                |
+                 | pagination | Pagination         | optional  | Allows to specify the first record and the number of records to be retrieved.  |
 
-                  Without filters and ranges all transactions from and to that identity ordered by tick number descending are returned.
-                  Data type for all values is string.
+                 Without filters and ranges all transactions from and to that identity ordered by tick number descending are returned.
 
-                  ### Filters
+                 ### Filters
 
-                  Filters restrict the results by single values.
+                 Filters restrict the results by single values.
 
-                  #### Allowed properties
+                 #### Allowed properties
 
-                  | Name        |  Type   | Format                 | Description                                                        |
-                  |-------------|---------|------------------------|--------------------------------------------------------------------|
-                  | source      |  string | 60 character identity  | Only find transactions that were sent from the specified identity. |
-                  | destination |  string | 60 character identity  | Only find transactions that were sent to the specified identity.   |
-                  | amount      |  string | Numeric                | Only find transactions with the specified amount.                  |
-                  | inputType   |  string | Numeric                | Only find transactions with the specified input type.              |
+                 | Name        |  Type   | Format                 | Description                                                        |
+                 |-------------|---------|------------------------|--------------------------------------------------------------------|
+                 | source      | string | 60 character identity, up to 5, comma separated. | Only find transactions that were sent from the specified identities. |
+                 | source-exclude | string | 60 character identity, up to 5, comma separated.  | Only find transactions that were not sent from the specified identities. |
+                 | destination | string | 60 character identity, up to 5, comma separated.  | Only find transactions that were sent to the specified identities.   |
+                 | destination-exclude | string | 60 character identity, up to 5, comma separated.  | Only find transactions that were not sent to the specified identities.   |
+                 | amount      | string | Numeric                | Only find transactions with the specified amount.                  |
+                 | inputType   | string | Numeric                | Only find transactions with the specified input type.              |
+                 | tickNumber  | string | Numeric                | Only find transactions with the specified tick number.             |
 
-                  #### Examples
+                 source` and `source-exclude` are mutually exclusive.
+                 destination` and `destination-exclude` are mutually exclusive.
 
-                  ```
-                  "source": "IIJHZSNPDRYYXCQBWNGKBSWYYDCARTYPOBXGOXZEVEZMMWYHPBVXZLJARRCB",
-                  "destination": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB"
-                  "amount": "1000000"
-                  "inputType": "0"
-                  ```
+                 #### Examples
 
-                  ### Ranges
+                 ```
+                 "source": "IIJHZSNPDRYYXCQBWNGKBSWYYDCARTYPOBXGOXZEVEZMMWYHPBVXZLJARRCB",
+                 "destination": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB"
+                 "amount": "1000000"
+                 "inputType": "0"
+                 ```
 
-                  Ranges restrict the results by a range of values. On range per property is supported.
+                 ### Ranges
 
-                  #### Allowed properties
+                 Ranges restrict the results by a range of values. On range per property is supported.
 
-                  | Name       | Type   | Format                                   | Description                                 |
-                  |------------|--------|------------------------------------------|---------------------------------------------|
-                  | amount     | string | Numeric                                  | Only find transactions in amount range.     |
-                  | tickNumber | string | Numeric                                  | Only find transactions in tick range.       |
-                  | inputType  | string | Numeric                                  | Only find transactions in input type range. |
-                  | timestamp  | string | Numeric (Unix Timestamp in milliseconds) | Only find transactions in time range.       |
+                 #### Allowed properties
 
-                  #### Range definition
+                 | Name       | Type   | Format                                   | Description                                 |
+                 |------------|--------|------------------------------------------|---------------------------------------------|
+                 | amount     | string | Numeric                                  | Only find transactions in amount range.     |
+                 | tickNumber | string | Numeric                                  | Only find transactions in tick range.       |
+                 | inputType  | string | Numeric                                  | Only find transactions in input type range. |
+                 | timestamp  | string | Numeric (Unix Timestamp in milliseconds) | Only find transactions in time range.       |
 
-                  A range with size of 0 or 1 is not allowed.
+                 #### Range definition
 
-                  | Name      | Type   | Necessity | Description                               |
-                  |-----------|--------|-----------|-------------------------------------------|
-                  | field | string | required  | Name of the field you wish to search for. |
-                  | gt        | string | optional  | Greater than.                             |
-                  | gte       | string | optional  | Greater than or equal to.                 |
-                  | lt        | string | optional  | Less than.                                |
-                  | lte       | string | optional  | Less than or equal to.                    |
+                 A range with size of 0 or 1 is not allowed.
 
-                  Only one lower bound and one upper bound can be specified.
+                 | Name      | Type   | Necessity | Description                               |
+                 |-----------|--------|-----------|-------------------------------------------|
+                 | field | string | required  | Name of the field you wish to search for. |
+                 | gt        | string | optional  | Greater than.                             |
+                 | gte       | string | optional  | Greater than or equal to.                 |
+                 | lt        | string | optional  | Less than.                                |
+                 | lte       | string | optional  | Less than or equal to.                    |
 
-                  #### Examples
+                 Only one lower bound and one upper bound can be specified.
 
-                  ```
-                  "amount": { "gt": "1000000" }
-                  "tickNumber": { "gte": "25563000", "lte": "28300000" }
-                  "inputType": { "gt": "0" }
-                  "timestamp": { "lt": "1757376000000" }
-                  ```
+                 #### Examples
 
-                  ### Pagination
+                 ```
+                 "amount": { "gt": "1000000" }
+                 "tickNumber": { "gte": "25563000", "lte": "28300000" }
+                 "inputType": { "gt": "0" }
+                 "timestamp": { "lt": "1757376000000" }
+                 ```
 
-                  | Name   | Type   | Necessity | Description                                                                                         |
-                  |--------|--------|-----------|-----------------------------------------------------------------------------------------------------|
-                  | offset | uint32 | optional  | The offset of the first record to return. Defaults to zero (first record). Maximum offset is 10000. |
-                  | size   | uint32 | optional  | Defaults to 10. Maximum size is 1000. Zero value is ignored (uses default). |
+                 ### Pagination
+
+                 | Name   | Type   | Necessity | Description                                                                                         |
+                 |--------|--------|-----------|-----------------------------------------------------------------------------------------------------|
+                 | offset | uint32 | optional  | The offset of the first record to return. Defaults to zero (first record). Maximum offset is 10000. |
+                 | size   | uint32 | optional  | Defaults to 10. Maximum size is 1000. Zero value is ignored (uses default). |
             operationId: ArchiveQueryService_GetTransactionsForIdentity
             requestBody:
                 content:
@@ -213,7 +218,56 @@ paths:
             tags:
                 - ArchiveQueryService
             summary: Get Transactions For Tick
-            description: Get the transactions that are in included in one tick.
+            description: |-
+                Get the transactions that are in included in one tick.
+
+                 ###  Request structure
+
+                 | Name       | Type               | Necessity | Description                                     |
+                 |------------|--------------------|-----------|-------------------------------------------------|
+                 | identity   | string             | required  | 60 characters uppercase identity.               |
+                 | filters    | map<string,string> | optional  | Filters that restrict results to single value.  |
+                 | ranges     | map<string,Range>  | optional  | Filters that restrict results to a value range. |
+
+                 ### Filters
+
+                 Filters restrict the results by single values.
+
+                 #### Allowed properties
+
+                 | Name        |  Type   | Format                 | Description                                                        |
+                 |-------------|---------|------------------------|--------------------------------------------------------------------|
+                 | source      | string  | 60 character identity  | Only find transactions that were sent from the specified identities. |
+                 | destination | string  | 60 character identity  | Only find transactions that were sent to the specified identities.   |
+                 | amount      | string  | Numeric                | Only find transactions with the specified amount.                  |
+                 | inputType   | string  | Numeric                | Only find transactions with the specified input type.              |
+
+                 ### Ranges
+
+                 Ranges restrict the results by a range of values. On range per property is supported.
+
+                 #### Allowed properties
+
+                 | Name       | Type   | Format                                   | Description                                 |
+                 |------------|--------|------------------------------------------|---------------------------------------------|
+                 | amount     | string | Numeric                                  | Only find transactions in amount range.     |
+                 | inputType  | string | Numeric                                  | Only find transactions in input type range. |
+
+                 #### Range definition
+
+                 A range with size of 0 or 1 is not allowed.
+
+                 | Name      | Type   | Necessity | Description                               |
+                 |-----------|--------|-----------|-------------------------------------------|
+                 | field | string | required  | Name of the field you wish to search for. |
+                 | gt        | string | optional  | Greater than.                             |
+                 | gte       | string | optional  | Greater than or equal to.                 |
+                 | lt        | string | optional  | Less than.                                |
+                 | lte       | string | optional  | Less than or equal to.                    |
+
+                 Only one lower bound and one upper bound can be specified.
+
+                 For examples how to use filters and ranges see the GetTransactionsForIdentity endpoint documentation.
             operationId: ArchiveQueryService_GetTransactionsForTick
             requestBody:
                 content:
@@ -379,12 +433,29 @@ components:
                     description: List of transactions that matched the search criteria.
             description: GetTransactionsForIdentityResponse
         GetTransactionsForTickRequest:
+            example:
+                tickNumber: 42977140
+                filters:
+                    destination: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB
+                ranges:
+                    amount:
+                        gte: "1"
             type: object
             properties:
                 tickNumber:
                     type: integer
                     description: The tick number to get the transactions for.
                     format: uint32
+                filters:
+                    type: object
+                    additionalProperties:
+                        type: string
+                    description: 'Filters restrict the results by single values. Allowed: source, destination, amount, inputType'
+                ranges:
+                    type: object
+                    additionalProperties:
+                        $ref: '#/components/schemas/Range'
+                    description: 'Ranges restrict the results by a maximum and minimum value. Allowed: amount, inputType'
             description: GetTransactionsForTickRequest
         GetTransactionsForTickResponse:
             type: object
