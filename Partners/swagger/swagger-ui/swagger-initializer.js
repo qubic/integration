@@ -1,6 +1,39 @@
 window.onload = function() {
   //<editor-fold desc="Changeable Configuration Block">
 
+  var HideInternalTagsPlugin = function() {
+    return {
+      statePlugins: {
+        spec: {
+          wrapActions: {
+            updateJsonSpec: function(ori) {
+              return function(spec) {
+                if (spec.paths) {
+                  Object.keys(spec.paths).forEach(function(path) {
+                    Object.keys(spec.paths[path]).forEach(function(method) {
+                      var op = spec.paths[path][method];
+                      if (op && op.tags) {
+                        op.tags = op.tags.filter(function(t) {
+                          return !t.match(/Service$/);
+                        });
+                      }
+                    });
+                  });
+                }
+                if (spec.tags) {
+                  spec.tags = spec.tags.filter(function(t) {
+                    return !t.name.match(/Service$/);
+                  });
+                }
+                return ori(spec);
+              };
+            }
+          }
+        }
+      }
+    };
+  };
+
   // the following lines will be replaced by docker/configurator, when it runs in a docker-container
   window.ui = SwaggerUIBundle({
     urls: [
@@ -16,7 +49,8 @@ window.onload = function() {
       SwaggerUIStandalonePreset
     ],
     plugins: [
-      SwaggerUIBundle.plugins.DownloadUrl
+      SwaggerUIBundle.plugins.DownloadUrl,
+      HideInternalTagsPlugin
     ],
     layout: "StandaloneLayout"
   });
