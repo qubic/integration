@@ -117,7 +117,7 @@ Important changes compared to the old API:
 | `GET /v1/epochs/{epoch}/computors`                    | `POST /query/v1/getComputorListsForEpoch`                                                                   |
 
 > [!NOTE]
-> For full API specifications, see the [Query OpenAPI documentation](swagger/qubic-query-doc.html).
+> For full API specifications, see the [Query OpenAPI documentation](swagger/qubic-rpc-doc.html?urls.primaryName=Qubic%20Query%20V2%20Tree).
 
 ### Migration Examples
 

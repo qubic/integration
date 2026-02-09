@@ -29,7 +29,7 @@ The following documentation is relevant for the Qubic "2.0" RPC.
 The RPC infrastructure is composed of several services that serve different purposes.  
 This section briefly describes these services and their endpoints.
 
-> [Full API Swagger Documentation](swagger/qubic-query-doc.html)
+> [Full API Swagger Documentation](swagger/qubic-rpc-doc.html?urls.primaryName=Qubic%20Query%20V2%20Tree)
 
 > **Note:** You can select to see the documentation for different services by clicking on the `Select a definition`
 > dropdown menu on the top-right side of the page.
