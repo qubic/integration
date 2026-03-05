@@ -3,40 +3,41 @@ name: Update API Docs
 on:
   workflow_dispatch: # Manual trigger
   repository_dispatch: # Trigger from other repos
-    types: [api-docs-update]
+    types: [live-api-update, query-api-update]
 
 jobs:
-  update-openapi-docs:
+  live-api-update:
+    if: github.event_name == 'repository_dispatch' && github.event.action == 'live-api-update'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout this repo
         uses: actions/checkout@v6
 
-      - name: Checkout qubic-http
-        uses: actions/checkout@v6
-        with:
-          repository: qubic/qubic-http
-          path: qubic-http
-          sparse-checkout: |
-            protobuff/qubic.openapi.yaml
-
-      - name: Checkout archive-query-service
-        uses: actions/checkout@v6
-        with:
-          repository: qubic/archive-query-service
-          path: archive-query-service
-          sparse-checkout: |
-            v2/api/archive-query-service/v2/query_services.openapi.yaml
-
-      - name: Copy OpenAPI files to Partners/swagger
+      - name: Decode Live API OpenAPI spec from payload
         run: |
-          cp qubic-http/protobuff/qubic.openapi.yaml Partners/swagger/qubic-http.openapi.yaml
-          cp archive-query-service/v2/api/archive-query-service/v2/query_services.openapi.yaml Partners/swagger/query_services.openapi.yaml
+          echo "${{ github.event.client_payload.openapi_spec_base64 }}" | base64 -d > Partners/swagger/qubic-http.openapi.yaml
 
       - name: Commit and Push
         run: |
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
-          git add Partners/swagger/qubic-http.openapi.yaml Partners/swagger/query_services.openapi.yaml
-          # Only commit if there are changes
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Update API Docs" && git push)
+          git add Partners/swagger/qubic-http.openapi.yaml
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update Live API Docs" && git push)
+
+  query-api-update:
+    if: github.event_name == 'repository_dispatch' && github.event.action == 'query-api-update'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout this repo
+        uses: actions/checkout@v6
+
+      - name: Decode Query API OpenAPI spec from payload
+        run: |
+          echo "${{ github.event.client_payload.openapi_spec_base64 }}" | base64 -d > Partners/swagger/query_services.openapi.yaml
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git add Partners/swagger/query_services.openapi.yaml
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update Query API Docs" && git push)
