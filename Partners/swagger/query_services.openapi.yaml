@@ -33,8 +33,65 @@ paths:
     post:
       tags:
         - Events (Beta)
-      summary: Get Events
-      description: Query event logs with optional filters. Beta endpoint.
+      summary: Get Event Logs
+      description: "Query event logs with optional filters.\n\n ## Please note: Beta\
+        \ version – may be subject to incompatible changes.\n\n ###  Request structure\n\
+        \n | Name       | Type               | Necessity | Description           \
+        \                                         |\n |------------|--------------------|-----------|----------------------------------------------------------------|\n\
+        \ | filters    | map<string,string> | optional  | The filter value must appear\
+        \ in the matching documents.        |\n | exclude    | map<string,string>\
+        \ | optional  | The filter value must not appear in the matching documents.\
+        \    |\n | should     | repeated ShouldFilter | optional  | At least one of\
+        \ the filter values must match. Needs multiple terms/ranges. |\n | ranges\
+        \     | map<string,Range>  | optional  | Filters that restrict results to\
+        \ a value range.                |\n | pagination | Pagination         | optional\
+        \  | Allows to specify the first record and number of records.      |\n\n\
+        \ ### Filters\n\n A filter property must only be used in one filter. See below\
+        \ for allowed properties.\n\n #### Include filter properties\n\n | Name  \
+        \          |  Type   | Format   | Description                            \
+        \                 |\n |-----------------|---------|----------|---------------------------------------------------------|\n\
+        \ | source      | string | 60 character identity, up to 5, comma separated.\
+        \ | Only find logs with this source. |\n | destination | string | 60 character\
+        \ identity, up to 5, comma separated.  | Only find logs with this destination.\
+        \   |\n | transactionHash | string  | Hash     | Only find events for the\
+        \ specified transaction hash.    |\n | tickNumber      | string  | Numeric\
+        \  | Only find events for the specified tick number.         |\n | logType\
+        \         | string  | Numeric  | Only find events with the specified type\
+        \ (0,1,2,3,8,13).|\n\n #### Exclude filter properties\n\n | Name         \
+        \   |  Type   | Format   | Description                                   \
+        \          |\n |-----------------|---------|----------|---------------------------------------------------------|\n\
+        \ | source      | string | 60 character identity, up to 5, comma separated.\
+        \ | Only find logs with another source. |\n | destination | string | 60 character\
+        \ identity, up to 5, comma separated.  | Only find logs with another destination.\
+        \   |\n\n #### Should filter term properties\n\n | Name            |  Type\
+        \   | Format   | Description                                             |\n\
+        \ |-----------------|---------|----------|---------------------------------------------------------|\n\
+        \ | source      | string | 60 character identity, up to 5, comma separated.\
+        \ | Find logs with this source. |\n | destination | string | 60 character\
+        \ identity, up to 5, comma separated.  | Find logs with this source.  |\n\
+        \ | amount      | string | Numeric | Find logs with this amount. |\n | numberOfShares\
+        \ | string | Numeric  | Find logs with these number of shares.  |\n\n ####\
+        \ Should filter range properties\n\n | Name            |  Type   | Format\
+        \   | Description                                             |\n |-----------------|---------|----------|---------------------------------------------------------|\n\
+        \ | amount      | string | Numeric | Find logs in the amount range. |\n |\
+        \ numberOfShares | string | Numeric  | Find logs in the number of shares range.\
+        \  |\n\n #### Range filter properties\n\n Ranges restrict the results to a\
+        \ range of values by defining a maximum and/or minimum value.\n\n | Name \
+        \      | Type   | Format                                   | Description \
+        \                                |\n |------------|--------|------------------------------------------|---------------------------------------------|\n\
+        \ | amount     | string | Numeric                                  | Only\
+        \ find logs in the amount range.     |\n | numberOfShares | string | Numeric\
+        \                              | Only find logs withing the number of shares\
+        \ range. |\n | tickNumber | string | Numeric                             \
+        \     | Only find logs in the tick range.       |\n | timestamp  | string\
+        \ | Numeric (Unix Timestamp in milliseconds) | Only find logs in the time\
+        \ range.       |\n\n ### Pagination\n\n | Name   | Type   | Necessity | Description\
+        \                                                                        \
+        \                 |\n |--------|--------|-----------|-----------------------------------------------------------------------------------------------------|\n\
+        \ | offset | uint32 | optional  | The offset of the first record to return.\
+        \ Defaults to zero (first record). Maximum offset is 10000. |\n | size   |\
+        \ uint32 | optional  | Defaults to 10. Maximum size is 1000. Zero value is\
+        \ ignored (uses default). |"
       operationId: ArchiveQueryService_GetEvents
       requestBody:
         content:
@@ -138,57 +195,43 @@ paths:
         \          |\n |------------|--------------------|-----------|--------------------------------------------------------------------------------|\n\
         \ | identity   | string             | required  | 60 characters uppercase\
         \ identity.                                              |\n | filters   \
-        \ | map<string,string> | optional  | Filters that restrict results to single\
-        \ value.                                 |\n | ranges     | map<string,Range>\
-        \  | optional  | Filters that restrict results to a value range.         \
-        \                       |\n | pagination | Pagination         | optional \
-        \ | Allows to specify the first record and the number of records to be retrieved.\
-        \  |\n\n Without filters and ranges all transactions from and to that identity\
-        \ ordered by tick number descending are returned.\n\n ### Filters\n\n Filters\
-        \ restrict the results by single values.\n\n #### Allowed properties\n\n |\
-        \ Name        |  Type   | Format                 | Description           \
-        \                                             |\n |-------------|---------|------------------------|--------------------------------------------------------------------|\n\
+        \ | map<string,string> | optional  | The filter value must appear in the matching\
+        \ documents.                        |\n | exclude    | map<string,string>\
+        \ | optional  | The filter value must not appear in the matching documents.\
+        \                    |\n | ranges     | map<string,Range>  | optional  | Filters\
+        \ that restrict results to a value range.                                |\n\
+        \ | pagination | Pagination         | optional  | Allows to specify the first\
+        \ record and the number of records to be retrieved.  |\n\n Without filters\
+        \ and ranges all transactions from and to that identity ordered by tick number\
+        \ descending are returned.\n\n ### Filters\n\n A filter property must only\
+        \ be used in one filter. See below for allowed properties.\n\n #### Include\
+        \ filter properties\n\n | Name        |  Type   | Format                 |\
+        \ Description                                                        |\n |-------------|---------|------------------------|--------------------------------------------------------------------|\n\
         \ | source      | string | 60 character identity, up to 5, comma separated.\
-        \ | Only find transactions that were sent from the specified identities. |\n\
-        \ | source-exclude | string | 60 character identity, up to 5, comma separated.\
-        \  | Only find transactions that were not sent from the specified identities.\
-        \ |\n | destination | string | 60 character identity, up to 5, comma separated.\
-        \  | Only find transactions that were sent to the specified identities.  \
-        \ |\n | destination-exclude | string | 60 character identity, up to 5, comma\
-        \ separated.  | Only find transactions that were not sent to the specified\
-        \ identities.   |\n | amount      | string | Numeric                | Only\
-        \ find transactions with the specified amount.                  |\n | inputType\
-        \   | string | Numeric                | Only find transactions with the specified\
-        \ input type.              |\n | tickNumber  | string | Numeric          \
-        \      | Only find transactions with the specified tick number.          \
-        \   |\n\n source` and `source-exclude` are mutually exclusive.\n destination`\
-        \ and `destination-exclude` are mutually exclusive.\n\n #### Examples\n\n\
-        \ ```\n \"source\": \"IIJHZSNPDRYYXCQBWNGKBSWYYDCARTYPOBXGOXZEVEZMMWYHPBVXZLJARRCB\"\
-        ,\n \"destination\": \"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFXIB\"\
-        \n \"amount\": \"1000000\"\n \"inputType\": \"0\"\n ```\n\n ### Ranges\n\n\
-        \ Ranges restrict the results by a range of values. On range per property\
-        \ is supported.\n\n #### Allowed properties\n\n | Name       | Type   | Format\
-        \                                   | Description                        \
-        \         |\n |------------|--------|------------------------------------------|---------------------------------------------|\n\
+        \ | Only find transactions with the specified source. |\n | destination |\
+        \ string | 60 character identity, up to 5, comma separated.  | Only find transactions\
+        \ with the specified destination. |\n | amount      | string | Numeric   \
+        \             | Only find transactions with the specified amount.        \
+        \          |\n | inputType   | string | Numeric                | Only find\
+        \ transactions with the specified input type.              |\n | tickNumber\
+        \  | string | Numeric                | Only find transactions with the specified\
+        \ tick number.             |\n\n #### Exclude filter properties\n\n | Name\
+        \            |  Type   | Format   | Description                          \
+        \                   |\n |-----------------|---------|----------|---------------------------------------------------------|\n\
+        \ | source      | string | 60 character identity, up to 5, comma separated.\
+        \ | Only find transactions with another source. |\n | destination | string\
+        \ | 60 character identity, up to 5, comma separated.  | Only find transactions\
+        \ with another destination.   |\n\n #### Range filter properties\n\n Ranges\
+        \ restrict the results by a range of values. One range per property is supported.\n\
+        \n | Name       | Type   | Format                                   | Description\
+        \                                 |\n |------------|--------|------------------------------------------|---------------------------------------------|\n\
         \ | amount     | string | Numeric                                  | Only\
         \ find transactions in amount range.     |\n | tickNumber | string | Numeric\
         \                                  | Only find transactions in tick range.\
         \       |\n | inputType  | string | Numeric                              \
         \    | Only find transactions in input type range. |\n | timestamp  | string\
         \ | Numeric (Unix Timestamp in milliseconds) | Only find transactions in time\
-        \ range.       |\n\n #### Range definition\n\n A range with size of 0 or 1\
-        \ is not allowed.\n\n | Name      | Type   | Necessity | Description     \
-        \                          |\n |-----------|--------|-----------|-------------------------------------------|\n\
-        \ | field | string | required  | Name of the field you wish to search for.\
-        \ |\n | gt        | string | optional  | Greater than.                   \
-        \          |\n | gte       | string | optional  | Greater than or equal to.\
-        \                 |\n | lt        | string | optional  | Less than.      \
-        \                          |\n | lte       | string | optional  | Less than\
-        \ or equal to.                    |\n\n Only one lower bound and one upper\
-        \ bound can be specified.\n\n #### Examples\n\n ```\n \"amount\": { \"gt\"\
-        : \"1000000\" }\n \"tickNumber\": { \"gte\": \"25563000\", \"lte\": \"28300000\"\
-        \ }\n \"inputType\": { \"gt\": \"0\" }\n \"timestamp\": { \"lt\": \"1757376000000\"\
-        \ }\n ```\n\n ### Pagination\n\n | Name   | Type   | Necessity | Description\
+        \ range.       |\n\n ### Pagination\n\n | Name   | Type   | Necessity | Description\
         \                                                                        \
         \                 |\n |--------|--------|-----------|-----------------------------------------------------------------------------------------------------|\n\
         \ | offset | uint32 | optional  | The offset of the first record to return.\
@@ -435,8 +478,22 @@ components:
           type: object
           additionalProperties:
             type: string
-          description: 'Filters restrict the results by single values. Allowed: transactionHash,
-            tickNumber, eventType'
+          description: 'Include filters: all the values must match.'
+        exclude:
+          type: object
+          additionalProperties:
+            type: string
+          description: 'Exclude filters: all the values must must not match.'
+        should:
+          type: array
+          items:
+            $ref: '#/components/schemas/ShouldFilter'
+          description: 'Should filters: one or more of the values must match.'
+        ranges:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Range'
+          description: Ranges restrict the results by a maximum and/or minimum value.
         pagination:
           $ref: '#/components/schemas/Pagination'
       description: GetEventsRequest
@@ -525,12 +582,18 @@ components:
           type: object
           additionalProperties:
             type: string
-          description: Filters restrict the results by single values.
+          description: 'Include filters: the value must appear in the matching documents.'
+        exclude:
+          type: object
+          additionalProperties:
+            type: string
+          description: 'Exclude filters: the value must not appear in the matching
+            documents.'
         ranges:
           type: object
           additionalProperties:
             $ref: '#/components/schemas/Range'
-          description: Ranges restrict the results by a maximum and minimum value.
+          description: Ranges restrict the results by a maximum and/or minimum value.
         pagination:
           $ref: '#/components/schemas/Pagination'
       description: GetTransactionsForIdentityRequest
@@ -567,8 +630,8 @@ components:
           type: object
           additionalProperties:
             type: string
-          description: 'Filters restrict the results by single values. Allowed: source,
-            destination, amount, inputType'
+          description: 'Include filters: the value must appear in the matching documents.
+            Allowed: source, destination, amount, inputType'
         ranges:
           type: object
           additionalProperties:
@@ -665,7 +728,36 @@ components:
         lte:
           type: string
           description: Less than or equal.
-      description: Range
+      description: "Range filter\n\n | Name      | Type   | Necessity | Description\
+        \                               |\n |-----------|--------|-----------|-------------------------------------------|\n\
+        \ | gt        | string | optional  | Greater than.                       \
+        \      |\n | gte       | string | optional  | Greater than or equal to.  \
+        \               |\n | lt        | string | optional  | Less than.        \
+        \                        |\n | lte       | string | optional  | Less than\
+        \ or equal to.                    |\n\n One lower bound and one upper bound\
+        \ can be specified. One bound is needed. A range with size of 0 or 1 is not\
+        \ allowed.\n\n Examples\n\n ```\n \"amount\": { \"gt\": \"1000000\" }\n \"\
+        tickNumber\": { \"gte\": \"25563000\", \"lte\": \"28300000\" }\n ```"
+    ShouldFilter:
+      type: object
+      properties:
+        terms:
+          type: object
+          additionalProperties:
+            type: string
+          description: 'Or filters: One or more of the values must match.'
+        ranges:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Range'
+          description: Ranges restrict the results by a maximum and/or minimum value.
+      description: "Should Filters\n\n One should filter can contain multiple terms\
+        \ and ranges. It needs at least two query clauses.\n At least one of them\
+        \ has to match by default. See term and range filter documentation for examples.\n\
+        \n Example\n\n ```\n \"should\": [\n   {\n     \"terms\": {\n       \"source\"\
+        : \"BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARMID\",\n    \
+        \   \"destination\": \"BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARMID\"\
+        \n     }\n   }\n ]\n ```"
     SmartContractMessageData:
       type: object
       properties:
