@@ -34,7 +34,7 @@ paths:
       tags:
         - Events (Beta)
       summary: Get Event Logs
-      description: "Query event logs with optional filters.\n\n ## Please note: Beta\
+      description: "Query event logs with optional filters.\n\n Please note: beta\
         \ version – may be subject to incompatible changes.\n\n ###  Request structure\n\
         \n | Name       | Type               | Necessity | Description           \
         \                                         |\n |------------|--------------------|-----------|----------------------------------------------------------------|\n\
@@ -46,20 +46,32 @@ paths:
         \     | map<string,Range>  | optional  | Filters that restrict results to\
         \ a value range.                |\n | pagination | Pagination         | optional\
         \  | Allows to specify the first record and number of records.      |\n\n\
-        \ ### Filters\n\n A filter property must only be used in one filter. See below\
-        \ for allowed properties.\n\n #### Include filter properties\n\n | Name  \
-        \          |  Type   | Format   | Description                            \
-        \                 |\n |-----------------|---------|----------|---------------------------------------------------------|\n\
-        \ | source      | string | 60 character identity, up to 5, comma separated.\
-        \ | Only find logs with this source. |\n | destination | string | 60 character\
-        \ identity, up to 5, comma separated.  | Only find logs with this destination.\
-        \   |\n | transactionHash | string  | Hash     | Only find events for the\
-        \ specified transaction hash.    |\n | tickNumber      | string  | Numeric\
-        \  | Only find events for the specified tick number.         |\n | logType\
-        \         | string  | Numeric  | Only find events with the specified type\
-        \ (0,1,2,3,8,13).|\n\n #### Exclude filter properties\n\n | Name         \
-        \   |  Type   | Format   | Description                                   \
-        \          |\n |-----------------|---------|----------|---------------------------------------------------------|\n\
+        \ ### Filters\n\n A filter property must only be used in one filter, if not\
+        \ explicitly stated otherwise.\n If multiple values are used they need to\
+        \ be comma separated. See below for allowed properties.\n Many fields are\
+        \ conditional per log type. Some fields are universal and present for all\
+        \ logs.\n\n #### Include filter properties\n\n | Name            |  Type \
+        \  | Format   | Description                                             |\n\
+        \ |-----------------|--------|-----------|---------------------------------------------------------|\n\
+        \ | source          | string | 60 character identity, up to 5 | The source\
+        \ identity. (conditional) |\n | destination     | string | 60 character identity,\
+        \ up to 5 | The destination identity. (conditional) |\n | transactionHash\
+        \ | string | Hash     | Hash of the related transaction. (conditional)   \
+        \        |\n | tickNumber      | string | Numeric  | The tick the log belongs\
+        \ to. (universal)                 |\n | logId           | string | Numeric\
+        \  | Index of the log within the tick. Should be unique per epoch. (universal)\
+        \ |\n | logType         | string | Numeric, up to 5 | The type of the log.\
+        \ (universal)                 |\n | categories      | string | Numeric, up\
+        \ to 5 | Log category. (conditional)                      |\n\n The following\
+        \ categories are theoretically supported at the moment. Not all are available\
+        \ in the archive.\n See log data consumer code for more details:\n\n | Name\
+        \          | Category |\n |---------------|----------|\n | \"SC_INITIALIZE_TX\"\
+        \   | 1 |\n | \"SC_BEGIN_EPOCH_TX\"  | 2 |\n | \"SC_BEGIN_TICK_TX\"   | 3\
+        \ |\n | \"SC_END_TICK_TX\"     | 4 |\n | \"SC_END_EPOCH_TX\"    | 5 |\n |\
+        \ \"SC_NOTIFICATION_TX\" | 6 |\n\n #### Exclude filter properties\n\n It is\
+        \ allowed to use exclude filters together with should filters.\n\n | Name\
+        \            |  Type   | Format   | Description                          \
+        \                   |\n |-----------------|---------|----------|---------------------------------------------------------|\n\
         \ | source      | string | 60 character identity, up to 5, comma separated.\
         \ | Only find logs with another source. |\n | destination | string | 60 character\
         \ identity, up to 5, comma separated.  | Only find logs with another destination.\
@@ -203,10 +215,10 @@ paths:
         \ | pagination | Pagination         | optional  | Allows to specify the first\
         \ record and the number of records to be retrieved.  |\n\n Without filters\
         \ and ranges all transactions from and to that identity ordered by tick number\
-        \ descending are returned.\n\n ### Filters\n\n A filter property must only\
-        \ be used in one filter. See below for allowed properties.\n\n #### Include\
-        \ filter properties\n\n | Name        |  Type   | Format                 |\
-        \ Description                                                        |\n |-------------|---------|------------------------|--------------------------------------------------------------------|\n\
+        \ descending are returned.\n\n ### Filters\n\n A property must only be used\
+        \ in one filter. See below for allowed properties.\n\n #### Include filter\
+        \ properties\n\n | Name        |  Type   | Format                 | Description\
+        \                                                        |\n |-------------|---------|------------------------|--------------------------------------------------------------------|\n\
         \ | source      | string | 60 character identity, up to 5, comma separated.\
         \ | Only find transactions with the specified source. |\n | destination |\
         \ string | 60 character identity, up to 5, comma separated.  | Only find transactions\
