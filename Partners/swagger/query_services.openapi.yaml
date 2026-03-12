@@ -375,7 +375,7 @@ components:
           type: string
         amount:
           type: string
-        contractIndexBurnedFor:
+        contractIndex:
           type: string
       description: BurningData contains fields specific to burning events (type 8).
     ComputorList:
@@ -773,7 +773,7 @@ components:
     SmartContractMessageData:
       type: object
       properties:
-        emittingContractIndex:
+        contractIndex:
           type: string
         contractMessageType:
           type: string
