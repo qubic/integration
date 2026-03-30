@@ -29,10 +29,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetComputorListsForEpochResponse'
-  /getEvents:
+  /getEventLogs:
     post:
       tags:
-        - Events (Beta)
+        - Event (Beta)
       summary: Get Event Logs
       description: "Query event logs with optional filters.\n\n Please note: beta\
         \ version – may be subject to incompatible changes.\n\n ###  Request structure\n\
@@ -104,12 +104,12 @@ paths:
         \ Defaults to zero (first record). Maximum offset is 10000. |\n | size   |\
         \ uint32 | optional  | Defaults to 10. Maximum size is 1000. Zero value is\
         \ ignored (uses default). |"
-      operationId: ArchiveQueryService_GetEvents
+      operationId: ArchiveQueryService_GetEventLogs
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/GetEventsRequest'
+              $ref: '#/components/schemas/GetEventLogsRequest'
         required: true
       responses:
         '200':
@@ -117,7 +117,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetEventsResponse'
+                $ref: '#/components/schemas/GetEventLogsResponse'
   /getLastProcessedTick:
     get:
       tags:
@@ -353,6 +353,23 @@ components:
           type: string
       description: AssetOwnershipChangeData contains fields specific to asset ownership
         change events (type 2).
+    AssetOwnershipManagingContractChangeData:
+      type: object
+      properties:
+        assetName:
+          type: string
+        assetIssuer:
+          type: string
+        owner:
+          type: string
+        numberOfShares:
+          type: string
+        sourceContractIndex:
+          type: string
+        destinationContractIndex:
+          type: string
+      description: AssetOwnershipManagingContractChangeData contains fields specific
+        to asset ownership managing contract change events (type 11).
     AssetPossessionChangeData:
       type: object
       properties:
@@ -368,6 +385,25 @@ components:
           type: string
       description: AssetPossessionChangeData contains fields specific to asset possession
         change events (type 3).
+    AssetPossessionManagingContractChangeData:
+      type: object
+      properties:
+        assetName:
+          type: string
+        assetIssuer:
+          type: string
+        owner:
+          type: string
+        possessor:
+          type: string
+        numberOfShares:
+          type: string
+        sourceContractIndex:
+          type: string
+        destinationContractIndex:
+          type: string
+      description: AssetPossessionManagingContractChangeData contains fields specific
+        to asset possession managing contract change events (type 12).
     BurningData:
       type: object
       properties:
@@ -459,6 +495,10 @@ components:
           $ref: '#/components/schemas/SmartContractMessageData'
         customMessage:
           $ref: '#/components/schemas/CustomMessageData'
+        assetOwnershipManagingContractChange:
+          $ref: '#/components/schemas/AssetOwnershipManagingContractChangeData'
+        assetPossessionManagingContractChange:
+          $ref: '#/components/schemas/AssetPossessionManagingContractChangeData'
       description: Event
     GetComputorListsForEpochRequest:
       type: object
@@ -477,7 +517,7 @@ components:
             $ref: '#/components/schemas/ComputorList'
           description: The lists of computors that voted in this epoch.
       description: GetComputorListsForEpochResponse
-    GetEventsRequest:
+    GetEventLogsRequest:
       example:
         filters:
           transactionHash: zvqvtjzvgwgpegmalkkjedhbdrnckqcfthpzfqzxbcljttljzidmvaxalxyz
@@ -508,18 +548,22 @@ components:
           description: Ranges restrict the results by a maximum and/or minimum value.
         pagination:
           $ref: '#/components/schemas/Pagination'
-      description: GetEventsRequest
-    GetEventsResponse:
+      description: GetEventLogsRequest
+    GetEventLogsResponse:
       type: object
       properties:
         hits:
           $ref: '#/components/schemas/Hits'
-        events:
+        eventLogs:
           type: array
           items:
             $ref: '#/components/schemas/Event'
-          description: List of events that matched the search criteria.
-      description: GetEventsResponse
+          description: List of event logs that matched the search criteria.
+        validForTick:
+          type: integer
+          description: The response is valid for this tick number.
+          format: uint32
+      description: GetEventLogsResponse
     GetLastProcessedTickResponse:
       type: object
       properties:
@@ -534,6 +578,10 @@ components:
         intervalInitialTick:
           type: integer
           description: The initial tick of the current tick interval.
+          format: uint32
+        lastProcessedLogTick:
+          type: integer
+          description: The last processed tick for event logs.
           format: uint32
       description: GetLastProcessedTickResponse
     GetProcessedTickIntervalsResponse:
