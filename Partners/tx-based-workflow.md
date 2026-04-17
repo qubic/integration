@@ -26,7 +26,9 @@ The following documentation is relevant for the Qubic "2.0" RPC.
 
 ## Endpoint summary
 
-The RPC infrastructure is composed of several services that serve different purposes.  
+The RPC infrastructure is composed of several services that serve different purposes.
+The **Live API** reflects the current network data and gets the data from the nodes directly and 
+the **Query API** provides indexed and verified historical data.
 This section briefly describes these services and their endpoints.
 
 > [Full API Swagger Documentation](swagger/qubic-rpc-doc.html?urls.primaryName=Qubic%20Query%20V2%20Tree)
@@ -34,27 +36,32 @@ This section briefly describes these services and their endpoints.
 > **Note:** You can select to see the documentation for different services by clicking on the `Select a definition`
 > dropdown menu on the top-right side of the page.
 
-### Query service
+### Query API
 
-The purpose of the query service is to serve archived data such as tick (block) information, transactions, identity
-transactions, etc.
+The Query API allows you to access historical network information efficiently. Whenever possible, prefer the Query API
+over the Live API because it allows filtering, the data is verified, the responses are faster and fewer errors occur.
+The purpose of the query service is to serve archived data such as tick (block) information, transactions and event logs.
+The query API can lag behind the network. Therefore, *always* get the last processed tick number
+(`/getLastProcessedTick`) before querying.
 
 Base path: `/query/v1`
 
-| Method | Endpoint                    | Description                                                                                             |
-|--------|-----------------------------|---------------------------------------------------------------------------------------------------------|
-| POST   | /getTickData                | Query the data related to a certain tick.                                                               |
-| POST   | /getTransactionByHash       | Query the data related to a certain transaction.                                                        |
-| POST   | /getTransactionsForIdentity | Query the transactions of a certain identity (address). Allows for different filters and range options. |
-| POST   | /getTransactionsForTick     | Query the transactions of a certain tick.                                                               |
-| POST   | /getComputorListsForEpoch   | Query the computor list of a certain epoch.                                                             |
-| GET    | /getLastProcessedTick       | Retrieve the number of the last archived tick.                                                          |
-| GET    | /getProcessedTickIntervals  | Retrieve the archived tick intervals in relation to their epoch.                                        |
+| Method | Endpoint                    | Description                                                               |
+|--------|-----------------------------|---------------------------------------------------------------------------|
+| GET    | /getLastProcessedTick       | Retrieve the number of the last archived tick (current epoch).            |
+| GET    | /getProcessedTickIntervals  | Retrieve the archived tick intervals for all epochs.                      |
+| POST   | /getTransactionsForTick     | Query the transactions of a certain tick. Supports filters.               |
+| POST   | /getTransactionsForIdentity | Query the transactions of a certain identity (address). Supports filters. |
+| POST   | /getTransactionByHash       | Query the data related to a single transaction.                           |
+| POST   | /getTickData                | Query the data related to a certain tick.                                 |
+| POST   | /getEventLogs               | Query event logs. Supports extensive filtering.                           |
 
-### Live service
+### Live API
 
-The live service acts as a proxy to the live network and allows for querying certain information directly from the
-network, sending transactions and querying smart contract data.
+Whenever you need to interact with the network directly, use this API. The live API acts as a proxy to the live network 
+and allows for querying certain information directly from the network, sending transactions and querying smart contract 
+data. For example, if you want to make a transaction, then get the network tick number via the Live API. This is important
+because the information must be current to set the correct target tick number.
 
 Base path: `/live/v1`
 
@@ -64,6 +71,9 @@ Base path: `/live/v1`
 | POST   | /querySmartContract    | Perform a query on a smart contract function. The `requestData` needs to be base64 encoded.      |
 | GET    | /tick-info             | Query the current tick of the network.                                                           |
 | GET    | /balances/{identity}   | Query the balance of a certain identity, alongside with some transfer related metadata.          |
+
+The Live API is slower and errors more often than the Query API because it accesses the nodes directly.
+Therefore, you need to have a robust retry logic in place.
 
 ## Qubic workflow guidelines
 
@@ -96,7 +106,7 @@ There are a couple of endpoints that can be used to get different types of statu
   ticks lower and equal to this value.
 - `/query/v1/getProcessedTickIntervals` -> Query the tick intervals of all the stored epochs. Note that due to different network
   conditions, there may exist multiple intervals for certain epochs, as the network can restart and skip some ticks in
-  certain scenarios.
+  certain scenarios. This endpoint is only needed for special cases spanning older epochs.
 
 ### Epoch transition
 
@@ -145,11 +155,14 @@ return nil
 
 The basic steps for this process are:
 
-1. Request current network tick from `/live/v1/tick-info`.
-2. Create transaction, define its target tick as a tick in the future and sign it.
+1. Request current network tick from `/live/v1/tick-info`. It is important to use the Live API here!
+2. Create a transaction, define its target tick as a tick in the future and sign it.
 3. Send transaction and store its hash.
-4. Verify transaction by querying `/query/v1/getTransactionByHash` after the tick returned by `/query/v1/getLastProcessedTick` surpasses
+4. Verify transaction by querying `/query/v1/getTransactionByHash` *after* the tick returned by `/query/v1/getLastProcessedTick` surpasses
    the target tick of the transaction.
+
+Please always call `/getLastProcessedTick` before accessing the Query API to avoid 4xx errors because of data that is not
+available yet.
 
 #### Example
 
