@@ -46,16 +46,6 @@ The query API can lag behind the network. Therefore, *always* get the last proce
 
 Base path: `/query/v1`
 
-| Method | Endpoint                    | Description                                                               |
-|--------|-----------------------------|---------------------------------------------------------------------------|
-| GET    | /getLastProcessedTick       | Retrieve the number of the last archived tick (current epoch).            |
-| GET    | /getProcessedTickIntervals  | Retrieve the archived tick intervals for all epochs.                      |
-| POST   | /getTransactionsForTick     | Query the transactions of a certain tick. Supports filters.               |
-| POST   | /getTransactionsForIdentity | Query the transactions of a certain identity (address). Supports filters. |
-| POST   | /getTransactionByHash       | Query the data related to a single transaction.                           |
-| POST   | /getTickData                | Query the data related to a certain tick.                                 |
-| POST   | /getEventLogs               | Query event logs. Supports extensive filtering.                           |
-
 ### Live API
 
 Whenever you need to interact with the network directly, use this API. The live API acts as a proxy to the live network 
@@ -63,17 +53,10 @@ and allows for querying certain information directly from the network, sending t
 data. For example, if you want to make a transaction, then get the network tick number via the Live API. This is important
 because the information must be current to set the correct target tick number.
 
-Base path: `/live/v1`
-
-| Method | Endpoint               | Description                                                                                      |
-|--------|------------------------|--------------------------------------------------------------------------------------------------|
-| POST   | /broadcast-transaction | Broadcast a new transaction to the network. The `encodedTransaction` needs to be base64 encoded. |
-| POST   | /querySmartContract    | Perform a query on a smart contract function. The `requestData` needs to be base64 encoded.      |
-| GET    | /tick-info             | Query the current tick of the network.                                                           |
-| GET    | /balances/{identity}   | Query the balance of a certain identity, alongside with some transfer related metadata.          |
-
 The Live API is slower and errors more often than the Query API because it accesses the nodes directly.
 Therefore, you need to have a robust retry logic in place.
+
+Base path: `/live/v1`
 
 ## Qubic workflow guidelines
 
