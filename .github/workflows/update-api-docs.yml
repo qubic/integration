@@ -13,9 +13,32 @@ jobs:
       - name: Checkout this repo
         uses: actions/checkout@v6
 
-      - name: Decode Live API OpenAPI spec from payload
+      - name: Checkout qubic-http
+        uses: actions/checkout@v6
+        with:
+          repository: qubic/qubic-http
+          ref: ${{ github.event.client_payload.ref || 'main' }}
+          path: qubic-http
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.26.x
+
+      - name: Install protoc
+        uses: arduino/setup-protoc@v3
+
+      - name: Install protoc-gen-openapi
+        run: go install github.com/google/gnostic/cmd/protoc-gen-openapi@latest
+
+      - name: Generate OpenAPI spec
+        working-directory: qubic-http/protobuff
         run: |
-          echo "${{ github.event.client_payload.openapi_spec_base64 }}" | base64 -d > Partners/swagger/qubic-http.openapi.yaml
+          export PATH="$(go env GOPATH)/bin:$PATH"
+          make openapi-v3
+
+      - name: Copy spec into place
+        run: cp qubic-http/protobuff/qubic.openapi.yaml Partners/swagger/qubic-http.openapi.yaml
 
       - name: Commit and Push
         run: |
