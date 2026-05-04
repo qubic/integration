@@ -133,6 +133,7 @@ paths:
                  | epoch           | string | Numeric (uint32)                         | Only find logs in the epoch range.                 |
                  | deductedAmount  | string | Numeric (uint64)                         | Only find logs in the deducted amount range.       |
                  | remainingAmount | string | Numeric (int64)                          | Only find logs in the remaining amount range.      |
+                 | logId           | string | Numeric (uint64)                         | Only find logs in the logId range. Combine with a tickNumber filter to paginate beyond 10K events in a tick. |
 
                  ### Pagination
 
