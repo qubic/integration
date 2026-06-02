@@ -40,6 +40,8 @@ paths:
             description: |-
                 Query event logs with optional filters.
 
+                 Please note: beta version – the API contract may change without notice, and data completeness is not yet guaranteed.
+
                  ###  Request structure
 
                  | Name       | Type               | Necessity | Description                                                    |
@@ -982,8 +984,8 @@ tags:
     - name: ArchiveQueryService
       description: Qubic Query API
       x-scalar-ignore: true
-    - name: Events
-      description: Query event logs from the Qubic blockchain.
+    - name: Events (Beta)
+      description: Query event logs from the Qubic blockchain. Beta endpoint.
     - name: Network
       description: Network status and computor information.
     - name: Ticks
