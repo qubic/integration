@@ -290,7 +290,24 @@ paths:
                 - QubicLiveService
                 - Transactions
             summary: Broadcast Transaction
-            description: Broadcasts a transaction to the network.
+            description: |-
+                Broadcasts a transaction to the network.
+
+                **A successful response does NOT mean the transaction was added to the blockchain.** It only confirms the transaction was relayed to `peers_broadcasted` node peers. The transaction still has to reach the computors, be selected into its target tick, and be executed. None of that is reported here.
+
+                Common reasons a broadcast transaction is never added to a tick (no error is returned in any of these cases):
+                - **Insufficient balance:** a validly signed transaction can be included in a tick but do nothing, or be dropped entirely, if the source lacks the funds. The balance simply does not change in the Spectrum ledger.
+                - **Tick congestion / low priority:** each tick holds a limited number of transactions. When more are scheduled than fit, the lowest-priority ones are discarded. Priority favors higher balances and addresses that have not recently transacted.
+                - **No quorum / empty tick:** if fewer than the required computors agree on the target tick, it becomes an empty tick and every transaction scheduled for it is discarded.
+                - **Target tick too close:** the target tick must be far enough in the future for the transaction to propagate (a margin of ~10 ticks is recommended). If it is processed before the transaction reaches enough computors, it is missed and not retried automatically.
+                - **Did not reach a computor in time:** broadcasting relays to node peers via gossip, not directly to computors. If peers are lagging or out of sync the transaction may never reach a computor for the target tick.
+
+                To confirm a transaction, do not rely on this response — the Live API does not track transaction outcomes. Use the Qubic public Query API (`https://rpc.qubic.org`, see the [Query API documentation](https://docs.qubic.org/apis/query)). Because every transaction targets a specific future tick, you can only check it once that target tick has been processed:
+                - **Has the target tick been processed yet?** Compare the target tick against the last processed tick — see [getLastProcessedTick](https://docs.qubic.org/apis/query#tag/archive/GET/getLastProcessedTick) in the Query API. The checks below are only conclusive once the last processed tick is greater than or equal to the target tick. Some ticks are skipped (empty); a transaction whose target tick was skipped will never appear.
+                - **Was it included?** Look the transaction up by its `transaction_id` — see [getTransactionByHash](https://docs.qubic.org/apis/query#tag/transactions/POST/getTransactionByHash) in the Query API. This is only conclusive once the target tick has been processed (the check above): if the transaction is still not found at that point, it was not included (dropped, congestion, or empty tick). Before the target tick has been processed, 'not found' only means 'not processed yet', not 'not included'.
+                - **Did it take effect?** Being included in a tick does not mean the transaction did anything. The [getTransactionByHash](https://docs.qubic.org/apis/query#tag/transactions/POST/getTransactionByHash) response includes a `moneyFlew` flag: for value transfers (simple transfers and SendMany multi-transfers) it tells you whether funds actually moved (`moneyFlew = false` means no money moved, e.g. insufficient balance). For other transaction types (e.g. smart contract calls), `moneyFlew` does not indicate success, and there is no generic way to tell whether the call did what it was meant to: it depends on the specific contract and what its procedure does.
+
+                Resubmit with a new target tick if the transaction was not included or had no effect.
             operationId: QubicLiveService_BroadcastTransaction
             requestBody:
                 content:
@@ -305,6 +322,20 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/BroadcastTransactionResponse'
+    /health:
+        get:
+            tags:
+                - QubicLiveService
+            summary: Get Health
+            description: Health check. This is for internal use only and can change any time. Do not rely on this endpoint.
+            operationId: QubicLiveService_GetHealth
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/HealthResponse'
     /ipos/active:
         get:
             tags:
@@ -551,7 +582,7 @@ components:
             properties:
                 peersBroadcasted:
                     type: integer
-                    description: The number of Qubic node peers this transactions has been broadcast to.
+                    description: The number of Qubic node peers this transaction has been broadcast to. A value greater than zero only means the transaction was relayed; it does not mean the transaction was added to a tick or executed.
                     format: int32
                 encodedTransaction:
                     type: string
@@ -591,6 +622,13 @@ components:
                 tickInfo:
                     $ref: '#/components/schemas/TickInfo'
             description: GetTickInfoResponse
+        HealthResponse:
+            type: object
+            properties:
+                status:
+                    type: string
+                    description: Health status information.
+            description: HealthResponse
         Ipo:
             type: object
             properties:
